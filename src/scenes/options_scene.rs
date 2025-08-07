@@ -27,14 +27,14 @@ const MENU_BOX_ARRAY: [[i8; 8]; 6] = [
     [6, 7, 7, 7, 7, 7, 7, 8],
 ];
 
-const SELECTED_FLAG_COLOR: Color = Color::Rgba {
+const SELECTED_FLAG_COLOR: Srgba = Srgba {
     red: (160.0 / 255.0),
     green: (170.0 / 255.0),
     blue: (170.0 / 255.0),
     alpha: 1.0,
 };
 
-const NORMAL_FLAG_COLOR: Color = Color::Rgba {
+const NORMAL_FLAG_COLOR: Srgba = Srgba {
     red: 1.0,
     green: 1.0,
     blue: 1.0,
@@ -383,7 +383,7 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
-            background_color: BackgroundColor(color),
+            background_color: BackgroundColor(Color::from(color)),
             image: UiImage::new(handle_image),
             ..Default::default()
         })
@@ -460,8 +460,8 @@ fn pair_button_handle_system(
         match *button {
             PairButtonComponent::Vietnamese => match *interaction {
                 Interaction::None | Interaction::Hovered => match setting.get_language() {
-                    Language::VI => ui_color.0 = SELECTED_FLAG_COLOR,
-                    Language::EN => ui_color.0 = NORMAL_FLAG_COLOR,
+                    Language::VI => ui_color.0 = Color::from(SELECTED_FLAG_COLOR),
+                    Language::EN => ui_color.0 = Color::from(NORMAL_FLAG_COLOR),
                 },
                 Interaction::Pressed => {
                     if setting.get_language() != Language::VI {
@@ -472,8 +472,8 @@ fn pair_button_handle_system(
             },
             PairButtonComponent::English => match *interaction {
                 Interaction::None | Interaction::Hovered => match setting.get_language() {
-                    Language::VI => ui_color.0 = NORMAL_FLAG_COLOR,
-                    Language::EN => ui_color.0 = SELECTED_FLAG_COLOR,
+                    Language::VI => ui_color.0 = Color::from(NORMAL_FLAG_COLOR),
+                    Language::EN => ui_color.0 = Color::from(SELECTED_FLAG_COLOR),
                 },
                 Interaction::Pressed => {
                     if setting.get_language() != Language::EN {

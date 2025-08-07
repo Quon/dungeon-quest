@@ -1,3 +1,4 @@
+use bevy::color::palettes::css::DARK_GRAY;
 use bevy::prelude::*;
 
 use crate::config::*;
@@ -101,7 +102,7 @@ fn loader_bundle(
                 right: Val::Auto,
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::DARK_GRAY),
+            background_color: BackgroundColor(Color::from(DARK_GRAY)),
             ..Default::default()
         },
     )

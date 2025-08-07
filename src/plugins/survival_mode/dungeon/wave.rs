@@ -17,6 +17,7 @@ use crate::resources::game_data::{GameData, PauseSceneData};
 use crate::resources::hero::hero_class::HeroClass;
 use crate::resources::upgrade::upgrade_controller::UpgradeController;
 use crate::resources::upgrade::upgrade_type::UpgradeType;
+use bevy::color::palettes::css::*;
 
 const BOX_TILE_SIZE: f32 = 60.0;
 const BOX_WIDTH_TILES: f32 = 4.0;
@@ -191,7 +192,7 @@ fn buttons(
                             TextStyle {
                                 font: font.clone(),
                                 font_size: 35.0,
-                                color: Color::GRAY,
+                                color: Color::from(GRAY),
                             }
                         ).with_justify(
                             JustifyText::Center
@@ -233,7 +234,7 @@ pub fn button_handle_system(
     for (interaction, reward, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
-            Interaction::None => text.sections[0].style.color = Color::GRAY,
+            Interaction::None => text.sections[0].style.color = Color::from(GRAY),
             Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
             Interaction::Pressed => {
                 let (mut player, mut player_skill, mut player_list_effects) =

@@ -254,7 +254,7 @@ fn get_texture(monster: &Monster, ingame_materials: &InGameMaterials) -> (Textur
     };
 
     (TextureAtlasLayout::from_grid(
-        Vec2::new(monster.origin_width, monster.origin_height),
+        UVec2::new(monster.origin_width as u32, monster.origin_height as u32),
         columns,
         1,
         None,

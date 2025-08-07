@@ -9,6 +9,7 @@ use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 use crate::resources::{game_mode::GameMode, profile::Profile};
 use crate::scenes::SceneState;
+use bevy::color::palettes::css::*;
 
 const RETURN_BUTTON_SIDE: f32 = 50.0;
 const FONT_SIZE: f32 = 35.0;
@@ -228,7 +229,7 @@ fn buttons(
                             TextStyle {
                                 font: font.clone(),
                                 font_size: FONT_SIZE,
-                                color: Color::GRAY,
+                                color: Color::from(GRAY),
                             },
                         )
                         .with_justify(JustifyText::Center),
@@ -253,7 +254,7 @@ fn button_handle_system(
     for (interaction, button, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
-            Interaction::None => text.sections[0].style.color = Color::GRAY,
+            Interaction::None => text.sections[0].style.color = Color::from(GRAY),
             Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
             Interaction::Pressed => {
                 if *button == ButtonComponent::ClassicMode {

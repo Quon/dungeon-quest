@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use std::slice::Iter;
 // use bevy::ui::ContentSize;
+use bevy::color::palettes::css::*;
 
 use crate::components::player::PlayerComponent;
 use crate::components::skill::SkillComponent;
@@ -314,7 +315,7 @@ pub fn skill_duration(root: &mut ChildBuilder) {
             height: Val::Px(10.0),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::ORANGE),
+        background_color: BackgroundColor(Color::from(ORANGE)),
         visibility: Visibility::Hidden,
         ..Default::default()
     })
@@ -353,7 +354,7 @@ pub fn skill_cooldown(root: &mut ChildBuilder) {
             height: Val::Px(length),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::GREEN),
+        background_color: BackgroundColor(Color::from(GREEN)),
         visibility: Visibility::Inherited,
         ..Default::default()
     })

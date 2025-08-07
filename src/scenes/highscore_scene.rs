@@ -143,7 +143,7 @@ fn setup(
     // book texture
     let book_tileset = scenes_materials.book_tileset.clone();
     let texture_atlas = TextureAtlasLayout::from_grid(
-        Vec2::new(BOOK_TILE_SIZE.width, BOOK_TILE_SIZE.width),
+        UVec2::new(BOOK_TILE_SIZE.width as u32, BOOK_TILE_SIZE.width as u32),
         7,
         1,
         None,

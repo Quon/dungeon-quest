@@ -9,6 +9,7 @@ use crate::components::weapon_shoot_attack::WeaponShootAttackComponent;
 use crate::materials::ingame::InGameMaterials;
 use crate::resources::weapon::attack_type::AttackType;
 use crate::resources::weapon::weapon_type::WeaponType;
+use bevy::color::palettes::css::*;
 
 pub fn spawn_bullet(
     mut weapon_query: Query<(
@@ -54,9 +55,9 @@ pub fn spawn_bullet(
 
             let color = match weapon_component.name {
                 WeaponType::Bow | WeaponType::Spear => Color::default(),
-                WeaponType::SmallWand => Color::GRAY,
+                WeaponType::SmallWand => Color::from(GRAY),
                 WeaponType::MagicWand => Color::default(),
-                _ => Color::CYAN,
+                _ => Color::from(AQUA),
             };
 
             weapon_shoot_attack.spawn_bullet = false;

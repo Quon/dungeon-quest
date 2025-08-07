@@ -36,7 +36,7 @@ pub fn initiate_player(
         .get_texture(class.clone(), gender);
 
     let texture_atlas = TextureAtlasLayout::from_grid(
-        Vec2::new(PLAYER_ORIGIN_SIZE_WIDTH, PLAYER_ORIGIN_SIZE_HEIGHT),
+        UVec2::new(PLAYER_ORIGIN_SIZE_WIDTH as u32, PLAYER_ORIGIN_SIZE_HEIGHT as u32),
         9,
         1,
         None,

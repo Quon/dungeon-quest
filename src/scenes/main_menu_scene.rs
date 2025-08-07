@@ -1,7 +1,8 @@
 use bevy::app::AppExit;
 use bevy::prelude::*;
 use std::slice::Iter;
-
+use bevy::color::palettes::basic::GRAY;
+use bevy::color::palettes::css::RED;
 use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
@@ -169,7 +170,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
                     TextStyle {
                         font: materials.get_font(dictionary.get_current_language()),
                         font_size: FONT_SIZE,
-                        color: Color::GRAY,
+                        color: Color::from(GRAY),
                     },
                 )
                 .with_justify(JustifyText::Center),
@@ -192,17 +193,17 @@ fn button_handle_system(
     for (interaction, button, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
-            Interaction::None => text.sections[0].style.color = Color::GRAY,
+            Interaction::None => text.sections[0].style.color = Color::from(GRAY),
             Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
             Interaction::Pressed => {
-                text.sections[0].style.color = Color::RED;
+                text.sections[0].style.color = Color::from(RED);
                 match button {
                     ButtonComponent::Play => state.set(SceneState::GameModeSelectScene),
                     ButtonComponent::Highscore => state.set(SceneState::HighscoreScene),
                     ButtonComponent::Options => state.set(SceneState::OptionsScene),
                     ButtonComponent::Help => state.set(SceneState::HelpScene),
                     ButtonComponent::Credits => state.set(SceneState::CreditsScene),
-                    ButtonComponent::Quit => {exit.send(AppExit);},
+                    ButtonComponent::Quit => {exit.send(AppExit::Success);},
                 }
             }
         }

@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use std::time::Duration;
-
+use bevy::color::palettes::css::DARK_GRAY;
 use crate::config::*;
 use crate::components::player::PlayerComponent;
 use crate::components::player_list_effects::PlayerListEffectsComponent;
@@ -229,7 +229,7 @@ fn upgrade_information(
                 TextStyle {
                     font: font.clone(),
                     font_size: 35.0,
-                    color: Color::DARK_GRAY,
+                    color: Color::from(DARK_GRAY),
                 }
             ).with_justify(
                 JustifyText::Center

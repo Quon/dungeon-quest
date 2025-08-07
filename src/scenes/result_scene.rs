@@ -3,7 +3,7 @@ use chrono::{DateTime, Datelike, Timelike};
 use std::fs::File;
 use std::io::prelude::*;
 use std::slice::Iter;
-
+use bevy::color::palettes::css::DARK_GRAY;
 use crate::config::*;
 use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
@@ -575,7 +575,7 @@ fn user_input_text(
                 right: Val::Auto,
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::DARK_GRAY),
+            background_color: BackgroundColor(Color::from(DARK_GRAY)),
             visibility: Visibility::Hidden,
             ..Default::default()
         })

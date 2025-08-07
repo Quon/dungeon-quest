@@ -51,7 +51,7 @@ pub fn aim(
             Vec2::new(screen_pos.x, window_size.y - screen_pos.y) / window_size
         ) * 2.0 - Vec2::ONE;
 
-        let ndc_to_world = camera_transform.compute_matrix() * camera.projection_matrix().inverse();
+        let ndc_to_world = camera_transform.compute_matrix() * camera.clip_from_view().inverse();
         let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
         let mouse_pos: Vec2 = world_pos.truncate();
 

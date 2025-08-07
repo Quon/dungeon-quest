@@ -323,7 +323,7 @@ fn heroes_images(
             };
 
             let texture_atlas =
-                TextureAtlasLayout::from_grid(Vec2::new(16.0, 28.0), 9, 1, None, None);
+                TextureAtlasLayout::from_grid(UVec2::new(16, 28), 9, 1, None, None);
             let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
             let x = hero_image_positions[index][0];

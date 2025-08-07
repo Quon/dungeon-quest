@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::color::palettes::css::*;
 
 use crate::components::{
     invinsible_cooldown::InvisibleCooldownComponent, monster::MonsterComponent,
@@ -13,7 +14,7 @@ pub fn hurt_duration_color(
 ) {
     for (mut invincible_cooldown, mut texture) in invincible_cooldown_query.iter_mut() {
         if !invincible_cooldown.hurt_duration.finished() {
-            texture.color = Color::RED;
+            texture.color = Color::from(RED);
             invincible_cooldown.hurt_duration.tick(time.delta());
         } else {
             texture.color = Color::default();

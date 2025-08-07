@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::color::palettes::css::*;
 
 use crate::{
     components::monster_list_effects::MonsterListEffectsComponent,
@@ -25,11 +26,11 @@ pub fn update_color_of_effects(
         for (effect_type, duration) in monster_list_effects.activated_effects.iter() {
             if !duration.finished() {
                 if *effect_type == EffectType::Stun {
-                    texture.color = Color::GRAY;
+                    texture.color = Color::from(GRAY);
                 } else if *effect_type == EffectType::Slow {
-                    texture.color = Color::ALICE_BLUE;
+                    texture.color = Color::from(ALICE_BLUE);
                 } else if *effect_type == EffectType::ReduceDamage {
-                    texture.color = Color::YELLOW;
+                    texture.color = Color::from(YELLOW);
                 }
             }
         }

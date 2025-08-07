@@ -4,6 +4,7 @@ use bevy::{
 };
 use bevy::sprite::TextureAtlas;
 use crate::components::{invinsible_cooldown::InvisibleCooldownComponent, player::PlayerComponent};
+use bevy::color::palettes::css::*;
 
 pub fn invincible_cooldown(
     mut invincible_cooldown_query: Query<&mut InvisibleCooldownComponent, With<PlayerComponent>>,
@@ -29,7 +30,7 @@ pub fn hurt_duration_color(
     let (invincible_cooldown, mut texture) = invincible_cooldown_query.single_mut();
 
     if !invincible_cooldown.hurt_duration.finished() {
-        texture.color = Color::RED;
+        texture.color = Color::from(RED);
     } else {
         texture.color = Color::default();
     }
