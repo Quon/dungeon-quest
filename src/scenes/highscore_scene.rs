@@ -129,7 +129,7 @@ fn setup(
     mut commands: Commands,
     font_materials: Res<FontMaterials>,
     scenes_materials: Res<ScenesMaterials>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
     dictionary: Res<Dictionary>,
 ) {
     // background
@@ -142,8 +142,7 @@ fn setup(
 
     // book texture
     let book_tileset = scenes_materials.book_tileset.clone();
-    let texture_atlas = TextureAtlas::from_grid(
-        book_tileset,
+    let texture_atlas = TextureAtlasLayout::from_grid(
         Vec2::new(BOOK_TILE_SIZE.width, BOOK_TILE_SIZE.width),
         7,
         1,
@@ -165,13 +164,17 @@ fn setup(
     // book
     let book = commands
         .spawn(SpriteSheetBundle {
-            texture_atlas: texture_atlas_handle,
-            transform: Transform {
-                translation: Vec3::new(-25.0, -30.0, 1.0),
-                scale: Vec3::splat(4.0),
-                ..Default::default()
+            atlas: TextureAtlas {
+                layout: texture_atlas_handle,
+                index: 0,
             },
-            sprite: TextureAtlasSprite {
+            transform: Transform {
+               translation: Vec3::new(-25.0, -30.0, 1.0),
+               scale: Vec3::splat(4.0),
+               ..Default::default()
+            },
+            texture: book_tileset,
+            sprite: Sprite {
                 custom_size: Some(Vec2::new(BOOK_TILE_SIZE.width, BOOK_TILE_SIZE.height)),
                 ..Default::default()
             },
@@ -339,7 +342,7 @@ fn button_handle_system(
 }
 
 fn book_animation_handle_system(
-    mut query: Query<(&mut HighscoreBookComponent, &mut TextureAtlasSprite)>,
+    mut query: Query<(&mut HighscoreBookComponent, &mut TextureAtlas)>,
     time: Res<Time>,
 ) {
     for (mut highscore_book, mut sprite) in query.iter_mut() {
@@ -463,8 +466,8 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
                             font_size: 25.0,
                             color: Color::BLACK,
                         }
-                    ).with_alignment(
-                        TextAlignment::Center
+                    ).with_justify(
+                        JustifyText::Center
                     ),
                     ..Default::default()
                 })

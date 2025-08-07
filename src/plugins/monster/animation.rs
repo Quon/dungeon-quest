@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub fn animation_handle(
-    mut monsters_animation_query: Query<(&mut MonsterAnimationComponent, &mut TextureAtlasSprite)>,
+    mut monsters_animation_query: Query<(&mut MonsterAnimationComponent, &mut TextureAtlas)>,
     time: Res<Time>,
 ) {
     for (mut monster_animation, mut sprite) in monsters_animation_query.iter_mut() {

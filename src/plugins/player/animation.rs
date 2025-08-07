@@ -6,12 +6,12 @@ use crate::resources::animation_state::AnimationState;
 
 pub fn player_animation_system(
     time: Res<Time>,
-    texture_atlases: Res<Assets<TextureAtlas>>,
+    texture_atlases: Res<Assets<TextureAtlasLayout>>,
     mut query: Query<(
         &mut PlayerAnimation,
         &InvisibleCooldownComponent,
-        &mut TextureAtlasSprite,
-        &Handle<TextureAtlas>,
+        &mut TextureAtlas,
+        &Handle<TextureAtlasLayout>,
     )>,
 ) {
     for (mut player_animation, invincible_cooldown, mut sprite, texture_atlas_handle) in

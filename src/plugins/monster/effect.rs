@@ -19,7 +19,7 @@ pub fn update_effects(
 }
 
 pub fn update_color_of_effects(
-    mut monsters_effects_query: Query<(&MonsterListEffectsComponent, &mut TextureAtlasSprite)>,
+    mut monsters_effects_query: Query<(&MonsterListEffectsComponent, &mut Sprite)>,
 ) {
     for (monster_list_effects, mut texture) in monsters_effects_query.iter_mut() {
         for (effect_type, duration) in monster_list_effects.activated_effects.iter() {

@@ -216,7 +216,7 @@ fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
                 color: Color::BLACK,
             },
         )
-        .with_alignment(TextAlignment::Center),
+        .with_justify(JustifyText::Center),
         ..Default::default()
     })
     .insert(Name::new("ResultText"));
@@ -416,7 +416,7 @@ fn texts(
                             color: Color::BLACK,
                         },
                     )
-                    .with_alignment(TextAlignment::Center)
+                    .with_justify(JustifyText::Center)
                     .with_no_wrap(),
                     ..Default::default()
                 })
@@ -594,7 +594,7 @@ fn user_input_text(
                             color: Color::WHITE,
                         },
                     )
-                    .with_alignment(TextAlignment::Center),
+                    .with_justify(JustifyText::Center),
                     visibility: Visibility::Hidden,
                     ..Default::default()
                 })
@@ -640,10 +640,10 @@ fn user_input_handle(
     mut state: ResMut<NextState<SceneState>>,
     mut user_name: Local<String>,
     mut profile: ResMut<Profile>,
-    keys: Res<Input<KeyCode>>,
+    keys: Res<ButtonInput<KeyCode>>,
 ) {
     if user_input_controller.0 {
-        if keys.just_pressed(KeyCode::Return) {
+        if keys.just_pressed(KeyCode::Enter) {
             profile.set_name(user_name.clone());
             stored_profile(profile.convert_to_stored_profile());
             user_name.clear();
@@ -655,13 +655,13 @@ fn user_input_handle(
             user_name.clear();
         }
 
-        if keys.just_pressed(KeyCode::Back) {
+        if keys.just_pressed(KeyCode::Backspace) {
             user_name.pop();
         }
 
         if user_name.len() <= 12 {
-            for ev in char_evr.iter() {
-                let char = ev.char;
+            for ev in char_evr.read() {
+                let char = ev.char.chars().next().unwrap();
                 if char.is_ascii() {
                     user_name.push(char);
                 }

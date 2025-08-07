@@ -1,8 +1,8 @@
 use bevy::{
     prelude::{Color, Query, Res, Time, With},
-    sprite::TextureAtlasSprite,
+    sprite::Sprite,
 };
-
+use bevy::sprite::TextureAtlas;
 use crate::components::{invinsible_cooldown::InvisibleCooldownComponent, player::PlayerComponent};
 
 pub fn invincible_cooldown(
@@ -22,7 +22,7 @@ pub fn invincible_cooldown(
 
 pub fn hurt_duration_color(
     mut invincible_cooldown_query: Query<
-        (&InvisibleCooldownComponent, &mut TextureAtlasSprite),
+        (&InvisibleCooldownComponent, &mut Sprite),
         With<PlayerComponent>,
     >,
 ) {

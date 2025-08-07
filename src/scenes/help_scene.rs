@@ -176,7 +176,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
                     color: Color::BLACK,
                 },
             )
-            .with_alignment(TextAlignment::Center),
+            .with_justify(JustifyText::Center),
             ..Default::default()
         });
     }
@@ -222,7 +222,7 @@ fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictio
                     color: Color::BLACK,
                 },
             )
-            .with_alignment(TextAlignment::Center),
+            .with_justify(JustifyText::Center),
             ..Default::default()
         });
     }

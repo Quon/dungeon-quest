@@ -21,7 +21,7 @@ use crate::resources::weapon::weapon_type::WeaponType;
 pub fn use_skill(
     mut player_query: Query<(&mut PlayerComponent, &mut SkillComponent)>,
     mut monsters_query: Query<(&mut MonsterComponent, &mut InvisibleCooldownComponent, &mut MonsterListEffectsComponent)>,
-    mut keyboard_input: ResMut<Input<KeyCode>>,
+    mut keyboard_input: ResMut<ButtonInput<KeyCode>>,
 ) {
     if keyboard_input.pressed(KeyCode::Space) {
         let (mut player, mut player_skill) = player_query.single_mut();
@@ -73,7 +73,7 @@ pub fn use_mouse(
         &mut WeaponShootAttackComponent,
     )>,
     mut player_list_effects_query: Query<&mut PlayerListEffectsComponent>,
-    mut buttons: ResMut<Input<MouseButton>>,
+    mut buttons: ResMut<ButtonInput<MouseButton>>,
     player_animation_query: Query<&PlayerAnimation>,
 ) {
     if buttons.just_pressed(MouseButton::Left) {

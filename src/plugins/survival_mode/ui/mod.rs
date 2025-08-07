@@ -37,7 +37,7 @@ impl Plugin for SurvivalModeUIPlugin {
             center_text_handle_system,
             wave_text_handle_system,
             wave_countdown_text_handle_system
-        ).run_if(in_state(SceneState::InGameSurvivalMode).and_then(not(resource_exists::<PauseSceneData>()))));
+        ).run_if(in_state(SceneState::InGameSurvivalMode).and_then(not(resource_exists::<PauseSceneData>))));
 
         app.add_systems(OnExit(SceneState::InGameSurvivalMode), cleanup);
     }
@@ -95,8 +95,8 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
                 font_size: 50.0,
                 color: Color::WHITE,
             }
-        ).with_alignment(
-            TextAlignment::Center
+        ).with_justify(
+            JustifyText::Center
         ),
         ..Default::default()
     })
@@ -148,8 +148,8 @@ fn wave_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary
                 font_size: 35.0,
                 color: Color::WHITE,
             }
-        ).with_alignment(
-            TextAlignment::Center
+        ).with_justify(
+            JustifyText::Center
         ),
         ..Default::default()
     })
@@ -189,8 +189,8 @@ fn wave_countdown_text(
                 font_size: 35.0,
                 color: Color::WHITE,
             }
-        ).with_alignment(
-            TextAlignment::Center
+        ).with_justify(
+            JustifyText::Center
         ),
         ..Default::default()
     })

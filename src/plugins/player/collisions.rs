@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::sprite::collide_aabb::collide;
 use rand::Rng;
 use std::time::Duration;
 
@@ -16,6 +15,7 @@ use crate::resources::dungeon::block_type::BlockType;
 use crate::resources::effect::effect_type::EffectType;
 use crate::resources::player::player_available_movement::PlayerAvailableMovement;
 use crate::resources::potion::potion_type::PotionType;
+use crate::utils::collide::collide;
 
 pub fn wall_collision_check(
     player_position: Vec3,
@@ -48,7 +48,7 @@ pub fn wall_collision_check(
             continue;
         }
 
-        if collide(player_position, player_size, block_position, block_size).is_some() {
+        if collide(player_position, player_size, block_position, block_size){
             match *block_type {
                 BlockType::WallTop => player_available_movement.can_move_up = false,
                 BlockType::WallBottom => player_available_movement.can_move_down = false,
@@ -88,7 +88,7 @@ pub fn monsters_collision_check(
     for (monster_component, transform) in monsters_query.iter() {
         let monster_size = Vec2::new(monster_component.width, monster_component.height);
         let monster_position = transform.translation;
-        if collide(player_position, player_size, monster_position, monster_size).is_some() {
+        if collide(player_position, player_size, monster_position, monster_size) {
             let damage = monster_component.damage;
 
             player.current_health_points = if damage > player.current_health_points {
@@ -155,7 +155,7 @@ pub fn potions_collision(
         let potion_size = Vec2::new(potion.width, potion.height);
         let potion_position = potion_transform.translation;
 
-        if collide(player_position, player_size, potion_position, potion_size).is_some() {
+        if collide(player_position, player_size, potion_position, potion_size) {
             match potion.potion_type {
                 PotionType::Heal => {
                     player.current_health_points =

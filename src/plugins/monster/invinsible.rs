@@ -6,7 +6,7 @@ use crate::components::{
 
 pub fn hurt_duration_color(
     mut invincible_cooldown_query: Query<
-        (&mut InvisibleCooldownComponent, &mut TextureAtlasSprite),
+        (&mut InvisibleCooldownComponent, &mut Sprite),
         With<MonsterComponent>,
     >,
     time: Res<Time>,

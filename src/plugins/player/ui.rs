@@ -140,8 +140,8 @@ pub fn information_texts(
                             font_size,
                             color: Color::WHITE,
                         }
-                    ).with_alignment(
-                        TextAlignment::Center
+                    ).with_justify(
+                        JustifyText::Center
                     ).with_no_wrap(),
                     ..Default::default()
                 })
@@ -331,7 +331,7 @@ pub fn skill_duration_handle(
 
     if !player_skill.duration.finished() {
         *visibility = Visibility::Visible;
-        let percent_left = player_skill.duration.percent_left();
+        let percent_left = player_skill.duration.fraction_remaining();
         let length = max_length * percent_left;
         style.left = Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - length / 2.0);
         style.width = Val::Px(length);
@@ -379,7 +379,7 @@ pub fn skill_cooldown_handle(
     } else {
         if !player_skill.cooldown.finished() {
             *visibility = Visibility::Visible;
-            let percent_left = player_skill.cooldown.percent_left();
+            let percent_left = player_skill.cooldown.fraction_remaining();
             let length = max_length * percent_left;
             style.height = Val::Px(length);
         } else {

@@ -10,7 +10,7 @@ use crate::components::player_animation::PlayerAnimation;
 pub fn player_movement_handle_system(
     mut player_query: Query<(&PlayerComponent, &mut PlayerAnimation, &mut Transform)>,
     block_type_query: Query<(&BlockType, &Transform), Without<PlayerComponent>>,
-    keyboard_input: Res<Input<KeyCode>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
 ) {
     let (player_stats, mut player_animation, mut transform) = player_query.single_mut();
@@ -22,25 +22,25 @@ pub fn player_movement_handle_system(
 
     let player_availalbe_movement = wall_collision_check(player_position, &block_type_query);
 
-    if keyboard_input.pressed(KeyCode::W) {
+    if keyboard_input.pressed(KeyCode::KeyW) {
         if player_availalbe_movement.can_move_up {
             delta.y += player_stats.speed * TILE_SIZE * time.delta_seconds();
         }
     }
 
-    if keyboard_input.pressed(KeyCode::S) {
+    if keyboard_input.pressed(KeyCode::KeyS) {
         if player_availalbe_movement.can_move_down {
             delta.y -= player_stats.speed * TILE_SIZE * time.delta_seconds();
         }
     }
 
-    if keyboard_input.pressed(KeyCode::A) {
+    if keyboard_input.pressed(KeyCode::KeyA) {
         if player_availalbe_movement.can_move_left {
             delta.x -= player_stats.speed * TILE_SIZE * time.delta_seconds();
         }
     }
 
-    if keyboard_input.pressed(KeyCode::D) {
+    if keyboard_input.pressed(KeyCode::KeyD) {
         if player_availalbe_movement.can_move_right {
             delta.x += player_stats.speed * TILE_SIZE * time.delta_seconds();
         }

@@ -38,7 +38,7 @@ impl ButtonComponent {
 
 // works without SceneState now, should consider to move
 pub fn pause(
-    mut keyboard_input: ResMut<Input<KeyCode>>,
+    mut keyboard_input: ResMut<ButtonInput<KeyCode>>,
     mut commands: Commands,
     font_materials: Res<FontMaterials>,
     scenes_materials: Res<ScenesMaterials>,
@@ -156,7 +156,7 @@ fn buttons(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: 
                         color: Color::GRAY,
                     },
                 )
-                .with_alignment(TextAlignment::Center),
+                .with_justify(JustifyText::Center),
                 ..Default::default()
             });
         })

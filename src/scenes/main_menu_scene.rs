@@ -172,7 +172,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
                         color: Color::GRAY,
                     },
                 )
-                .with_alignment(TextAlignment::Center),
+                .with_justify(JustifyText::Center),
                 ..Default::default()
             });
         })
@@ -202,7 +202,7 @@ fn button_handle_system(
                     ButtonComponent::Options => state.set(SceneState::OptionsScene),
                     ButtonComponent::Help => state.set(SceneState::HelpScene),
                     ButtonComponent::Credits => state.set(SceneState::CreditsScene),
-                    ButtonComponent::Quit => exit.send(AppExit),
+                    ButtonComponent::Quit => {exit.send(AppExit);},
                 }
             }
         }

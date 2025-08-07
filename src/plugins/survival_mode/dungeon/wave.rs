@@ -193,8 +193,8 @@ fn buttons(
                                 font_size: 35.0,
                                 color: Color::GRAY,
                             }
-                        ).with_alignment(
-                            TextAlignment::Center
+                        ).with_justify(
+                            JustifyText::Center
                         ),
                         ..Default::default()
                     });

@@ -143,8 +143,8 @@ fn loader_bundle(
                             font_size: TEXT_FONT_SIZE,
                             color: Color::WHITE,
                         }
-                    ).with_alignment(
-                        TextAlignment::Center
+                    ).with_justify(
+                        JustifyText::Center
                     ),
                     ..Default::default()
                 });
@@ -200,8 +200,8 @@ fn loading_text(
                     font_size: LOADING_TEXT_FONT_SIZE,
                     color: Color::WHITE,
                 }
-            ).with_alignment(
-                TextAlignment::Center
+            ).with_justify(
+                JustifyText::Center
             ),
             ..Default::default()
         });

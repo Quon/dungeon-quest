@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use rand::Rng;
 use std::time::Duration;
-
+use bevy::render::render_resource::Texture;
 use crate::{
     components::{
         invinsible_cooldown::InvisibleCooldownComponent, monster::MonsterComponent,
@@ -19,10 +19,11 @@ use crate::{
         player::player_dungeon_stats::PlayerDungeonStats,
     },
 };
+use crate::plugins::player::{PLAYER_SIZE_HEIGHT, PLAYER_SIZE_WIDTH};
 
 pub fn spawn_monsters_classic_mode(
     mut monster_spawn_controller: ResMut<MonsterSpawnController>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
     player_dungeon_stats: Res<PlayerDungeonStats>,
     ingame_materials: Res<InGameMaterials>,
     game_data: Res<GameData>,
@@ -71,15 +72,19 @@ pub fn spawn_monsters_classic_mode(
                 let x = rng.gen_range(start_x..end_x);
                 let y = rng.gen_range(end_y..start_y);
 
-                let texture_atlas = get_texture(&raw_monster, &ingame_materials);
+                let (texture_atlas, image) = get_texture(&raw_monster, &ingame_materials);
                 let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
                 let component_name = format!("Monster {}", monster_spawn_controller.alive_monsters);
 
                 commands
                     .spawn(SpriteSheetBundle {
-                        texture_atlas: texture_atlas_handle,
-                        sprite: TextureAtlasSprite {
+                        texture: image,
+                        atlas: TextureAtlas {
+                            layout: texture_atlas_handle,
+                            index: 0,
+                        },
+                        sprite: Sprite {
                             custom_size: Some(Vec2::new(
                                 raw_monster.origin_width * 3.5,
                                 raw_monster.origin_height * 3.5,
@@ -130,7 +135,7 @@ pub fn spawn_monsters_classic_mode(
 
 pub fn spawn_monsters_survival_mode(
     mut monster_spawn_controller: ResMut<MonsterSpawnController>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
     ingame_materials: Res<InGameMaterials>,
     game_data: Res<GameData>,
     mut commands: Commands,
@@ -177,15 +182,19 @@ pub fn spawn_monsters_survival_mode(
                 let x = rng.gen_range(start_x..end_x);
                 let y = rng.gen_range(end_y..start_y);
 
-                let texture_atlas = get_texture(&raw_monster, &ingame_materials);
+                let (texture_atlas, image) = get_texture(&raw_monster, &ingame_materials);
                 let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
                 let component_name = format!("Monster {}", monster_spawn_controller.alive_monsters);
 
                 commands
                     .spawn(SpriteSheetBundle {
-                        texture_atlas: texture_atlas_handle,
-                        sprite: TextureAtlasSprite {
+                        texture: image,
+                        atlas: TextureAtlas {
+                            layout: texture_atlas_handle,
+                            index: 0,
+                        },
+                        sprite: Sprite {
                             custom_size: Some(Vec2::new(
                                 raw_monster.origin_width * 3.5,
                                 raw_monster.origin_height * 3.5,
@@ -234,7 +243,7 @@ pub fn spawn_monsters_survival_mode(
     }
 }
 
-fn get_texture(monster: &Monster, ingame_materials: &InGameMaterials) -> TextureAtlas {
+fn get_texture(monster: &Monster, ingame_materials: &InGameMaterials) -> (TextureAtlasLayout, Handle<Image>) {
     let monster_tileset = ingame_materials
         .monsters_materials
         .get_texture(monster.class.clone());
@@ -244,12 +253,11 @@ fn get_texture(monster: &Monster, ingame_materials: &InGameMaterials) -> Texture
         _ => 8,
     };
 
-    TextureAtlas::from_grid(
-        monster_tileset,
+    (TextureAtlasLayout::from_grid(
         Vec2::new(monster.origin_width, monster.origin_height),
         columns,
         1,
         None,
         None
-    )
+    ), monster_tileset)
 }

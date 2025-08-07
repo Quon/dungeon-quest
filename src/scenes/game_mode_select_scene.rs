@@ -166,7 +166,7 @@ fn select_game_mode_text(
                 color: Color::BLACK,
             },
         )
-        .with_alignment(TextAlignment::Center),
+        .with_justify(JustifyText::Center),
         ..Default::default()
     });
 }
@@ -231,7 +231,7 @@ fn buttons(
                                 color: Color::GRAY,
                             },
                         )
-                        .with_alignment(TextAlignment::Center),
+                        .with_justify(JustifyText::Center),
                         ..Default::default()
                     });
                 })

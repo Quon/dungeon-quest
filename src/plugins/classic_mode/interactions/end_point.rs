@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::sprite::collide_aabb::collide;
 use std::time::Duration;
 
 use crate::config::*;
@@ -23,7 +22,7 @@ use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::resources::profile::Profile;
 use crate::resources::upgrade::upgrade_controller::UpgradeController;
 use crate::resources::upgrade::upgrade_type::UpgradeType;
-
+use crate::utils::collide::collide;
 
 const BOX_TILE_SIZE: f32 = 60.0;
 const BOX_WIDTH_TILES: f32 = 6.0;
@@ -55,7 +54,7 @@ pub fn end_point_interaction_handle_system(
     font_materials: Res<FontMaterials>,
     dictionary: Res<Dictionary>,
     potion_query: Query<Entity, With<PotionComponent>>,
-    mut player_query: Query<(&Transform, &TextureAtlasSprite), With<PlayerComponent>>,
+    mut player_query: Query<(&Transform, &TextureAtlas, &Sprite), With<PlayerComponent>>,
     mut end_point_query: Query<
         (&Transform, &Sprite, &Visibility),
         (With<EndPoint>, Without<PlayerComponent>),
@@ -72,7 +71,7 @@ pub fn end_point_interaction_handle_system(
     // info!("Triggered Endpoint Handle! Current pos: {:?}, end room pos: {:?}, is_room_cleared: {:?}", current_position, end_room_position, player_dungeon_stats.is_room_cleared);
     if current_position == end_room_position && player_dungeon_stats.is_room_cleared {
         info!("triggered endpoint inner logic!");
-        let (player_transform, player_sprite) = player_query.single_mut();
+        let (player_transform, player_atlas, player_sprite) = player_query.single_mut();
         let (end_point_transform, end_point_sprite, visibility) = end_point_query.single_mut();
 
         let p_translation = player_transform.translation;
@@ -81,7 +80,7 @@ pub fn end_point_interaction_handle_system(
         let ep_size = end_point_sprite.custom_size.unwrap();
 
         if visibility == Visibility::Visible {
-            if collide(p_translation, p_size, ep_translation, ep_size).is_some() {
+            if collide(p_translation, p_size, ep_translation, ep_size) {
                 if dungeon.current_floor.is_last_floor {
                     profile.is_run_completed = true;
                     profile.is_run_finished = true;
@@ -232,8 +231,8 @@ fn upgrade_information(
                     font_size: 35.0,
                     color: Color::DARK_GRAY,
                 }
-            ).with_alignment(
-                TextAlignment::Center
+            ).with_justify(
+                JustifyText::Center
             ),
             ..Default::default()
         });

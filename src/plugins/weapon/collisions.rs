@@ -1,7 +1,6 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
-use bevy::sprite::collide_aabb::collide;
 use rand::Rng;
 
 use crate::components::bullet::BulletComponent;
@@ -13,6 +12,7 @@ use crate::components::{
 };
 use crate::resources::hero::power::Power;
 use crate::resources::weapon::attack_type::AttackType;
+use crate::utils::collide::{collide};
 
 pub fn bullet_collision(
     mut commands: Commands,
@@ -65,7 +65,7 @@ pub fn bullet_collision(
                 let monster_size = Vec2::new(monster.width, monster.height);
                 let monster_position = transform.translation;
 
-                if collide(bullet_position, bullet_size, monster_position, monster_size).is_some() {
+                if collide(bullet_position, bullet_size, monster_position, monster_size) {
                     let debuff_effect = weapon.debuff_effect;
                     let trigger_chance = weapon.trigger_chance;
 
@@ -135,7 +135,7 @@ pub fn swing_weapon_collision(
         {
             let monster_size = Vec2::new(monster.width, monster.height);
             let monster_position = transform.translation;
-            if collide(weapon_position, weapon_size, monster_position, monster_size).is_some() {
+            if collide(weapon_position, weapon_size, monster_position, monster_size) {
                 let debuff_effect = weapon.debuff_effect;
                 let trigger_chance = weapon.trigger_chance;
 

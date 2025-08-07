@@ -10,6 +10,7 @@ mod materials;
 mod plugins;
 mod resources;
 mod scenes;
+mod utils;
 
 fn main() {
     App::new()
@@ -34,7 +35,7 @@ fn main() {
         ))
         .init_resource::<resources::setting::Setting>()
         .init_resource::<resources::dictionary::Dictionary>()
-        .add_state::<scenes::SceneState>()
+        .init_state::<scenes::SceneState>()
 
         .add_plugins(AudioPlugin)
         .add_systems(Startup, plugins::music::background_audio_channel_setup)

@@ -102,7 +102,7 @@ impl Plugin for HeroSelectScenePlugin {
 }
 
 fn setup(
-    texture_atlases: ResMut<Assets<TextureAtlas>>,
+    texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
     ingame_materials: Res<InGameMaterials>,
     scenes_materials: Res<ScenesMaterials>,
     font_materials: Res<FontMaterials>,
@@ -251,7 +251,7 @@ fn return_button_handle(
 fn heroes_images(
     root: &mut ChildBuilder,
     ingame_materials: &InGameMaterials,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     let mut index = 0;
     let hero_image_positions: [[f32; 2]; 8] = [
@@ -323,14 +323,18 @@ fn heroes_images(
             };
 
             let texture_atlas =
-                TextureAtlas::from_grid(hero_tileset, Vec2::new(16.0, 28.0), 9, 1, None, None);
+                TextureAtlasLayout::from_grid(Vec2::new(16.0, 28.0), 9, 1, None, None);
             let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
             let x = hero_image_positions[index][0];
             let y = hero_image_positions[index][1];
 
             root.spawn(SpriteSheetBundle {
-                texture_atlas: texture_atlas_handle,
+                texture: hero_tileset,
+                atlas: TextureAtlas {
+                    layout: texture_atlas_handle,
+                    index: 0,
+                },
                 transform: Transform {
                     translation: Vec3::new(x, y, 0.2),
                     scale: Vec3::splat(4.0),
@@ -367,7 +371,7 @@ fn select_hero_text(
                 color: Color::BLACK,
             },
         )
-        .with_alignment(TextAlignment::Center),
+        .with_justify(JustifyText::Center),
         ..Default::default()
     })
     .insert(Name::new("SelectHeroText"));
@@ -468,7 +472,7 @@ fn hero_select_handle(
 
 fn hero_image_animation_handle(
     time: Res<Time>,
-    mut query: Query<(&HeroImageComponent, &mut TextureAtlasSprite)>,
+    mut query: Query<(&HeroImageComponent, &mut TextureAtlas)>,
     mut animation_controller: ResMut<AnimationController>,
 ) {
     for (hero_image, mut sprite) in query.iter_mut() {

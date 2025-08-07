@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::sprite::collide_aabb::collide;
 
 use crate::components::player::PlayerComponent;
 use crate::components::potion::PotionComponent;
@@ -9,9 +8,10 @@ use crate::resources::dungeon::Dungeon;
 use crate::resources::monster::monster_spawn_controller::MonsterSpawnController;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::resources::profile::Profile;
+use crate::utils::collide::collide;
 
 pub fn horizontal_door_interaction_handle(
-    mut player_query: Query<(&mut Transform, &TextureAtlasSprite), With<PlayerComponent>>,
+    mut player_query: Query<(&mut Transform, &TextureAtlas, &Sprite), With<PlayerComponent>>,
     mut door_query: Query<
         (&Door, &Transform, &Sprite, &Visibility),
         (With<HorizontalDoor>, Without<PlayerComponent>),
@@ -23,7 +23,7 @@ pub fn horizontal_door_interaction_handle(
     mut profile: ResMut<Profile>,
     mut commands: Commands,
 ) {
-    let (mut player_transform, player_sprite) = player_query.single_mut();
+    let (mut player_transform, player_atlas, player_sprite) = player_query.single_mut();
     let player_translation = player_transform.translation;
     let player_size = player_sprite.custom_size.unwrap();
 
@@ -40,7 +40,7 @@ pub fn horizontal_door_interaction_handle(
 
             let door_translation = door_transform.translation;
 
-            if collide(player_translation, player_size, door_translation, door_size).is_some() {
+            if collide(player_translation, player_size, door_translation, door_size) {
                 let new_position = Position {
                     row_index: current_position.row_index,
                     column_index: if *door == Door::Right {
@@ -88,7 +88,7 @@ pub fn horizontal_door_interaction_handle(
 }
 
 pub fn vertical_door_interaction_handle(
-    mut player_query: Query<(&mut Transform, &TextureAtlasSprite), With<PlayerComponent>>,
+    mut player_query: Query<(&mut Transform, &TextureAtlas, &Sprite), With<PlayerComponent>>,
     mut vertical_door_query: Query<(&Visibility, &Children), With<VerticaltDoor>>,
     mut door_query: Query<(&Door, &Transform), Without<PlayerComponent>>,
     mut monster_spawn_controller: ResMut<MonsterSpawnController>,
@@ -98,7 +98,7 @@ pub fn vertical_door_interaction_handle(
     mut profile: ResMut<Profile>,
     mut commands: Commands,
 ) {
-    let (mut player_transform, player_spirte) = player_query.single_mut();
+    let (mut player_transform, player_atlas, player_spirte) = player_query.single_mut();
     let player_translation = player_transform.translation;
     let player_size = player_spirte.custom_size.unwrap().clone();
 
@@ -122,7 +122,7 @@ pub fn vertical_door_interaction_handle(
                         Vec2::new(128.0, 36.0)
                     };
 
-                    if collide(player_translation, player_size, translation, size).is_some() {
+                    if collide(player_translation, player_size, translation, size) {
                         let new_position = Position {
                             row_index: if *door == Door::Bottom {
                                 current_position.row_index + 1

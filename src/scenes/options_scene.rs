@@ -251,7 +251,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
                     color: Color::BLACK,
                 },
             )
-            .with_alignment(TextAlignment::Center),
+            .with_justify(JustifyText::Center),
             ..Default::default()
         })
         .insert(Name::new(component_name))

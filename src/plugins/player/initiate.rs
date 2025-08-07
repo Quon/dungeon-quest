@@ -18,7 +18,7 @@ const PLAYER_ORIGIN_SIZE_WIDTH: f32 = 16.0;
 const PLAYER_ORIGIN_SIZE_HEIGHT: f32 = 28.0;
 
 pub fn initiate_player(
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
     ingame_materials: Res<InGameMaterials>,
     game_data: Res<GameData>,
     mut commands: Commands,
@@ -35,8 +35,7 @@ pub fn initiate_player(
         .heroes_materials
         .get_texture(class.clone(), gender);
 
-    let texture_atlas = TextureAtlas::from_grid(
-        hero_tileset,
+    let texture_atlas = TextureAtlasLayout::from_grid(
         Vec2::new(PLAYER_ORIGIN_SIZE_WIDTH, PLAYER_ORIGIN_SIZE_HEIGHT),
         9,
         1,
@@ -48,8 +47,12 @@ pub fn initiate_player(
 
     let entity = commands
         .spawn(SpriteSheetBundle {
-            texture_atlas: texture_atlas_handle,
-            sprite: TextureAtlasSprite {
+            texture: hero_tileset,
+            atlas: TextureAtlas {
+                layout: texture_atlas_handle,
+                index: 0,
+            },
+            sprite: Sprite {
                 custom_size: Some(Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT)),
                 ..Default::default()
             },

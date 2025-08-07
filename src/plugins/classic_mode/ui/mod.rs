@@ -29,7 +29,7 @@ impl Plugin for ClassicModeUIPlugin {
         app.add_systems(Update, (
             center_text_handle_system,
             top_right_conner_text_handle_system
-        ).run_if(in_state(SceneState::InGameClassicMode).and_then(not(resource_exists::<PauseSceneData>()))));
+        ).run_if(in_state(SceneState::InGameClassicMode).and_then(not(resource_exists::<PauseSceneData>))));
 
         app.add_systems(OnExit(SceneState::InGameClassicMode), cleanup);
     }
@@ -87,8 +87,8 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
                 color: Color::WHITE,
             }
 
-        ).with_alignment(
-            TextAlignment::Center
+        ).with_justify(
+            JustifyText::Center
         ),
         ..Default::default()
     })
@@ -140,8 +140,8 @@ fn floor_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionar
                 font_size: 35.0,
                 color: Color::WHITE,
             }
-        ).with_alignment(
-            TextAlignment::Center
+        ).with_justify(
+            JustifyText::Center
         ),
         ..Default::default()
     })
