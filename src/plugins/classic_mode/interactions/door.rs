@@ -23,7 +23,7 @@ pub fn horizontal_door_interaction_handle(
     mut profile: ResMut<Profile>,
     mut commands: Commands,
 ) {
-    let (mut player_transform, player_sprite) = player_query.single_mut();
+    let (mut player_transform, player_sprite) = player_query.single_mut().unwrap();
     let player_translation = player_transform.translation;
     let player_size = player_sprite.custom_size.unwrap();
 
@@ -98,7 +98,7 @@ pub fn vertical_door_interaction_handle(
     mut profile: ResMut<Profile>,
     mut commands: Commands,
 ) {
-    let (mut player_transform, player_spirte) = player_query.single_mut();
+    let (mut player_transform, player_spirte) = player_query.single_mut().unwrap();
     let player_translation = player_transform.translation;
     let player_size = player_spirte.custom_size.unwrap().clone();
 
@@ -111,7 +111,7 @@ pub fn vertical_door_interaction_handle(
                 continue;
             }
             for child in children.iter() {
-                let result = door_query.get_mut(*child);
+                let result = door_query.get_mut(child);
                 if result.is_ok() {
                     let (door, door_transform) = result.unwrap();
                     let translation = door_transform.translation;

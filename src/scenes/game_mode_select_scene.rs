@@ -100,7 +100,7 @@ fn cleanup(mut commands: Commands, game_mode_select_scene_data: Res<GameModeSele
         .despawn_recursive();
 }
 
-fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
@@ -137,7 +137,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
 }
 
 fn select_game_mode_text(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     font_materials: &FontMaterials,
     dictionary: &Dictionary,
 ) {
@@ -169,7 +169,7 @@ fn select_game_mode_text(
 }
 
 fn buttons(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     scenes_materials: &ScenesMaterials,
     font_materials: &FontMaterials,
     dictionary: &Dictionary,

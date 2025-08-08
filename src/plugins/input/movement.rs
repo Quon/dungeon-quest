@@ -13,7 +13,7 @@ pub fn player_movement_handle_system(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
 ) {
-    let (player_stats, mut player_animation, mut transform) = player_query.single_mut();
+    let (player_stats, mut player_animation, mut transform) = player_query.single_mut().unwrap();
 
     let mut delta = Vec3::new(0.0, 0.0, 0.0);
 

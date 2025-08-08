@@ -158,7 +158,7 @@ fn cleanup(
         .despawn_recursive();
 }
 
-fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * MENU_BOX_WIDTH_TILES) / 2.0;
 
     let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * MENU_BOX_HEIGHT_TILES) / 2.0;
@@ -200,7 +200,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .insert(Name::new("MenuBox"));
 }
 
-fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn texts(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
@@ -254,7 +254,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
     }
 }
 
-fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &ScenesMaterials) {
+fn buttons(root: &mut ChildSpawnerCommands, setting: &Setting, scenes_materials: &ScenesMaterials) {
     let positions: [UiRect; 3] = [
         UiRect {
             left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
@@ -327,7 +327,7 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
     }
 }
 
-fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &ScenesMaterials) {
+fn pair_buttons(root: &mut ChildSpawnerCommands, setting: &Setting, scenes_materials: &ScenesMaterials) {
     let positions: [UiRect; 2] = [
         UiRect {
             left: Val::Px(570.0),

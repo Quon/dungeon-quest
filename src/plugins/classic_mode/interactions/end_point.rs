@@ -72,8 +72,8 @@ pub fn end_point_interaction_handle_system(
     // info!("Triggered Endpoint Handle! Current pos: {:?}, end room pos: {:?}, is_room_cleared: {:?}", current_position, end_room_position, player_dungeon_stats.is_room_cleared);
     if current_position == end_room_position && player_dungeon_stats.is_room_cleared {
         info!("triggered endpoint inner logic!");
-        let (player_transform, player_sprite) = player_query.single_mut();
-        let (end_point_transform, end_point_sprite, visibility) = end_point_query.single_mut();
+        let (player_transform, player_sprite) = player_query.single_mut().unwrap();
+        let (end_point_transform, end_point_sprite, visibility) = end_point_query.single_mut().unwrap();
 
         let p_translation = player_transform.translation;
         let p_size = player_sprite.custom_size.unwrap();
@@ -94,7 +94,7 @@ pub fn end_point_interaction_handle_system(
                         let start_room_position = dungeon.current_floor.start_room_position;
                         player_dungeon_stats.current_room_position = start_room_position;
 
-                        ui_center_text_query.single_mut().timer =
+                        ui_center_text_query.single_mut().unwrap().timer =
                             Timer::new(Duration::from_secs(1), TimerMode::Once);
                         let upgrade_type =
                             REWARDS[player_dungeon_stats.current_floor_index - 1].clone();
@@ -136,7 +136,7 @@ pub fn end_point_interaction_handle_system(
     }
 }
 
-fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
@@ -182,7 +182,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
 }
 
 fn upgrade_information(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     font_materials: &FontMaterials,
     dictionary: &Dictionary,
     upgrade_type: UpgradeType,
@@ -255,7 +255,7 @@ pub fn cooldown_handle(
     reward_scene_data: Res<PauseSceneData>,
     time: Res<Time>,
 ) {
-    let mut countdown = countdown_query.single_mut();
+    let mut countdown = countdown_query.single_mut().unwrap();
     countdown.0.tick(time.delta());
     if countdown.0.finished() {
         commands
@@ -281,16 +281,16 @@ pub fn collect_reward(
     upgrade_controller: Res<UpgradeController>,
     game_data: Res<GameData>,
 ) {
-    let mut reward = reward_query.single_mut();
+    let mut reward = reward_query.single_mut().unwrap();
 
     if !reward.is_collected {
-        let (mut player, mut player_skill, mut player_list_effects) = player_query.single_mut();
+        let (mut player, mut player_skill, mut player_list_effects) = player_query.single_mut().unwrap();
         let skill_type = player_skill.skill.name.clone();
         let hero_class = player.class.clone();
 
         match reward.upgrade_type {
             UpgradeType::Weapon => {
-                let (mut weapon, mut swing_attack, mut shoot_attack) = weapon_query.single_mut();
+                let (mut weapon, mut swing_attack, mut shoot_attack) = weapon_query.single_mut().unwrap();
                 if weapon.level < 3 || (weapon.level < 1 && hero_class == HeroClass::Elf) {
                     let raw_weapons = game_data.get_weapons(hero_class);
                     let raw_weapon = *raw_weapons

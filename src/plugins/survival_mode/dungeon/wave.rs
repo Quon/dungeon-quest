@@ -64,9 +64,9 @@ pub fn countdown(
 ) {
     wave.timer.tick(time.delta());
     if wave.timer.finished() {
-        let player = player_query.single();
+        let player = player_query.single().unwrap();
         let hero_class = player.class.clone();
-        let weapon_component = weapon_query.single();
+        let weapon_component = weapon_query.single().unwrap();
         let three_upgrades =
             upgrade_controller.get_three_upgrades(hero_class, weapon_component.level);
 
@@ -94,7 +94,7 @@ pub fn countdown(
     }
 }
 
-fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
@@ -137,7 +137,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
 }
 
 fn buttons(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     font_materials: &FontMaterials,
     dictionary: &Dictionary,
     three_upgrades: Vec<UpgradeType>,
@@ -233,12 +233,12 @@ pub fn button_handle_system(
             Interaction::Hovered => *writer.color(entity, 0) = TextColor::BLACK,
             Interaction::Pressed => {
                 let (mut player, mut player_skill, mut player_list_effects) =
-                    player_query.single_mut();
+                    player_query.single_mut().unwrap();
                 let hero_class = player.class.clone();
                 match reward.upgrade_type {
                     UpgradeType::Weapon => {
                         let (mut weapon, mut swing_attack, mut shoot_attack) =
-                            weapon_query.single_mut();
+                            weapon_query.single_mut().unwrap();
                         if weapon.level < 3 || (weapon.level < 1 && hero_class == HeroClass::Elf) {
                             let raw_weapons = game_data.get_weapons(hero_class);
                             let raw_weapon = *raw_weapons

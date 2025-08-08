@@ -162,7 +162,7 @@ fn cleanup(mut commands: Commands, hero_select_scene_data: Res<HeroSelectSceneDa
     commands.remove_resource::<AnimationController>();
 }
 
-fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
     let start_x = -340.0;
     let start_y = 230.0;
 
@@ -198,7 +198,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     }
 }
 
-fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
+fn return_button(root: &mut ChildSpawnerCommands, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
     root.spawn((
         Button { ..default() },
@@ -244,7 +244,7 @@ fn return_button_handle(
 }
 
 fn heroes_images(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     ingame_materials: &InGameMaterials,
     mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
 ) {
@@ -346,7 +346,7 @@ fn heroes_images(
 }
 
 fn select_hero_text(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     font_materials: &FontMaterials,
     dictionary: &Dictionary,
 ) {
@@ -371,7 +371,7 @@ fn select_hero_text(
     .insert(Name::new("SelectHeroText"));
 }
 
-fn heroes_buttons(root: &mut ChildBuilder) {
+fn heroes_buttons(root: &mut ChildSpawnerCommands) {
     let button_positions: [[f32; 2]; 8] = [
         [210.0, 170.0],
         [380.0, 170.0],

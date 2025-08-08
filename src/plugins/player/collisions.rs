@@ -77,7 +77,7 @@ pub fn monsters_collision_check(
         mut player_list_effects,
         mut invincible_cooldown,
         player_transform,
-    ) = player_query.single_mut();
+    ) = player_query.single_mut().unwrap();
     let player_size = Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT);
     let player_position = player_transform.translation;
 
@@ -145,7 +145,7 @@ pub fn potions_collision(
         (With<PotionComponent>, Without<PlayerComponent>),
     >,
 ) {
-    let (mut player, mut player_list_effects, player_transform) = player_query.single_mut();
+    let (mut player, mut player_list_effects, player_transform) = player_query.single_mut().unwrap();
     let player_size = Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT);
     let player_position = player_transform.translation;
 

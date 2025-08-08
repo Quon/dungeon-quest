@@ -216,7 +216,7 @@ fn setup(
     });
 }
 
-fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
+fn buttons(root: &mut ChildSpawnerCommands, scenes_materials: &ScenesMaterials) {
     let positions: [UiRect; 3] = [
         UiRect {
             left: Val::Px(50.0 / 2.0),
@@ -373,7 +373,7 @@ fn book_animation_handle_system(
     }
 }
 
-fn hero_image(root: &mut ChildBuilder) {
+fn hero_image(root: &mut ChildSpawnerCommands) {
     root.spawn((
         ImageNode { ..default() },
         Node {
@@ -425,7 +425,7 @@ fn hero_image_handle_system(
     }
 }
 
-fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Dictionary) {
+fn texts(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let position_of_texts: [[f32; 2]; 8] = [
         [210.0, 300.0],

@@ -20,7 +20,7 @@ pub fn spawn_bullet(
     ingame_materials: Res<InGameMaterials>,
     mut commands: Commands,
 ) {
-    let (weapon_component, mut weapon_shoot_attack, weapon_transform) = weapon_query.single_mut();
+    let (weapon_component, mut weapon_shoot_attack, weapon_transform) = weapon_query.single_mut().unwrap();
 
     if weapon_component.attack_type == AttackType::Shoot {
         if weapon_shoot_attack.spawn_bullet {

@@ -74,7 +74,7 @@ fn cleanup(mut commands: Commands, classic_mode_ui_data: Res<ClassicModeUIData>)
         .despawn_recursive();
 }
 
-fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn center_text(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
@@ -107,7 +107,7 @@ fn center_text_handle_system(
     time: Res<Time>,
     mut writer: TextUiWriter,
 ) {
-    let (mut entity, mut center_text, mut visibility) = text_query.single_mut();
+    let (mut entity, mut center_text, mut visibility) = text_query.single_mut().unwrap();
     center_text.timer.tick(time.delta());
 
     if center_text.timer.finished() {
@@ -127,7 +127,7 @@ fn center_text_handle_system(
     }
 }
 
-fn floor_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn floor_text(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     root.spawn((
         Node {
@@ -154,7 +154,7 @@ fn top_right_conner_text_handle_system(
     player_dungeon_stats: Res<PlayerDungeonStats>,
     mut writer: TextUiWriter,
 ) {
-    let entity = text_query.single();
+    let entity = text_query.single().unwrap();
 
     if player_dungeon_stats.is_changed() {
         *writer.text(entity, 0) = (player_dungeon_stats.current_floor_index + 1).to_string();

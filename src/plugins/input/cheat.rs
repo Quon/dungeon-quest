@@ -27,7 +27,7 @@ pub fn knight_skill_cheat(
     mut player_skill_query: Query<&mut SkillComponent>,
 ) {
     if keyboard_input.pressed(KeyCode::KeyM) {
-        let mut player_skill = player_skill_query.single_mut();
+        let mut player_skill = player_skill_query.single_mut().unwrap();
         if player_skill.skill.name == SkillType::Armor {
             player_skill.monster_counter += 1;
         }
@@ -40,7 +40,7 @@ pub fn damage_player_cheat(
     mut player_query: Query<&mut PlayerComponent>,
 ) {
     if keyboard_input.pressed(KeyCode::KeyN) {
-        let mut player = player_query.single_mut();
+        let mut player = player_query.single_mut().unwrap();
         player.current_health_points -= 1.0;
         keyboard_input.reset(KeyCode::KeyN);
     }

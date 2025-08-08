@@ -148,7 +148,7 @@ fn cleanup(mut commands: Commands, result_scene_data: Res<ResultSceneData>) {
         .despawn_recursive();
 }
 
-fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * MENU_BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * MENU_BOX_HEIGHT_TILES) / 2.0;
 
@@ -190,7 +190,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .insert(Name::new("MenuBox"));
 }
 
-fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn result_text(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
@@ -220,7 +220,7 @@ fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
 }
 
 fn texts(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     font_materials: &FontMaterials,
     dictionary: &Dictionary,
     profile: &Profile,
@@ -424,7 +424,7 @@ fn texts(
     .insert(Name::new("Texts"));
 }
 
-fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
+fn return_button(root: &mut ChildSpawnerCommands, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
     root.spawn((
@@ -447,7 +447,7 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
 }
 
 fn save_profile_button(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     scenes_materials: &ScenesMaterials,
     profile: Res<Profile>,
 ) {
@@ -476,7 +476,7 @@ fn save_profile_button(
     .insert(ButtonComponent::SaveProfile);
 }
 
-fn play_again_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
+fn play_again_button(root: &mut ChildSpawnerCommands, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.restart.clone();
 
     root.spawn((
@@ -550,7 +550,7 @@ fn button_handle_system(
 }
 
 fn user_input_text(
-    grandparent: &mut ChildBuilder,
+    grandparent: &mut ChildSpawnerCommands,
     font_materials: &FontMaterials,
     dictionary: &Dictionary,
 ) {
@@ -670,7 +670,7 @@ fn user_input_handle(
                 }
             }
         }
-        let entity = user_input_query.single();
+        let entity = user_input_query.single().unwrap();
         *writer.text(entity, 0) = user_name.to_string();
     }
 }

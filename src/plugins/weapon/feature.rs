@@ -16,8 +16,8 @@ pub fn attach_to_player(
     mut weapon_query: Query<(&WeaponComponent, &mut Transform), Without<PlayerComponent>>,
     player_query: Query<&Transform, (Without<WeaponComponent>, With<PlayerComponent>)>,
 ) {
-    let (weapon_component, mut weapon_transform) = weapon_query.single_mut();
-    let player_transform = player_query.single();
+    let (weapon_component, mut weapon_transform) = weapon_query.single_mut().unwrap();
+    let player_transform = player_query.single().unwrap();
 
     let weapon_size_width = weapon_component.size_width;
     let weapon_size_height = weapon_component.size_height;
@@ -40,8 +40,8 @@ pub fn aim(
     primary_query: Query<&Window, With<PrimaryWindow>>,
     time: Res<Time>,
 ) {
-    let (camera, camera_transform) = q_camera.single();
-    let wnd = primary_query.single();
+    let (camera, camera_transform) = q_camera.single().unwrap();
+    let wnd = primary_query.single().unwrap();
 
     if let Some(screen_pos) = wnd.cursor_position() {
         let window_size = Vec2::new(wnd.width() as f32, wnd.height() as f32);
@@ -59,7 +59,7 @@ pub fn aim(
             mut weapon_shoot_attack,
             mut weapon_swing_attack,
             mut weapon_transform,
-        ) = weapon_query.single_mut();
+        ) = weapon_query.single_mut().unwrap();
 
         let weapon_position_x = weapon_transform.translation.x;
         let weapon_position_y = weapon_transform.translation.y;
@@ -119,7 +119,7 @@ pub fn change_weapon_texture(
     mut weapon_query: Query<(Ref<WeaponComponent>, &mut Sprite)>,
     ingame_materials: Res<InGameMaterials>,
 ) {
-    let (weapon, mut sprite) = weapon_query.single_mut();
+    let (weapon, mut sprite) = weapon_query.single_mut().unwrap();
     if weapon.is_changed() {
         sprite.custom_size = Some(Vec2::new(
             weapon.size_width * weapon.scale,

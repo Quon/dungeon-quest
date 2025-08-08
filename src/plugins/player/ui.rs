@@ -93,7 +93,7 @@ pub fn cleanup(mut commands: Commands, player_ui_data: Res<PlayerUIData>) {
 }
 
 pub fn information_texts(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     font_materials: &FontMaterials,
     dictionary: &Dictionary,
 ) {
@@ -163,7 +163,7 @@ pub fn information_texts_handle(
 ) {
     let glossary = dictionary.get_glossary();
     let ingame_gloassary = glossary.ingame_text;
-    let player = player_query.single();
+    let player = player_query.single().unwrap();
 
     for (entity, information_text) in information_texts_query.iter_mut() {
         match *information_text {
@@ -217,7 +217,7 @@ pub fn information_texts_handle(
     }
 }
 
-fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
+fn hearts(root: &mut ChildSpawnerCommands, ingame_materials: &InGameMaterials) {
     root.spawn((
         Node {
             position_type: PositionType::Absolute,
@@ -277,7 +277,7 @@ pub fn hearts_handle(
     ingame_materials: Res<InGameMaterials>,
     player_query: Query<&PlayerComponent>,
 ) {
-    let player = player_query.single();
+    let player = player_query.single().unwrap();
 
     let current_health_points = player.current_health_points;
     let current_health_points_floor = current_health_points.floor();
@@ -302,7 +302,7 @@ pub fn hearts_handle(
     }
 }
 
-pub fn skill_duration(root: &mut ChildBuilder) {
+pub fn skill_duration(root: &mut ChildSpawnerCommands) {
     let length = 300.0;
     root.spawn((
         Node {
@@ -324,8 +324,8 @@ pub fn skill_duration_handle(
     player_skill_query: Query<&SkillComponent>,
 ) {
     let max_length = 300.0;
-    let (mut style, mut visibility) = skill_duration_query.single_mut();
-    let player_skill = player_skill_query.single();
+    let (mut style, mut visibility) = skill_duration_query.single_mut().unwrap();
+    let player_skill = player_skill_query.single().unwrap();
 
     if !player_skill.duration.finished() {
         *visibility = Visibility::Visible;
@@ -339,7 +339,7 @@ pub fn skill_duration_handle(
     }
 }
 
-pub fn skill_cooldown(root: &mut ChildBuilder) {
+pub fn skill_cooldown(root: &mut ChildSpawnerCommands) {
     let length = 250.0;
 
     root.spawn((
@@ -362,9 +362,9 @@ pub fn skill_cooldown_handle(
     player_skill_query: Query<&SkillComponent>,
 ) {
     let max_length = 250.0;
-    let player_skill = player_skill_query.single();
+    let player_skill = player_skill_query.single().unwrap();
 
-    let (mut style, mut visibility) = skill_cooldown_query.single_mut();
+    let (mut style, mut visibility) = skill_cooldown_query.single_mut().unwrap();
     if player_skill.skill.name == SkillType::Armor {
         let require_monsters = player_skill.require_monsters as f32;
         let monster_counter = player_skill.monster_counter as f32;

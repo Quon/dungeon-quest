@@ -28,7 +28,7 @@ pub fn cleanup_killed_monsters(
     mut profile: ResMut<Profile>,
     mut commands: Commands,
 ) {
-    let mut player_skill = player_skill_query.single_mut();
+    let mut player_skill = player_skill_query.single_mut().unwrap();
     for (monster_entity, monster_transform, monster) in monsters_query.iter_mut() {
         if monster.current_health_points == 0.0 {
             if player_skill.skill.name == SkillType::Armor {

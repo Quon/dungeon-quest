@@ -86,7 +86,7 @@ fn cleanup(mut commands: Commands, survival_mode_ui_data: Res<SurvivalModeUIData
         .despawn_recursive();
 }
 
-fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn center_text(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
@@ -119,7 +119,7 @@ fn center_text_handle_system(
     time: Res<Time>,
     mut writer: TextUiWriter,
 ) {
-    let (mut center_text, entity, mut visibility) = text_query.single_mut();
+    let (mut center_text, entity, mut visibility) = text_query.single_mut().unwrap();
     center_text.timer.tick(time.delta());
     if center_text.timer.finished() {
         *visibility = Visibility::Hidden;
@@ -138,7 +138,7 @@ fn center_text_handle_system(
     }
 }
 
-fn wave_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn wave_text(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
 
     root.spawn((
@@ -166,7 +166,7 @@ fn wave_text_handle_system(
     wave: Res<Wave>,
     mut writer: TextUiWriter,
 ) {
-    let entity = text_query.single();
+    let entity = text_query.single().unwrap();
 
     if wave.is_changed() {
         *writer.text(entity, 0) = wave.wave_number.to_string();
@@ -174,7 +174,7 @@ fn wave_text_handle_system(
 }
 
 fn wave_countdown_text(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     font_materials: &FontMaterials,
     dictionary: &Dictionary,
 ) {
@@ -225,13 +225,13 @@ fn wave_countdown_text_handle_system(
     };
 
     let value = format!("{}:{}", formated_minutes, formated_seconds);
-    let entity = wave_countdown_text_query.single();
+    let entity = wave_countdown_text_query.single().unwrap();
     *writer.text(entity, 0) = value;
 }
 
 fn reset_center_text(mut center_text_query: Query<&mut CenterTextComponent>, wave: Res<Wave>) {
     if wave.is_changed() {
-        let mut center_text = center_text_query.single_mut();
+        let mut center_text = center_text_query.single_mut().unwrap();
         center_text.timer = Timer::new(Duration::from_secs(1), TimerMode::Once);
     }
 }

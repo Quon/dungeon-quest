@@ -97,7 +97,7 @@ fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>)
         .despawn_recursive();
 }
 
-fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn main_menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
     for (row_index, row) in MAIN_MENU_BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
             let image: Handle<Image> = match value {
@@ -130,7 +130,7 @@ fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
     }
 }
 
-fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: Res<Dictionary>) {
+fn buttons(root: &mut ChildSpawnerCommands, materials: &Res<FontMaterials>, dictionary: Res<Dictionary>) {
     let glossary = dictionary.get_glossary();
 
     for (index, button) in ButtonComponent::iterator().enumerate() {

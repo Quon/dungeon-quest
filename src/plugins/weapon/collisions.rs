@@ -32,10 +32,10 @@ pub fn bullet_collision(
         (Without<BulletComponent>, With<MonsterComponent>),
     >,
 ) {
-    let (weapon, weapon_shoot_attack) = weapon_query.single();
+    let (weapon, weapon_shoot_attack) = weapon_query.single().unwrap();
 
     if weapon.attack_type == AttackType::Shoot {
-        let player = player_query.single();
+        let player = player_query.single().unwrap();
 
         let mut damage = if player.power == Power::Intelligence {
             player.intelligence + weapon.intelligence
@@ -108,9 +108,9 @@ pub fn swing_weapon_collision(
         (Without<WeaponComponent>, With<MonsterComponent>),
     >,
 ) {
-    let (weapon, weapon_transform) = weapon_query.single();
+    let (weapon, weapon_transform) = weapon_query.single().unwrap();
     if weapon.attack_type == AttackType::Swing {
-        let player = player_query.single();
+        let player = player_query.single().unwrap();
 
         let mut weapon_position = weapon_transform.translation;
         weapon_position.z = 0.16;

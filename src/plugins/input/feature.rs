@@ -28,7 +28,7 @@ pub fn use_skill(
     mut keyboard_input: ResMut<ButtonInput<KeyCode>>,
 ) {
     if keyboard_input.pressed(KeyCode::Space) {
-        let (mut player, mut player_skill) = player_query.single_mut();
+        let (mut player, mut player_skill) = player_query.single_mut().unwrap();
 
         if player_skill.cooldown.finished() {
             let skill = player_skill.skill.clone();
@@ -87,8 +87,8 @@ pub fn use_mouse(
 ) {
     if buttons.just_pressed(MouseButton::Left) {
         let (weapon_component, mut weapon_swing_attack, mut weapon_shoot_attack) =
-            weapon_query.single_mut();
-        let player_animation = player_animation_query.single();
+            weapon_query.single_mut().unwrap();
+        let player_animation = player_animation_query.single().unwrap();
 
         match weapon_component.attack_type {
             AttackType::Swing => {
@@ -110,7 +110,7 @@ pub fn use_mouse(
                     }
 
                     if weapon_component.name == WeaponType::Spear {
-                        let mut player_list_effects = player_list_effects_query.single_mut();
+                        let mut player_list_effects = player_list_effects_query.single_mut().unwrap();
                         let buff_effect = weapon_component.buff_effect.unwrap();
                         let mut rng = rand::thread_rng();
                         if rng.gen_range(0.0..1.0) < weapon_component.trigger_chance {

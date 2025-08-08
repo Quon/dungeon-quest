@@ -13,7 +13,7 @@ pub fn update_stats(
         &PlayerListEffectsComponent,
     )>,
 ) {
-    let (mut player, player_skill, player_list_effects) = player_query.single_mut();
+    let (mut player, player_skill, player_list_effects) = player_query.single_mut().unwrap();
 
     let mut speed_percent_bonus = 0.0;
     let mut damage_percent_bonus = 0.0;

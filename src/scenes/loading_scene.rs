@@ -80,7 +80,7 @@ fn cleanup(mut commands: Commands, loading_scene_data: Res<LoadingSceneData>) {
 }
 
 fn loader_bundle(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     asset_server: &Res<AssetServer>,
     dictionary: &Res<Dictionary>,
 ) {
@@ -115,7 +115,7 @@ fn loader_bundle(
                     bottom: Val::Px(5.0),
                     ..Default::default()
                 },
-                BackgroundColor(Color::rgb(247.0 / 255.0, 104.0 / 255.0, 12.0 / 255.0)),
+                BackgroundColor(Color::srgb(247.0 / 255.0, 104.0 / 255.0, 12.0 / 255.0)),
             ))
             .with_children(|parent| {
                 let font_str = match dictionary.get_current_language() {
@@ -149,7 +149,7 @@ fn loader_bundle(
 }
 
 fn loading_text(
-    root: &mut ChildBuilder,
+    root: &mut ChildSpawnerCommands,
     asset_server: &Res<AssetServer>,
     dictionary: &Res<Dictionary>,
 ) {

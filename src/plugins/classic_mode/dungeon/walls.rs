@@ -50,7 +50,7 @@ pub fn walls(
 }
 
 fn wall(
-    parent: &mut ChildBuilder,
+    parent: &mut ChildSpawnerCommands,
     row_index: usize,
     column_index: usize,
     value: i32,

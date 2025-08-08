@@ -82,7 +82,7 @@ fn cleanup(mut commands: Commands, credits_scene_data: Res<CreditsSceneData>) {
         .despawn_recursive();
 }
 
-fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn credits_menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
@@ -118,7 +118,7 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
     }
 }
 
-fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
+fn return_button_component(root: &mut ChildSpawnerCommands, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
     root.spawn((
@@ -163,7 +163,7 @@ fn button_handle_system(
     }
 }
 
-fn credits_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn credits_text(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
     root.spawn((
@@ -184,7 +184,7 @@ fn credits_text(root: &mut ChildBuilder, font_materials: &FontMaterials, diction
     ));
 }
 
-fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn texts(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let file = match File::open(CREDITS_FILE) {
         Ok(file) => file,

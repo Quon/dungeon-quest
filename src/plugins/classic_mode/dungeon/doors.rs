@@ -35,7 +35,7 @@ pub fn doors(
     data.doors = Some(doors);
 }
 
-pub fn horizontal_door(parent: &mut ChildBuilder, door: &Door, ingame_materials: &InGameMaterials) {
+pub fn horizontal_door(parent: &mut ChildSpawnerCommands, door: &Door, ingame_materials: &InGameMaterials) {
     let image = if *door == Door::Left {
         ingame_materials.dungeon_materials.wall_border_left.clone()
     } else {
@@ -71,7 +71,7 @@ pub fn horizontal_door(parent: &mut ChildBuilder, door: &Door, ingame_materials:
 }
 
 pub fn vertical_door(
-    grandparent: &mut ChildBuilder,
+    grandparent: &mut ChildSpawnerCommands,
     door: &Door,
     ingame_materials: &InGameMaterials,
 ) {
@@ -231,7 +231,7 @@ pub fn vertical_doors_system(
             };
 
             for child in children.iter() {
-                let mut child_visibility = visibility_query.get_mut(*child).unwrap();
+                let mut child_visibility = visibility_query.get_mut(child).unwrap();
                 *child_visibility = if has_next_room {
                     Visibility::Inherited
                 } else {
@@ -242,7 +242,7 @@ pub fn vertical_doors_system(
             if has_next_room {
                 let is_room_cleared = player_dungeon_stats.is_room_cleared;
                 for child in children.iter() {
-                    let result = image_query.get_mut(*child);
+                    let result = image_query.get_mut(child);
                     if result.is_ok() {
                         let (_door, mut texture) = result.unwrap();
                         texture.image = if is_room_cleared {

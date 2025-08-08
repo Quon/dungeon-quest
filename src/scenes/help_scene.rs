@@ -81,7 +81,7 @@ fn cleanup(mut commands: Commands, help_scene_data: Res<HelpSceneData>) {
         .despawn_recursive();
 }
 
-fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn help_menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * HELP_BOX_WIDTH_TILES) / 2.0;
 
     let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * HELP_BOX_HEIGHT_TILES) / 2.0;
@@ -118,7 +118,7 @@ fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
     }
 }
 
-fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn texts(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
@@ -177,7 +177,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
     }
 }
 
-fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+fn control_texts(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
 
     let position_of_texts: [[f32; 2]; 7] = [
@@ -221,7 +221,7 @@ fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictio
     }
 }
 
-fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
+fn return_button_component(root: &mut ChildSpawnerCommands, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
     root.spawn((
