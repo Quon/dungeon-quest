@@ -109,10 +109,10 @@ pub fn bullet_handle(
             let distance = transform.translation.distance(target);
 
             if distance < 5.0 {
-                commands.entity(entity).despawn_recursive();
+                commands.entity(entity).despawn();
             }
         } else {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
         }
     }
 }

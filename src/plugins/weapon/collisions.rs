@@ -84,7 +84,7 @@ pub fn bullet_collision(
                         monster.current_health_points - damage
                     };
 
-                    commands.entity(bullet_entity).despawn_recursive();
+                    commands.entity(bullet_entity).despawn();
                     break;
                 }
             }

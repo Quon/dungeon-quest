@@ -129,7 +129,7 @@ pub fn end_point_interaction_handle_system(
                 }
 
                 for potion_entity in potion_query.iter() {
-                    commands.entity(potion_entity).despawn_recursive();
+                    commands.entity(potion_entity).despawn();
                 }
             }
         }
@@ -260,7 +260,7 @@ pub fn cooldown_handle(
     if countdown.0.finished() {
         commands
             .entity(reward_scene_data.user_interface_root)
-            .despawn_recursive();
+            .despawn();
         commands.remove_resource::<PauseSceneData>();
         commands.remove_resource::<RewardSceneFlag>();
     }

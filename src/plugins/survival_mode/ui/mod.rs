@@ -83,7 +83,7 @@ fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary:
 fn cleanup(mut commands: Commands, survival_mode_ui_data: Res<SurvivalModeUIData>) {
     commands
         .entity(survival_mode_ui_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 fn center_text(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, dictionary: &Dictionary) {

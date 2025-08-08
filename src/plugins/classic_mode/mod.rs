@@ -72,17 +72,17 @@ impl Plugin for ClassicModePlugin {
 fn clean_up_classic_mode(mut commands: Commands, classic_mode_data: Res<ClassicModeData>) {
     commands
         .entity(classic_mode_data.doors.unwrap())
-        .despawn_recursive();
+        .despawn();
 
     commands
         .entity(classic_mode_data.walls.unwrap())
-        .despawn_recursive();
+        .despawn();
 
     commands
         .entity(classic_mode_data.end_point.unwrap())
-        .despawn_recursive();
+        .despawn();
 
     commands
         .entity(classic_mode_data.ground.unwrap())
-        .despawn_recursive();
+        .despawn();
 }

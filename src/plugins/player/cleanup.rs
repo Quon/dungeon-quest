@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub fn cleanup_player(mut commands: Commands, player_entity: Res<PlayerEntity>) {
-    commands.entity(player_entity.entity).despawn_recursive();
+    commands.entity(player_entity.entity).despawn();
 }
 
 pub fn save_cleared_waves(wave: Res<Wave>, mut profile: ResMut<Profile>) {

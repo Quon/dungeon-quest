@@ -264,7 +264,7 @@ pub fn button_handle_system(
                 wave.next_wave();
                 commands
                     .entity(rewards_scene_data.user_interface_root)
-                    .despawn_recursive();
+                    .despawn();
                 commands.remove_resource::<PauseSceneData>();
                 commands.remove_resource::<RewardsSceneFlag>();
             }

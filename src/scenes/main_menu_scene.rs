@@ -94,7 +94,7 @@ fn setup(
 fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>) {
     commands
         .entity(main_menu_scene_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 fn main_menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {

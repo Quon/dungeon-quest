@@ -185,7 +185,7 @@ pub fn button_handle_system(
 
                 commands
                     .entity(pause_scene_data.user_interface_root)
-                    .despawn_recursive();
+                    .despawn();
                 commands.remove_resource::<PauseSceneData>();
                 commands.remove_resource::<PauseSceneFlag>();
             }

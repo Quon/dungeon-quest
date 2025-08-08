@@ -79,7 +79,7 @@ fn setup(
 fn cleanup(mut commands: Commands, credits_scene_data: Res<CreditsSceneData>) {
     commands
         .entity(credits_scene_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 fn credits_menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {

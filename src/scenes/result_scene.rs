@@ -145,7 +145,7 @@ fn setup(
 fn cleanup(mut commands: Commands, result_scene_data: Res<ResultSceneData>) {
     commands
         .entity(result_scene_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 fn menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {
@@ -428,7 +428,7 @@ fn return_button(root: &mut ChildSpawnerCommands, scenes_materials: &ScenesMater
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
     root.spawn((
-        Button,
+        Button { ..default() },
         Node {
             left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
@@ -480,7 +480,7 @@ fn play_again_button(root: &mut ChildSpawnerCommands, scenes_materials: &ScenesM
     let handle_image = scenes_materials.icon_materials.restart.clone();
 
     root.spawn((
-        Button,
+        Button { ..default() },
         Node {
             left: Val::Px(400.0),
             top: Val::Px(440.0),

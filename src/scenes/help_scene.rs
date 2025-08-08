@@ -78,7 +78,7 @@ fn setup(
 fn cleanup(mut commands: Commands, help_scene_data: Res<HelpSceneData>) {
     commands
         .entity(help_scene_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 fn help_menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {

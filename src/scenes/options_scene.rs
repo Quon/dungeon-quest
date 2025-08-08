@@ -155,7 +155,7 @@ fn cleanup(
     setting.store();
     commands
         .entity(options_scene_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 fn menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {

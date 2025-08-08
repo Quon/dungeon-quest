@@ -80,7 +80,7 @@ pub fn horizontal_door_interaction_handle(
                 }
 
                 for potion_entity in potion_query.iter() {
-                    commands.entity(potion_entity).despawn_recursive();
+                    commands.entity(potion_entity).despawn();
                 }
             }
         }
@@ -163,7 +163,7 @@ pub fn vertical_door_interaction_handle(
                         }
 
                         for potion_entity in potion_query.iter() {
-                            commands.entity(potion_entity).despawn_recursive();
+                            commands.entity(potion_entity).despawn();
                         }
                     }
                 }

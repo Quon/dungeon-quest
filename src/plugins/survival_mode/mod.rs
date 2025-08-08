@@ -51,9 +51,9 @@ impl Plugin for SurvivalModePlugin {
 fn cleanup_survival_mode_data(mut commands: Commands, survival_mode_data: Res<SurvivalModeData>) {
     commands
         .entity(survival_mode_data.walls.unwrap())
-        .despawn_recursive();
+        .despawn();
 
     commands
         .entity(survival_mode_data.ground.unwrap())
-        .despawn_recursive();
+        .despawn();
 }

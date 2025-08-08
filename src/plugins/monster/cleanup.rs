@@ -16,7 +16,7 @@ pub fn cleanup_monsters(
     mut commands: Commands,
 ) {
     for monster_entity in monsters_query.iter_mut() {
-        commands.entity(monster_entity).despawn_recursive();
+        commands.entity(monster_entity).despawn();
     }
 }
 
@@ -37,7 +37,7 @@ pub fn cleanup_killed_monsters(
             monster_spawn_controller.killed_monsters += 1;
             monster_spawn_controller.alive_monsters -= 1;
             profile.total_killed_monsters += 1;
-            commands.entity(monster_entity).despawn_recursive();
+            commands.entity(monster_entity).despawn();
 
             let mut rng = rand::thread_rng();
             let chance = rng.gen_range(0.0..1.0);
@@ -99,7 +99,7 @@ pub fn cleanup_monster_after_cleared_room(
 ) {
     if player_dungeon_stats.is_room_cleared {
         for monster_entity in monsters_query.iter_mut() {
-            commands.entity(monster_entity).despawn_recursive();
+            commands.entity(monster_entity).despawn();
         }
     }
 }

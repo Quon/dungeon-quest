@@ -118,15 +118,15 @@ impl Plugin for HighscoreScenePlugin {
 fn cleanup(mut commands: Commands, highscore_scene_data: Res<HighscoreSceneData>) {
     commands
         .entity(highscore_scene_data.background)
-        .despawn_recursive();
+        .despawn();
 
     commands
         .entity(highscore_scene_data.book)
-        .despawn_recursive();
+        .despawn();
 
     commands
         .entity(highscore_scene_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 fn setup(

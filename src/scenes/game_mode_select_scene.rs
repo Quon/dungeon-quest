@@ -97,7 +97,7 @@ fn setup(
 fn cleanup(mut commands: Commands, game_mode_select_scene_data: Res<GameModeSelectSceneData>) {
     commands
         .entity(game_mode_select_scene_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 fn menu_box(root: &mut ChildSpawnerCommands, menu_box_materials: &MenuBoxMaterials) {

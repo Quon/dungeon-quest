@@ -89,7 +89,7 @@ pub fn setup(
 pub fn cleanup(mut commands: Commands, player_ui_data: Res<PlayerUIData>) {
     commands
         .entity(player_ui_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 pub fn information_texts(

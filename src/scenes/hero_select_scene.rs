@@ -153,11 +153,11 @@ fn setup(
 fn cleanup(mut commands: Commands, hero_select_scene_data: Res<HeroSelectSceneData>) {
     commands
         .entity(hero_select_scene_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 
     commands
         .entity(hero_select_scene_data.sprite_bundle)
-        .despawn_recursive();
+        .despawn();
 
     commands.remove_resource::<AnimationController>();
 }

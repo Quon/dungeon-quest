@@ -170,7 +170,7 @@ pub fn potions_collision(
                 PotionType::Focus => player_list_effects.activate(EffectType::Focus),
             }
 
-            commands.entity(potion_entity).despawn_recursive();
+            commands.entity(potion_entity).despawn();
         }
     }
 }

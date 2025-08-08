@@ -4,11 +4,11 @@ use crate::components::bullet::BulletComponent;
 use crate::plugins::weapon::WeaponEntity;
 
 pub fn cleanup_weapon(mut commands: Commands, weapon_entity: Res<WeaponEntity>) {
-    commands.entity(weapon_entity.entity).despawn_recursive();
+    commands.entity(weapon_entity.entity).despawn();
 }
 
 pub fn cleanup_bullet(mut commands: Commands, bullets_query: Query<Entity, With<BulletComponent>>) {
     for entity in bullets_query.iter() {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
 }

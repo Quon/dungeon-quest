@@ -76,7 +76,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res
 fn cleanup(mut commands: Commands, loading_scene_data: Res<LoadingSceneData>) {
     commands
         .entity(loading_scene_data.user_interface_root)
-        .despawn_recursive();
+        .despawn();
 }
 
 fn loader_bundle(
