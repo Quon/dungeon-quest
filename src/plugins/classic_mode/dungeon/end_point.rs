@@ -19,12 +19,13 @@ pub fn end_point(
     let center_column = TOTAL_TILE_WIDTH / 2;
 
     let end_point = commands
-        .spawn(SpriteBundle {
-            sprite: Sprite {
+        .spawn((
+                   Sprite {
+                       image: ingame_materials.dungeon_materials.ladder.clone(),
                 custom_size: Some(Vec2::new(50.0, 50.0)),
                 ..Default::default()
             },
-            transform: Transform {
+            Transform {
                 translation: Vec3::new(
                     start_x + center_column as f32 * TILE_SIZE,
                     start_y - center_row as f32 * TILE_SIZE,
@@ -32,10 +33,8 @@ pub fn end_point(
                 ),
                 ..Default::default()
             },
-            texture: ingame_materials.dungeon_materials.ladder.clone(),
-            visibility: Visibility::Hidden,
-            ..Default::default()
-        })
+            Visibility::Hidden,
+        ))
         .insert(EndPoint)
         .insert(Name::new("EndPoint"))
         .id();
@@ -44,7 +43,7 @@ pub fn end_point(
 }
 
 pub fn end_point_handle_system(
-    mut query: Query<(&mut Visibility, &mut Handle<Image>), With<EndPoint>>,
+    mut query: Query<(&mut Visibility, &mut Sprite), With<EndPoint>>,
     ingame_materials: Res<InGameMaterials>,
     dungeon: Res<Dungeon>,
 ) {
@@ -55,9 +54,9 @@ pub fn end_point_handle_system(
         if end_room_position == current_position {
             *visibility = Visibility::Visible;
             if dungeon.current_floor.is_last_floor {
-                *handle_image = ingame_materials.dungeon_materials.treasure.clone();
+                handle_image.image = ingame_materials.dungeon_materials.treasure.clone();
             } else {
-                *handle_image = ingame_materials.dungeon_materials.ladder.clone();
+                handle_image.image = ingame_materials.dungeon_materials.ladder.clone();
             }
         } else {
             *visibility = Visibility::Hidden;

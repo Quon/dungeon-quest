@@ -49,9 +49,9 @@ pub fn initiate_weapon(
     });
 
     let weapon_entity = commands
-        .spawn(SpriteBundle {
-            texture: weapon_texture,
-            sprite: Sprite {
+        .spawn((
+                   Sprite {
+                image: weapon_texture,
                 custom_size: Some(Vec2::new(weapon_width * scale, weapon_height * scale)),
                 anchor: match weapon.attack_type {
                     AttackType::Swing => Anchor::BottomCenter,
@@ -59,12 +59,11 @@ pub fn initiate_weapon(
                 },
                 ..Default::default()
             },
-            transform: Transform {
+            Transform {
                 translation: Vec3::new(0.0, 0.0, 0.17),
                 ..Default::default()
             },
-            ..Default::default()
-        })
+        ))
         .insert(Name::new("Weapon"))
         .insert(WeaponComponent {
             strength: weapon.strength,

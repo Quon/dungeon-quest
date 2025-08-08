@@ -16,8 +16,8 @@ pub fn ground(
     let start_y = 0.0 + (TOTAL_TILE_HEIGHT * TILE_SIZE / 2.0 - TILE_SIZE / 2.0);
 
     let ground = commands
-        .spawn(SpriteBundle {
-            sprite: Sprite {
+        .spawn((
+               Sprite {
                 color: Color::BLACK,
                 custom_size: Some(Vec2::new(
                     TOTAL_TILE_WIDTH * TILE_SIZE,
@@ -25,8 +25,7 @@ pub fn ground(
                 )),
                 ..Default::default()
             },
-            ..Default::default()
-        })
+        ))
         .with_children(|parent| {
             let total_tile_width = TOTAL_TILE_WIDTH as usize;
             let total_tile_height = TOTAL_TILE_HEIGHT as usize;
@@ -38,18 +37,17 @@ pub fn ground(
                     let component_name = format!("Layer[{},{}]", row_index, column_index);
 
                     parent
-                        .spawn(SpriteBundle {
-                            sprite: Sprite {
+                        .spawn((
+                                   Sprite {
+                                       image: ingame_materials.dungeon_materials.floor.clone(),
                                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                                 ..Default::default()
                             },
-                            transform: Transform {
+                            Transform {
                                 translation: Vec3::new(x, y, 0.0),
                                 ..Default::default()
                             },
-                            texture: ingame_materials.dungeon_materials.floor.clone(),
-                            ..Default::default()
-                        })
+                        ))
                         .insert(Layer)
                         .insert(Name::new(component_name));
                 }

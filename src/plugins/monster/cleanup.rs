@@ -70,18 +70,17 @@ pub fn cleanup_killed_monsters(
                 let y = monster_transform.translation.y;
 
                 commands
-                    .spawn(SpriteBundle {
-                        texture,
-                        sprite: Sprite {
+                    .spawn((
+                        Sprite {
+                            image: texture,
                             custom_size: Some(Vec2::new(16.0 * 2.0, 16.0 * 2.0)),
                             ..Default::default()
                         },
-                        transform: Transform {
+                        Transform {
                             translation: Vec3::new(x, y, 0.15),
                             ..Default::default()
                         },
-                        ..Default::default()
-                    })
+                    ))
                     .insert(PotionComponent {
                         potion_type,
                         width: 16.0 * 2.0,

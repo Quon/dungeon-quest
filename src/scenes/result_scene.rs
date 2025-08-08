@@ -3,7 +3,9 @@ use chrono::{DateTime, Datelike, Timelike};
 use std::fs::File;
 use std::io::prelude::*;
 use std::slice::Iter;
+use bevy::color::palettes::basic::GRAY;
 use bevy::color::palettes::css::DARK_GRAY;
+use bevy::input::keyboard::{Key, KeyboardInput};
 use crate::config::*;
 use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
@@ -113,15 +115,14 @@ fn setup(
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn(ImageBundle {
-            style: Style {
+        .spawn((
+            Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
             },
-            image: UiImage::new(scenes_materials.sub_background_image.clone()),
-            ..Default::default()
-        })
+            ImageNode::new(scenes_materials.sub_background_image.clone()),
+    ))
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
             result_text(parent, &font_materials, &dictionary);
@@ -151,7 +152,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * MENU_BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * MENU_BOX_HEIGHT_TILES) / 2.0;
 
-    root.spawn(NodeBundle {
+    root.spawn(Node {
         ..Default::default()
     })
     .with_children(|parent| {
@@ -170,9 +171,9 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     _ => panic!("Unknown resources"),
                 };
 
-                parent.spawn(ImageBundle {
-                    image: UiImage::new(image),
-                    style: Style {
+                parent.spawn((
+                    ImageNode::new(image),
+                    Node {
                         position_type: PositionType::Absolute,
                         left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
                         top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
@@ -183,8 +184,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                         ..Default::default()
                     },
 
-                    ..Default::default()
-                });
+                ));
             }
         }
     })
@@ -201,24 +201,23 @@ fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
         440.0
     };
 
-    root.spawn(TextBundle {
-        style: Style {
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             left: Val::Px(left_position),
             top: Val::Px(60.0),
             ..Default::default()
         },
-        text: Text::from_section(
-            glossary.result_scene_text.result,
-            TextStyle {
+        Text::new(
+            glossary.result_scene_text.result),
+        TextFont {
                 font: font,
                 font_size: 50.0,
-                color: Color::BLACK,
+            ..Default::default()
             },
-        )
-        .with_justify(JustifyText::Center),
-        ..Default::default()
-    })
+        TextColor(Color::BLACK),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ))
     .insert(Name::new("ResultText"));
 }
 
@@ -231,7 +230,7 @@ fn texts(
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
-    root.spawn(NodeBundle {
+    root.spawn(Node {
         ..Default::default()
     })
     .with_children(|parent| {
@@ -400,26 +399,27 @@ fn texts(
             };
 
             parent
-                .spawn(TextBundle {
-                    style: Style {
+                .spawn((
+                    Node {
                         position_type: PositionType::Absolute,
                         left: Val::Px(left_position),
                         top: Val::Px(top_position),
                         ..Default::default()
                     },
-                    visibility: Visibility::Inherited,
-                    text: Text::from_section(
-                        value,
-                        TextStyle {
-                            font: font.clone(),
-                            font_size: 35.0,
-                            color: Color::BLACK,
-                        },
-                    )
-                    .with_justify(JustifyText::Center)
-                    .with_no_wrap(),
+                    Visibility::Inherited,
+                    Text::new(
+                        value),
+                    TextFont {
+                        font: font.clone(),
+                        font_size: 35.0,
                     ..Default::default()
-                })
+                    },
+                   TextColor(Color::BLACK),
+                    TextLayout {
+                        justify: JustifyText::Center,
+                        linebreak: LineBreak::NoWrap,
+                    },
+                ))
                 .insert(Name::new(component_name))
                 .insert(prefix.clone());
         }
@@ -430,8 +430,9 @@ fn texts(
 fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
-    root.spawn(ButtonBundle {
-        style: Style {
+    root.spawn((
+       Button,
+       Node {
             left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             right: Val::Auto,
@@ -442,9 +443,8 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        image: UiImage::new(handle_image),
-        ..Default::default()
-    })
+        ImageNode::new(handle_image),
+    ))
     .insert(Name::new("ReturnButton"))
     .insert(ButtonComponent::Return);
 }
@@ -460,8 +460,9 @@ fn save_profile_button(
 
     let handle_image = scenes_materials.icon_materials.leaderboard.clone();
 
-    root.spawn(ButtonBundle {
-        style: Style {
+    root.spawn((
+       Button,
+       Node {
             left: Val::Px(550.0),
             top: Val::Px(440.0),
             right: Val::Auto,
@@ -472,9 +473,8 @@ fn save_profile_button(
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        image: UiImage::new(handle_image),
-        ..Default::default()
-    })
+        ImageNode::new(handle_image),
+    ))
     .insert(Name::new("SaveProfileButton"))
     .insert(ButtonComponent::SaveProfile);
 }
@@ -482,8 +482,9 @@ fn save_profile_button(
 fn play_again_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.restart.clone();
 
-    root.spawn(ButtonBundle {
-        style: Style {
+    root.spawn((
+       Button,
+       Node {
             left: Val::Px(400.0),
             top: Val::Px(440.0),
             right: Val::Auto,
@@ -494,16 +495,15 @@ fn play_again_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        image: UiImage::new(handle_image),
-        ..Default::default()
-    })
+        ImageNode::new(handle_image),
+    ))
     .insert(Name::new("PlayAgainButton"))
     .insert(ButtonComponent::PlayAgain);
 }
 
 fn button_handle_system(
     mut button_query: Query<
-        (&ButtonComponent, &Interaction, &mut UiImage),
+        (&ButtonComponent, &Interaction, &mut Sprite),
         (Changed<Interaction>, With<Button>),
     >,
     scenes_materials: Res<ScenesMaterials>,
@@ -515,22 +515,22 @@ fn button_handle_system(
         match *button {
             ButtonComponent::Return => match *interaction {
                 Interaction::None => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
+                    ui_image.image = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
+                    ui_image.image = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
                 Interaction::Pressed => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
+                    ui_image.image = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state.set(SceneState::MainMenuScene);
                 }
             },
             ButtonComponent::SaveProfile => match *interaction {
                 Interaction::None => {
-                    ui_image.texture = scenes_materials.icon_materials.leaderboard.clone()
+                    ui_image.image = scenes_materials.icon_materials.leaderboard.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.texture = scenes_materials.icon_materials.leaderboard_hovered.clone()
+                    ui_image.image = scenes_materials.icon_materials.leaderboard_hovered.clone()
                 }
                 Interaction::Pressed => {
                     user_input_controller.0 = true;
@@ -539,10 +539,10 @@ fn button_handle_system(
             },
             ButtonComponent::PlayAgain => match *interaction {
                 Interaction::None => {
-                    ui_image.texture = scenes_materials.icon_materials.restart.clone()
+                    ui_image.image = scenes_materials.icon_materials.restart.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.texture = scenes_materials.icon_materials.restart_hovered.clone()
+                    ui_image.image = scenes_materials.icon_materials.restart_hovered.clone()
                 }
                 Interaction::Pressed => {
                     state.set(SceneState::GameModeSelectScene);
@@ -560,8 +560,8 @@ fn user_input_text(
     let font = font_materials.get_font(dictionary.get_current_language());
 
     grandparent
-        .spawn(NodeBundle {
-            style: Style {
+        .spawn((Node {
+
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
                 align_items: AlignItems::Center,
@@ -575,29 +575,26 @@ fn user_input_text(
                 right: Val::Auto,
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::from(DARK_GRAY)),
-            visibility: Visibility::Hidden,
-            ..Default::default()
-        })
+            BackgroundColor(Color::from(DARK_GRAY)),
+            Visibility::Hidden,
+        ))
         .with_children(|parent| {
             parent
-                .spawn(TextBundle {
-                    style: Style {
+                .spawn((
+                    Node {
                         position_type: PositionType::Relative,
                         ..Default::default()
                     },
-                    text: Text::from_section(
-                        "",
-                        TextStyle {
-                            font: font.clone(),
-                            font_size: 40.0,
-                            color: Color::WHITE,
-                        },
-                    )
-                    .with_justify(JustifyText::Center),
-                    visibility: Visibility::Hidden,
-                    ..Default::default()
-                })
+                    Text::new(""),
+                    TextFont {
+                        font: font.clone(),
+                        font_size: 40.0,
+                        ..Default::default()
+                    },
+                    TextColor(Color::WHITE),
+                    TextLayout::new_with_justify(JustifyText::Center),
+                    Visibility::Hidden,
+                ))
                 .insert(UserInput)
                 .insert(Name::new("UserInput"));
         })
@@ -634,13 +631,14 @@ fn user_input_visibility_handle(
 }
 
 fn user_input_handle(
-    mut user_input_query: Query<&mut Text, With<UserInput>>,
+    mut user_input_query: Query<Entity, With<UserInput>>,
     mut user_input_controller: ResMut<UserInputController>,
-    mut char_evr: EventReader<ReceivedCharacter>,
+    mut char_evr: EventReader<KeyboardInput>,
     mut state: ResMut<NextState<SceneState>>,
     mut user_name: Local<String>,
     mut profile: ResMut<Profile>,
     keys: Res<ButtonInput<KeyCode>>,
+    mut writer: TextUiWriter,
 ) {
     if user_input_controller.0 {
         if keys.just_pressed(KeyCode::Enter) {
@@ -661,15 +659,22 @@ fn user_input_handle(
 
         if user_name.len() <= 12 {
             for ev in char_evr.read() {
-                let char = ev.char.chars().next().unwrap();
-                if char.is_ascii() {
-                    user_name.push(char);
+                // Only check for characters when the key is pressed.
+                if !ev.state.is_pressed() {
+                    continue;
+                }
+                match &ev.logical_key {
+                    Key::Character(character) => {
+                        if character.is_ascii() {
+                            user_name.push(character.chars().next().unwrap());
+                        }
+                    },
+                    _ => {},
                 }
             }
         }
-
-        let mut text = user_input_query.get_single_mut().unwrap();
-        text.sections[0].value = user_name.to_string();
+        let entity = user_input_query.single();
+        *writer.text(entity,0) = user_name.to_string();
     }
 }
 

@@ -74,29 +74,24 @@ pub fn spawn_monsters_classic_mode(
 
                 let (texture_atlas, image) = get_texture(&raw_monster, &ingame_materials);
                 let texture_atlas_handle = texture_atlases.add(texture_atlas);
-
+                let mut sprite = Sprite::from_atlas_image(image, TextureAtlas {
+                    layout: texture_atlas_handle,
+                    index: 0,
+                });
+                sprite.custom_size = Some(Vec2::new(
+                            raw_monster.origin_width * 3.5,
+                            raw_monster.origin_height * 3.5,
+                ));
                 let component_name = format!("Monster {}", monster_spawn_controller.alive_monsters);
 
                 commands
-                    .spawn(SpriteSheetBundle {
-                        texture: image,
-                        atlas: TextureAtlas {
-                            layout: texture_atlas_handle,
-                            index: 0,
-                        },
-                        sprite: Sprite {
-                            custom_size: Some(Vec2::new(
-                                raw_monster.origin_width * 3.5,
-                                raw_monster.origin_height * 3.5,
-                            )),
-                            ..Default::default()
-                        },
-                        transform: Transform {
+                    .spawn((
+                        sprite,
+                        Transform {
                             translation: Vec3::new(x, y, 0.16),
                             ..Default::default()
                         },
-                        ..Default::default()
-                    })
+                    ))
                     .insert(MonsterComponent {
                         current_health_points: raw_monster.health_points,
                         max_health_points: raw_monster.health_points,
@@ -184,29 +179,24 @@ pub fn spawn_monsters_survival_mode(
 
                 let (texture_atlas, image) = get_texture(&raw_monster, &ingame_materials);
                 let texture_atlas_handle = texture_atlases.add(texture_atlas);
-
+                let mut sprite = Sprite::from_atlas_image(image, TextureAtlas {
+                    layout: texture_atlas_handle,
+                    index: 0,
+                });
+                sprite.custom_size = Some(Vec2::new(
+                    raw_monster.origin_width * 3.5,
+                    raw_monster.origin_height * 3.5,
+                ));
                 let component_name = format!("Monster {}", monster_spawn_controller.alive_monsters);
 
                 commands
-                    .spawn(SpriteSheetBundle {
-                        texture: image,
-                        atlas: TextureAtlas {
-                            layout: texture_atlas_handle,
-                            index: 0,
-                        },
-                        sprite: Sprite {
-                            custom_size: Some(Vec2::new(
-                                raw_monster.origin_width * 3.5,
-                                raw_monster.origin_height * 3.5,
-                            )),
-                            ..Default::default()
-                        },
-                        transform: Transform {
+                    .spawn((
+                        sprite,
+                        Transform {
                             translation: Vec3::new(x, y, 0.16),
                             ..Default::default()
                         },
-                        ..Default::default()
-                    })
+                    ))
                     .insert(MonsterComponent {
                         current_health_points: raw_monster.health_points,
                         max_health_points: raw_monster.health_points,

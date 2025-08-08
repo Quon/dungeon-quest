@@ -11,7 +11,7 @@ use crate::resources::profile::Profile;
 use crate::utils::collide::collide;
 
 pub fn horizontal_door_interaction_handle(
-    mut player_query: Query<(&mut Transform, &TextureAtlas, &Sprite), With<PlayerComponent>>,
+    mut player_query: Query<(&mut Transform, &Sprite), With<PlayerComponent>>,
     mut door_query: Query<
         (&Door, &Transform, &Sprite, &Visibility),
         (With<HorizontalDoor>, Without<PlayerComponent>),
@@ -23,7 +23,7 @@ pub fn horizontal_door_interaction_handle(
     mut profile: ResMut<Profile>,
     mut commands: Commands,
 ) {
-    let (mut player_transform, player_atlas, player_sprite) = player_query.single_mut();
+    let (mut player_transform, player_sprite) = player_query.single_mut();
     let player_translation = player_transform.translation;
     let player_size = player_sprite.custom_size.unwrap();
 
@@ -88,7 +88,7 @@ pub fn horizontal_door_interaction_handle(
 }
 
 pub fn vertical_door_interaction_handle(
-    mut player_query: Query<(&mut Transform, &TextureAtlas, &Sprite), With<PlayerComponent>>,
+    mut player_query: Query<(&mut Transform, &Sprite), With<PlayerComponent>>,
     mut vertical_door_query: Query<(&Visibility, &Children), With<VerticaltDoor>>,
     mut door_query: Query<(&Door, &Transform), Without<PlayerComponent>>,
     mut monster_spawn_controller: ResMut<MonsterSpawnController>,
@@ -98,7 +98,7 @@ pub fn vertical_door_interaction_handle(
     mut profile: ResMut<Profile>,
     mut commands: Commands,
 ) {
-    let (mut player_transform, player_atlas, player_spirte) = player_query.single_mut();
+    let (mut player_transform, player_spirte) = player_query.single_mut();
     let player_translation = player_transform.translation;
     let player_size = player_spirte.custom_size.unwrap().clone();
 

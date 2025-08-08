@@ -71,15 +71,14 @@ fn setup(
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn(ImageBundle {
-            style: Style {
+        .spawn((
+            Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
             },
-            image: UiImage::new(scenes_materials.sub_background_image.clone()),
-            ..Default::default()
-        })
+            ImageNode::new(scenes_materials.sub_background_image.clone()),
+    ))
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
             select_game_mode_text(parent, &font_materials, &dictionary);
@@ -120,9 +119,9 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                 _ => panic!("Unknown resources"),
             };
 
-            root.spawn(ImageBundle {
-                image: UiImage::new(image),
-                style: Style {
+            root.spawn((
+                ImageNode::new(image),
+                Node {
                     position_type: PositionType::Absolute,
                     left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                     top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
@@ -132,8 +131,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     height: Val::Px(BOX_TILE_SIZE),
                     ..Default::default()
                 },
-                ..Default::default()
-            });
+            ));
         }
     }
 }
@@ -152,24 +150,23 @@ fn select_game_mode_text(
         300.0
     };
 
-    root.spawn(TextBundle {
-        style: Style {
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             left: Val::Px(left_position),
             top: Val::Px(190.0),
             ..Default::default()
         },
-        text: Text::from_section(
-            glossary.shared_text.select_game_mode,
-            TextStyle {
+        Text::new(
+            glossary.shared_text.select_game_mode),
+        TextFont {
                 font: font,
                 font_size: 50.0,
-                color: Color::BLACK,
+            ..Default::default()
             },
-        )
-        .with_justify(JustifyText::Center),
-        ..Default::default()
-    });
+        TextColor(Color::BLACK),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ));
 }
 
 fn buttons(
@@ -185,8 +182,9 @@ fn buttons(
         match button {
             ButtonComponent::Return => {
                 let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
-                root.spawn(ButtonBundle {
-                    style: Style {
+                root.spawn((
+                               Button{..default()},
+                               Node  {
                         left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                         top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                         right: Val::Auto,
@@ -197,14 +195,14 @@ fn buttons(
                         position_type: PositionType::Absolute,
                         ..Default::default()
                     },
-                    image: UiImage::new(handle_image),
-                    ..Default::default()
-                })
+                    ImageNode::new(handle_image),
+                ))
                 .insert(button.clone());
             }
             _ => {
-                root.spawn(ButtonBundle {
-                    style: Style {
+                root.spawn((
+                               Button{..default()},
+                               Node  {
                         left: Val::Px((WINDOW_HEIGHT * RESOLUTION - 300.0) / 2.0),
                         top: Val::Px(if index == 1 { 270.0 } else { 330.0 }),
                         right: Val::Auto,
@@ -215,26 +213,24 @@ fn buttons(
                         position_type: PositionType::Absolute,
                         ..Default::default()
                     },
-                    background_color: BackgroundColor(Color::NONE),
-                    ..Default::default()
-                })
+                    BackgroundColor(Color::NONE),
+                ))
                 .with_children(|parent| {
-                    parent.spawn(TextBundle {
-                        text: Text::from_section(
+                    parent.spawn((
+                        Text::new(
                             if index == 1 {
                                 glossary.shared_text.classic_mode.clone()
                             } else {
                                 glossary.shared_text.survival_mode.clone()
-                            },
-                            TextStyle {
+                            }),
+                        TextFont {
                                 font: font.clone(),
                                 font_size: FONT_SIZE,
-                                color: Color::from(GRAY),
+                            ..Default::default()
                             },
-                        )
-                        .with_justify(JustifyText::Center),
-                        ..Default::default()
-                    });
+                        TextColor(Color::from(GRAY)),
+                        TextLayout::new_with_justify(JustifyText::Center),
+                    ));
                 })
                 .insert(button.clone());
             }
@@ -247,15 +243,16 @@ fn button_handle_system(
         (&Interaction, &ButtonComponent, &Children),
         (Changed<Interaction>, With<Button>),
     >,
-    mut text_query: Query<&mut Text>,
+    mut text_query: Query<Entity>,
     mut profile: ResMut<Profile>,
     mut state: ResMut<NextState<SceneState>>,
+    mut writer: TextUiWriter,
 ) {
     for (interaction, button, children) in button_query.iter_mut() {
-        let mut text = text_query.get_mut(children[0]).unwrap();
+        let entity = text_query.get(children[0]).unwrap();
         match *interaction {
-            Interaction::None => text.sections[0].style.color = Color::from(GRAY),
-            Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
+            Interaction::None => *writer.color(entity,0) = TextColor::from(GRAY),
+            Interaction::Hovered => *writer.color(entity,0) = TextColor::BLACK,
             Interaction::Pressed => {
                 if *button == ButtonComponent::ClassicMode {
                     profile.set_game_mode(GameMode::ClassicMode);
@@ -271,7 +268,7 @@ fn button_handle_system(
 
 fn return_button_handle(
     mut button_query: Query<
-        (&Interaction, &ButtonComponent, &mut UiImage),
+        (&Interaction, &ButtonComponent, &mut ImageNode),
         (Changed<Interaction>, With<Button>),
     >,
     scenes_materials: Res<ScenesMaterials>,
@@ -281,13 +278,13 @@ fn return_button_handle(
         if *button == ButtonComponent::Return {
             match *interaction {
                 Interaction::None => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
+                    ui_image.image = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
+                    ui_image.image = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
                 Interaction::Pressed => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
+                    ui_image.image = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state.set(SceneState::MainMenuScene);
                 }
             }

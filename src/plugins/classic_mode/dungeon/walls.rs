@@ -30,7 +30,7 @@ pub fn walls(
     let room = rooms.get_room(if room_id == 1.0 { 1.0 } else { 1.0 });
 
     let walls = commands
-        .spawn(SpriteBundle {
+        .spawn(Sprite {
             ..Default::default()
         })
         .with_children(|parent| {
@@ -107,18 +107,16 @@ fn wall(
     };
 
     parent
-        .spawn(SpriteBundle {
-            sprite: Sprite {
+        .spawn((Sprite {
+            image: image,
                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                 ..Default::default()
             },
-            transform: Transform {
+            Transform {
                 translation: Vec3::new(x, y, z),
                 ..Default::default()
             },
-            texture: image,
-            ..Default::default()
-        })
+        ))
         .insert(Wall {
             wall_type: if value < 0 {
                 WallType::Temporary

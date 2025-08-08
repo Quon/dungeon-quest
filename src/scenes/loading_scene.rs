@@ -55,15 +55,14 @@ impl Plugin for LoadingScenePlugin {
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res<Dictionary>) {
     let user_interface_root = commands
-        .spawn(NodeBundle {
-            style: Style {
+        .spawn((Node {
+
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::BLACK),
-            ..Default::default()
-        })
+            BackgroundColor(Color::BLACK),
+        ))
         .with_children(|parent| {
             loading_text(parent, &asset_server, &dictionary);
             loader_bundle(parent, &asset_server, &dictionary);
@@ -88,28 +87,26 @@ fn loader_bundle(
 ) {
     root.spawn(
         // Border
-        NodeBundle {
-            style: Style {
-                justify_content: JustifyContent::Center,
-                position_type: PositionType::Absolute,
-                width: Val::Px(LOADING_BORDER_WIDTH),
-                height: Val::Px(LOADING_BORDER_HEIGHT),
-                top: Val::Px((WINDOW_HEIGHT / 2.0) - (LOADING_BORDER_HEIGHT / 2.0)),
-                left: Val::Px(
-                    (WINDOW_HEIGHT * RESOLUTION) / 2.0 - (LOADING_BORDER_WIDTH / 2.0),
-                ),
-                bottom: Val::Auto,
-                right: Val::Auto,
-                ..Default::default()
+        (Node {
+
+            justify_content: JustifyContent::Center,
+            position_type: PositionType::Absolute,
+            width: Val::Px(LOADING_BORDER_WIDTH),
+            height: Val::Px(LOADING_BORDER_HEIGHT),
+            top: Val::Px((WINDOW_HEIGHT / 2.0) - (LOADING_BORDER_HEIGHT / 2.0)),
+            left: Val::Px(
+                (WINDOW_HEIGHT * RESOLUTION) / 2.0 - (LOADING_BORDER_WIDTH / 2.0),
+            ),
+            bottom: Val::Auto,
+            right: Val::Auto,
+            ..default()
             },
-            background_color: BackgroundColor(Color::from(DARK_GRAY)),
-            ..Default::default()
-        },
-    )
+            BackgroundColor(Color::from(DARK_GRAY)),
+        ))
     .with_children(|parent| {
         parent
-            .spawn(NodeBundle {
-                style: Style {
+            .spawn((Node {
+
                     justify_content: JustifyContent::Center,
                     position_type: PositionType::Absolute,
                     width: Val::Px(0.0),
@@ -120,35 +117,32 @@ fn loader_bundle(
                     bottom: Val::Px(5.0),
                     ..Default::default()
                 },
-                background_color: BackgroundColor(Color::rgb(247.0 / 255.0, 104.0 / 255.0, 12.0 / 255.0)),
-                ..Default::default()
-            })
+                BackgroundColor(Color::rgb(247.0 / 255.0, 104.0 / 255.0, 12.0 / 255.0)),
+            ))
             .with_children(|parent| {
                 let font_str = match dictionary.get_current_language() {
                     Language::VI => ROBOTO_FONT,
                     Language::EN => FIBBERISH_FONT,
                 };
 
-                parent.spawn(TextBundle {
-                    style: Style {
+                parent.spawn((
+                    Node {
                         justify_content: JustifyContent::Center,
                         position_type: PositionType::Absolute,
                         align_items: AlignItems::Center,
                         align_self: AlignSelf::Center,
                         ..Default::default()
                     },
-                    text: Text::from_section(
-                        "",
-                        TextStyle {
+                    Text::new(
+                        ""),
+                    TextFont {
                             font: asset_server.load(font_str),
                             font_size: TEXT_FONT_SIZE,
-                            color: Color::WHITE,
-                        }
-                    ).with_justify(
-                        JustifyText::Center
-                    ),
-                    ..Default::default()
-                });
+                        ..Default::default()
+                        },
+                    TextColor(Color::WHITE),
+                    TextLayout::new_with_justify(JustifyText::Center),
+                ));
             })
             .insert(LoaderComponent {
                 max_width: LOADING_BORDER_WIDTH - 10.0,
@@ -162,8 +156,8 @@ fn loading_text(
     asset_server: &Res<AssetServer>,
     dictionary: &Res<Dictionary>,
 ) {
-    root.spawn(NodeBundle {
-        style: Style {
+    root.spawn((Node {
+
             justify_content: JustifyContent::Center,
             position_type: PositionType::Absolute,
             width: Val::Px(LOADING_BORDER_WIDTH),
@@ -174,9 +168,8 @@ fn loading_text(
             right: Val::Auto,
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::NONE),
-        ..Default::default()
-    })
+        BackgroundColor(Color::NONE),
+    ))
     .with_children(|parent| {
         let glossary = dictionary.get_glossary();
 
@@ -185,8 +178,8 @@ fn loading_text(
             Language::EN => FIBBERISH_FONT,
         };
 
-        parent.spawn(TextBundle {
-            style: Style {
+        parent.spawn((
+            Node {
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
                 align_items: AlignItems::Center,
@@ -194,25 +187,24 @@ fn loading_text(
                 ..Default::default()
             },
 
-            text: Text::from_section(
-                glossary.loading_scene_text.loading,
-                TextStyle {
+            Text::new(
+                glossary.loading_scene_text.loading),
+            TextFont {
                     font: asset_server.load(font_str),
                     font_size: LOADING_TEXT_FONT_SIZE,
-                    color: Color::WHITE,
-                }
-            ).with_justify(
-                JustifyText::Center
-            ),
-            ..Default::default()
-        });
+                ..Default::default()
+                },
+            TextColor(Color::WHITE),
+            TextLayout::new_with_justify(JustifyText::Center),
+        ));
     });
 }
 
 fn update_loader(
-    mut query: Query<(&mut LoaderComponent, &mut Style, &Children)>,
+    mut query: Query<(&mut LoaderComponent, &mut Node, &Children)>,
     mut state: ResMut<NextState<SceneState>>,
-    mut text_query: Query<&mut Text>,
+    mut text_query: Query<Entity>,
+    mut writer: TextUiWriter,
 ) {
     for (mut loader, mut style, children) in query.iter_mut() {
         if loader.current_width < loader.max_width {
@@ -221,8 +213,8 @@ fn update_loader(
 
             let value = (loader.current_width / loader.max_width * 100.0) as usize;
             if value >= 6 {
-                let mut text = text_query.get_mut(children[0]).unwrap();
-                text.sections[0].value = value.to_string() + "%";
+                let entity = text_query.get(children[0]).unwrap();
+                *writer.text(entity, 0) = value.to_string() + "%";
             }
         } else {
             state

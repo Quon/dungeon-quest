@@ -134,10 +134,7 @@ fn setup(
 ) {
     // background
     let background = commands
-        .spawn(SpriteBundle {
-            texture: scenes_materials.sub_background_image.clone(),
-            ..Default::default()
-        })
+        .spawn(Sprite::from_image(scenes_materials.sub_background_image.clone()))
         .id();
 
     // book texture
@@ -160,26 +157,21 @@ fn setup(
         }
         Err(err) => panic!("Can't find highscores file: {}", err),
     };
-
+    let mut sprite = Sprite::from_atlas_image(book_tileset, TextureAtlas {
+        layout: texture_atlas_handle,
+        index: 0,
+    });
+    sprite.custom_size = Some(Vec2::new(BOOK_TILE_SIZE.width, BOOK_TILE_SIZE.height));
     // book
     let book = commands
-        .spawn(SpriteSheetBundle {
-            atlas: TextureAtlas {
-                layout: texture_atlas_handle,
-                index: 0,
-            },
-            transform: Transform {
+        .spawn((
+            sprite,
+            Transform {
                translation: Vec3::new(-25.0, -30.0, 1.0),
                scale: Vec3::splat(4.0),
                ..Default::default()
             },
-            texture: book_tileset,
-            sprite: Sprite {
-                custom_size: Some(Vec2::new(BOOK_TILE_SIZE.width, BOOK_TILE_SIZE.height)),
-                ..Default::default()
-            },
-            ..Default::default()
-        })
+        ))
         .insert(HighscoreBookComponent {
             current_page: -1,
             total_pages: profiles.len(),
@@ -193,15 +185,14 @@ fn setup(
 
     // user interface root
     let user_interface_root = commands
-        .spawn(NodeBundle {
-            style: Style {
+        .spawn((Node {
+
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::NONE),
-            ..Default::default()
-        })
+            BackgroundColor(Color::NONE),
+        ))
         .with_children(|parent| {
             buttons(parent, &scenes_materials);
             hero_image(parent);
@@ -243,8 +234,9 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
             ButtonComponent::Return => {
                 let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
                 let rect = positions[index];
-                root.spawn(ButtonBundle {
-                    style: Style {
+                root.spawn((
+                               Button{..default()},
+                               Node  {
                         left: rect.left,
                         right: rect.right,
                         top: rect.top,
@@ -255,15 +247,15 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                         position_type: PositionType::Absolute,
                         ..Default::default()
                     },
-                    image: UiImage::new(handle_image),
-                    ..Default::default()
-                })
+                    ImageNode::new(handle_image),
+                ))
                 .insert(*button);
             }
             _ => {
                 let rect = positions[index];
-                root.spawn(ButtonBundle {
-                    style: Style {
+                root.spawn((
+                               Button{..default()},
+                               Node  {
                         left: rect.left,
                         right: rect.right,
                         top: rect.top,
@@ -274,9 +266,8 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                         position_type: PositionType::Absolute,
                         ..Default::default()
                     },
-                    background_color: BackgroundColor(Color::NONE),
-                    ..Default::default()
-                })
+                    BackgroundColor(Color::NONE),
+                ))
                 .insert(*button);
             }
         };
@@ -285,7 +276,7 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
 
 fn button_handle_system(
     mut button_query: Query<
-        (&Interaction, &ButtonComponent, &mut UiImage),
+        (&Interaction, &ButtonComponent, &mut ImageNode),
         (Changed<Interaction>, With<Button>),
     >,
     mut highscore_book_query: Query<&mut HighscoreBookComponent>,
@@ -296,13 +287,13 @@ fn button_handle_system(
         match *button {
             ButtonComponent::Return => match *interaction {
                 Interaction::None => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
+                    ui_image.image = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
+                    ui_image.image = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
                 Interaction::Pressed => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
+                    ui_image.image = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state
                         .set(SceneState::MainMenuScene);
                 }
@@ -342,14 +333,17 @@ fn button_handle_system(
 }
 
 fn book_animation_handle_system(
-    mut query: Query<(&mut HighscoreBookComponent, &mut TextureAtlas)>,
+    mut query: Query<(&mut HighscoreBookComponent, &mut Sprite)>,
     time: Res<Time>,
 ) {
     for (mut highscore_book, mut sprite) in query.iter_mut() {
         if !highscore_book.animation_indexes.is_empty() {
             highscore_book.timer.tick(time.delta());
             if highscore_book.timer.just_finished() {
-                sprite.index = highscore_book.animation_indexes[highscore_book.animation_index];
+                let Some(ref mut atlas) = sprite.texture_atlas else {
+                    continue;
+                };
+                atlas.index = highscore_book.animation_indexes[highscore_book.animation_index];
                 highscore_book.animation_index += 1;
                 if highscore_book.animation_index == highscore_book.animation_indexes.len() {
                     highscore_book.animation_indexes = Vec::new();
@@ -372,8 +366,11 @@ fn book_animation_handle_system(
 }
 
 fn hero_image(root: &mut ChildBuilder) {
-    root.spawn(ImageBundle {
-        style: Style {
+    root.spawn((
+        ImageNode {
+            ..default()
+        },
+        Node {
             right: Val::Auto,
             bottom: Val::Auto,
             left: Val::Px(280.0),
@@ -383,14 +380,13 @@ fn hero_image(root: &mut ChildBuilder) {
             height: Val::Px(HERO_IMAGE_SIZE.height),
             ..Default::default()
         },
-        visibility: Visibility::Hidden,
-        ..Default::default()
-    })
+        Visibility::Hidden,
+    ))
     .insert(HeroImageComponent);
 }
 
 fn hero_image_handle_system(
-    mut query: Query<(&HeroImageComponent, &mut UiImage, &mut Visibility)>,
+    mut query: Query<(&HeroImageComponent, &mut ImageNode, &mut Visibility)>,
     mut highscore_book_query: Query<&mut HighscoreBookComponent>,
     scenes_materials: Res<ScenesMaterials>,
 ) {
@@ -398,7 +394,7 @@ fn hero_image_handle_system(
         let highscore_book = highscore_book_query.get_single_mut().unwrap();
         if highscore_book.current_page != -1 && highscore_book.animation_indexes.is_empty() {
             let index = highscore_book.current_page as usize;
-            ui_image.texture = match highscore_book.profiles[index].hero_class {
+            ui_image.image = match highscore_book.profiles[index].hero_class {
                 HeroClass::Elf => match highscore_book.profiles[index].gender {
                     Gender::Male => scenes_materials.heroes_materials.male_elf.clone(),
                     Gender::Female => scenes_materials.heroes_materials.female_elf.clone(),
@@ -436,41 +432,38 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
         [500.0, 300.0],
     ];
 
-    root.spawn(NodeBundle {
-        focus_policy: FocusPolicy::Pass,
-        style: Style {
+    root.spawn((Node {
+
             display: Display::None,
             position_type: PositionType::Absolute,
             width: Val::Percent(100.0),
             height: Val::Percent(100.0),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::NONE),
-        ..Default::default()
-    })
+        BackgroundColor(Color::NONE),
+        FocusPolicy::Pass,
+    ))
     .with_children(|parent| {
         for (index, prevalue) in PrefixWordComponent::iterator().enumerate() {
             parent
-                .spawn(TextBundle {
-                    style: Style {
+                .spawn((
+                    Node {
                         position_type: PositionType::Absolute,
                         left: Val::Px(position_of_texts[index][0]),
                         top: Val::Px(position_of_texts[index][1]),
                         ..Default::default()
                     },
-                    visibility: Visibility::Inherited,
-                    text: Text::from_section(
-                        "",
-                        TextStyle {
+                    Visibility::Inherited,
+                    Text::new(
+                        ""),
+                    TextFont {
                             font: font.clone(),
                             font_size: 25.0,
-                            color: Color::BLACK,
-                        }
-                    ).with_justify(
-                        JustifyText::Center
-                    ),
-                    ..Default::default()
-                })
+                        ..Default::default()
+                        },
+                       TextColor(Color::BLACK),
+                       TextLayout::new_with_justify(JustifyText::Center),
+                ))
                 .insert(*prevalue);
         }
     })
@@ -478,11 +471,12 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
 }
 
 fn texts_handle_system(
-    mut query: Query<(&TextsNodeComponent, &mut Style, &mut Children)>,
+    mut query: Query<(&TextsNodeComponent, &mut Node, &Children)>,
     mut highscore_book_query: Query<&mut HighscoreBookComponent>,
     mut text_type_query: Query<&PrefixWordComponent>,
-    mut text_query: Query<&mut Text>,
+    mut text_query: Query<Entity>,
     dictionary: Res<Dictionary>,
+    mut writer: TextUiWriter,
 ) {
     for (_hero_image, mut style, children) in query.iter_mut() {
         let highscore_book = highscore_book_query.get_single_mut().unwrap();
@@ -585,8 +579,8 @@ fn texts_handle_system(
                     }
                 };
 
-                let mut text = text_query.get_mut(children[text_index]).unwrap();
-                text.sections[0].value = text_value;
+                let entity = text_query.get(children[text_index]).unwrap();
+                *writer.text(entity,0) = text_value;
             }
             style.display = Display::Flex;
         } else {

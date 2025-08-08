@@ -120,11 +120,10 @@ pub fn change_weapon_texture(
     mut weapon_query: Query<(
         Ref<WeaponComponent>,
         &mut Sprite,
-        &mut Handle<Image>
     )>,
     ingame_materials: Res<InGameMaterials>,
 ) {
-    let (weapon, mut sprite, mut texture) = weapon_query.single_mut();
+    let (weapon, mut sprite) = weapon_query.single_mut();
     if weapon.is_changed() {
         sprite.custom_size = Some(Vec2::new(
             weapon.size_width * weapon.scale,
@@ -136,7 +135,7 @@ pub fn change_weapon_texture(
             AttackType::Shoot => Anchor::Center,
         };
 
-        *texture = match weapon.name {
+        sprite.image = match weapon.name {
             WeaponType::ShortSword => ingame_materials.weapons_materials.short_sword.clone(),
             WeaponType::Sword => ingame_materials.weapons_materials.sword.clone(),
             WeaponType::BigMachete => ingame_materials.weapons_materials.machete.clone(),

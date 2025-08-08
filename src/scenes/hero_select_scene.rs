@@ -110,8 +110,8 @@ fn setup(
     mut commands: Commands,
 ) {
     let sprite_bundle = commands
-        .spawn(SpriteBundle {
-            texture: scenes_materials.sub_background_image.clone(),
+        .spawn(Sprite {
+            image: scenes_materials.sub_background_image.clone(),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -122,15 +122,14 @@ fn setup(
         .id();
 
     let user_interface_root = commands
-        .spawn(NodeBundle {
-            style: Style {
+        .spawn((Node {
+
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::NONE),
-            ..Default::default()
-        })
+            BackgroundColor(Color::NONE),
+        ))
         .with_children(|parent| {
             select_hero_text(parent, &font_materials, &dictionary);
             return_button(parent, &scenes_materials);
@@ -181,10 +180,11 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                 8 => menu_box_materials.bottom_right.clone(),
                 _ => panic!("Unknown resources"),
             };
-
-            root.spawn(SpriteBundle {
-                texture: image,
-                transform: Transform {
+            let mut sprite = Sprite::from_image(image);
+            sprite.custom_size = Some(Vec2::new(BOX_TILE_SIZE, BOX_TILE_SIZE));
+            root.spawn((
+               sprite,
+                Transform {
                     translation: Vec3::new(
                         start_x + BOX_TILE_SIZE * column_index as f32,
                         start_y - BOX_TILE_SIZE * row_index as f32,
@@ -193,20 +193,16 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     scale: Vec3::splat(1.0),
                     ..Default::default()
                 },
-                sprite: Sprite {
-                    custom_size: Some(Vec2::new(BOX_TILE_SIZE, BOX_TILE_SIZE)),
-                    ..Default::default()
-                },
-                ..Default::default()
-            });
+            ));
         }
     }
 }
 
 fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
-    root.spawn(ButtonBundle {
-        style: Style {
+    root.spawn((
+                   Button{..default()},
+                   Node  {
             left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
             top: Val::Px(RETURN_BUTTON_SIZE / 2.0),
             right: Val::Auto,
@@ -217,16 +213,15 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        image: UiImage::new(handle_image),
-        ..Default::default()
-    })
+        ImageNode::new(handle_image),
+    ))
     .insert(Name::new("ReturnButton"))
     .insert(ReturnButtonComponent);
 }
 
 fn return_button_handle(
     mut button_query: Query<
-        (&Interaction, &mut UiImage),
+        (&Interaction, &mut ImageNode),
         (Changed<Interaction>, With<ReturnButtonComponent>),
     >,
     scenes_materials: Res<ScenesMaterials>,
@@ -235,13 +230,13 @@ fn return_button_handle(
     for (interaction, mut ui_image) in button_query.iter_mut() {
         match *interaction {
             Interaction::None => {
-                ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
+                ui_image.image = scenes_materials.icon_materials.home_icon_normal.clone()
             }
             Interaction::Hovered => {
-                ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
+                ui_image.image = scenes_materials.icon_materials.home_icon_hovered.clone()
             }
             Interaction::Pressed => {
-                ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
+                ui_image.image = scenes_materials.icon_materials.home_icon_clicked.clone();
                 state.set(SceneState::MainMenuScene);
             }
         }
@@ -325,23 +320,21 @@ fn heroes_images(
             let texture_atlas =
                 TextureAtlasLayout::from_grid(UVec2::new(16, 28), 9, 1, None, None);
             let texture_atlas_handle = texture_atlases.add(texture_atlas);
+            let mut sprite = Sprite::from_atlas_image(hero_tileset, TextureAtlas {
+                layout: texture_atlas_handle,
+                index: 0,
+            });
 
             let x = hero_image_positions[index][0];
             let y = hero_image_positions[index][1];
 
-            root.spawn(SpriteSheetBundle {
-                texture: hero_tileset,
-                atlas: TextureAtlas {
-                    layout: texture_atlas_handle,
-                    index: 0,
-                },
-                transform: Transform {
+            root.spawn((sprite,
+                Transform {
                     translation: Vec3::new(x, y, 0.2),
                     scale: Vec3::splat(4.0),
                     ..Default::default()
                 },
-                ..Default::default()
-            })
+            ))
             .insert(Name::new(component_name))
             .insert(hero_image);
             index += 1;
@@ -356,24 +349,23 @@ fn select_hero_text(
 ) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
-    root.spawn(TextBundle {
-        style: Style {
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             left: Val::Px(390.0),
             top: Val::Px(95.0),
             ..Default::default()
         },
-        text: Text::from_section(
-            glossary.shared_text.select_hero,
-            TextStyle {
+        Text::new(
+            glossary.shared_text.select_hero),
+        TextFont {
                 font: font,
                 font_size: 50.0,
-                color: Color::BLACK,
+            ..Default::default()
             },
-        )
-        .with_justify(JustifyText::Center),
-        ..Default::default()
-    })
+        TextColor(Color::BLACK),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ))
     .insert(Name::new("SelectHeroText"));
 }
 
@@ -401,8 +393,9 @@ fn heroes_buttons(root: &mut ChildBuilder) {
             _ => "FemaleWizard",
         };
 
-        root.spawn(ButtonBundle {
-            style: Style {
+        root.spawn((
+                       Button{..default()},
+                       Node  {
                 position_type: PositionType::Absolute,
                 left: Val::Px(button_positions[index][0]),
                 top: Val::Px(button_positions[index][1]),
@@ -412,9 +405,8 @@ fn heroes_buttons(root: &mut ChildBuilder) {
                 height: Val::Px(150.0),
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::NONE),
-            ..Default::default()
-        })
+            BackgroundColor(Color::NONE),
+        ))
         .insert(Name::new(component_name))
         .insert(value.clone());
     }
@@ -472,7 +464,7 @@ fn hero_select_handle(
 
 fn hero_image_animation_handle(
     time: Res<Time>,
-    mut query: Query<(&HeroImageComponent, &mut TextureAtlas)>,
+    mut query: Query<(&HeroImageComponent, &mut Sprite)>,
     mut animation_controller: ResMut<AnimationController>,
 ) {
     for (hero_image, mut sprite) in query.iter_mut() {
@@ -481,10 +473,13 @@ fn hero_image_animation_handle(
             if animation_controller.timer.just_finished() {
                 let min_index = 0;
                 let max_index = 3;
-                if sprite.index > max_index || sprite.index < min_index {
-                    sprite.index = min_index;
+                let Some(ref mut atlas) = sprite.texture_atlas else {
+                    continue;
+                };
+                if atlas.index > max_index || atlas.index < min_index {
+                    atlas.index = min_index;
                 } else {
-                    sprite.index += 1;
+                    atlas.index += 1;
                 }
             }
         }

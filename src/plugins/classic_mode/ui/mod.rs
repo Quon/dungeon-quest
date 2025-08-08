@@ -29,7 +29,7 @@ impl Plugin for ClassicModeUIPlugin {
         app.add_systems(Update, (
             center_text_handle_system,
             top_right_conner_text_handle_system
-        ).run_if(in_state(SceneState::InGameClassicMode).and_then(not(resource_exists::<PauseSceneData>))));
+        ).run_if(in_state(SceneState::InGameClassicMode).and(not(resource_exists::<PauseSceneData>))));
 
         app.add_systems(OnExit(SceneState::InGameClassicMode), cleanup);
     }
@@ -37,8 +37,8 @@ impl Plugin for ClassicModeUIPlugin {
 
 fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary: Res<Dictionary>) {
     let user_interface_root = commands
-        .spawn(NodeBundle {
-            style: Style {
+        .spawn((Node {
+
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
@@ -47,9 +47,8 @@ fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary:
                 align_content: AlignContent::Center,
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::NONE),
-            ..Default::default()
-        })
+            BackgroundColor(Color::NONE),
+        ))
         .with_children(|parent| {
             center_text(parent, &font_materials, &dictionary);
             floor_text(parent, &font_materials, &dictionary);
@@ -74,24 +73,20 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
 
     let value = format!("{} {}", glossary.ingame_text.floor.clone(), 1);
 
-    root.spawn(TextBundle {
-        style: Style {
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        text: Text::from_section(
-            value,
-            TextStyle {
+        Text::new(value),
+        TextFont {
                 font: font.clone(),
                 font_size: 50.0,
-                color: Color::WHITE,
-            }
-
-        ).with_justify(
-            JustifyText::Center
-        ),
-        ..Default::default()
-    })
+            ..default()
+            },
+        TextColor(Color::WHITE),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ))
     .insert(CenterTextComponent {
         timer: Timer::new(Duration::from_secs(1), TimerMode::Once),
     })
@@ -99,12 +94,13 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
 }
 
 fn center_text_handle_system(
-    mut text_query: Query<(&mut CenterTextComponent, &mut Text, &mut Visibility)>,
+    mut text_query: Query<(Entity, &mut CenterTextComponent, &mut Visibility)>,
     player_dungeon_stats: Res<PlayerDungeonStats>,
     dictionary: Res<Dictionary>,
     time: Res<Time>,
+    mut writer: TextUiWriter,
 ) {
-    let (mut center_text, mut text, mut visibility) = text_query.single_mut();
+    let (mut entity, mut center_text, mut visibility) = text_query.single_mut();
     center_text.timer.tick(time.delta());
 
     if center_text.timer.finished() {
@@ -119,43 +115,41 @@ fn center_text_handle_system(
             current_floor_index + 1
         );
 
-        text.sections[0].value = value;
+        *writer.text(entity, 0) = value;
         *visibility = Visibility::Visible;
     }
 }
 
 fn floor_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
-    root.spawn(TextBundle {
-        style: Style {
-            position_type: PositionType::Absolute,
-            top: Val::Px(0.0),
-            right: Val::Px(10.0),
-            ..Default::default()
-        },
-        text: Text::from_section(
-            "1",
-            TextStyle {
+    root.spawn((
+            Node {
+                position_type: PositionType::Absolute,
+                top: Val::Px(0.0),
+                right: Val::Px(10.0),
+                ..Default::default()
+            },
+            Text::new("1"),
+            TextFont {
                 font: font.clone(),
                 font_size: 35.0,
-                color: Color::WHITE,
-            }
-        ).with_justify(
-            JustifyText::Center
-        ),
-        ..Default::default()
-    })
+                ..Default::default()
+            },
+            TextColor(Color::WHITE),
+            TextLayout::new_with_justify(JustifyText::Center),
+        ))
     .insert(FloorTextComponent)
     .insert(Name::new("FloorTextComponent"));
 }
 
 fn top_right_conner_text_handle_system(
-    mut text_query: Query<&mut Text, With<FloorTextComponent>>,
+    mut text_query: Query<Entity, With<FloorTextComponent>>,
     player_dungeon_stats: Res<PlayerDungeonStats>,
+    mut writer: TextUiWriter,
 ) {
-    let mut text = text_query.single_mut();
+    let entity = text_query.single();
 
     if player_dungeon_stats.is_changed() {
-        text.sections[0].value = (player_dungeon_stats.current_floor_index + 1).to_string();
+        *writer.text(entity,0) = (player_dungeon_stats.current_floor_index + 1).to_string();
     }
 }

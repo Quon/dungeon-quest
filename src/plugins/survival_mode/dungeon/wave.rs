@@ -70,16 +70,15 @@ pub fn countdown(
         let three_upgrades = upgrade_controller.get_three_upgrades(hero_class, weapon_component.level);
 
         let user_interface_root = commands
-            .spawn(NodeBundle {
-                style: Style {
+            .spawn((Node {
+
                     width: Val::Percent(100.0),
                     height: Val::Percent(100.0),
                     position_type: PositionType::Absolute,
                     ..Default::default()
                 },
-                background_color: BackgroundColor(Color::NONE),
-                ..Default::default()
-            })
+                BackgroundColor(Color::NONE),
+            ))
             .with_children(|parent| {
                 menu_box(parent, &scenes_materials.menu_box_materials);
                 buttons(parent, &font_materials, &dictionary, three_upgrades);
@@ -99,7 +98,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
-    root.spawn(NodeBundle {
+    root.spawn(Node {
         ..Default::default()
     })
     .with_children(|parent| {
@@ -119,9 +118,9 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     _ => panic!("Unknown resources"),
                 };
 
-                parent.spawn(ImageBundle {
-                    image: UiImage::new(image),
-                    style: Style {
+                parent.spawn((
+                    ImageNode::new(image),
+                    Node {
                         position_type: PositionType::Absolute,
                         left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                         top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
@@ -131,9 +130,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                         height: Val::Px(BOX_TILE_SIZE),
                         ..Default::default()
                     },
-
-                    ..Default::default()
-                });
+                ));
             }
         }
     })
@@ -149,7 +146,7 @@ fn buttons(
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
-    root.spawn(NodeBundle {
+    root.spawn(Node {
         ..Default::default()
     })
     .with_children(|grandparent| {
@@ -170,8 +167,8 @@ fn buttons(
             };
 
             grandparent
-                .spawn(ButtonBundle {
-                    style: Style {
+                .spawn((Button {..Default::default()},
+                    Node {
                         left: Val::Px(435.0),
                         top: Val::Px(top_position),
                         right: Val::Auto,
@@ -182,23 +179,19 @@ fn buttons(
                         position_type: PositionType::Absolute,
                         ..Default::default()
                     },
-                    background_color: BackgroundColor(Color::NONE),
-                    ..Default::default()
-                })
+                    BackgroundColor(Color::NONE),
+                ))
                 .with_children(|parent| {
-                    parent.spawn(TextBundle {
-                        text: Text::from_section(
-                            value.clone(),
-                            TextStyle {
-                                font: font.clone(),
-                                font_size: 35.0,
-                                color: Color::from(GRAY),
-                            }
-                        ).with_justify(
-                            JustifyText::Center
-                        ),
-                        ..Default::default()
-                    });
+                    parent.spawn((
+                        Text::new(value.clone()),
+                        TextFont {
+                            font: font.clone(),
+                            font_size: 35.0,
+                            ..Default::default()
+                        },
+                        TextColor(Color::from(GRAY)),
+                        TextLayout::new_with_justify(JustifyText::Center),
+                    ));
                 })
                 .insert(Reward { upgrade_type })
                 .insert(Name::new(value.clone()))
@@ -214,7 +207,8 @@ pub fn button_handle_system(
         (&Interaction, &Reward, &Children),
         (Changed<Interaction>, With<RewardsSceneButton>),
     >,
-    mut text_query: Query<&mut Text>,
+    mut writer: TextUiWriter,
+    mut text_query: Query<Entity>,
     mut player_query: Query<(
         &mut PlayerComponent,
         &mut SkillComponent,
@@ -232,10 +226,10 @@ pub fn button_handle_system(
     mut commands: Commands,
 ) {
     for (interaction, reward, children) in button_query.iter_mut() {
-        let mut text = text_query.get_mut(children[0]).unwrap();
+        let mut entity = text_query.get_mut(children[0]).unwrap();
         match *interaction {
-            Interaction::None => text.sections[0].style.color = Color::from(GRAY),
-            Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
+            Interaction::None => *writer.color(entity,0) = TextColor::from(GRAY),
+            Interaction::Hovered => *writer.color(entity,0) = TextColor::BLACK,
             Interaction::Pressed => {
                 let (mut player, mut player_skill, mut player_list_effects) =
                     player_query.single_mut();

@@ -1,7 +1,3 @@
-use bevy::prelude::*;
-use std::time::Duration;
-use bevy::color::palettes::css::DARK_GRAY;
-use crate::config::*;
 use crate::components::player::PlayerComponent;
 use crate::components::player_list_effects::PlayerListEffectsComponent;
 use crate::components::potion::PotionComponent;
@@ -9,6 +5,7 @@ use crate::components::skill::SkillComponent;
 use crate::components::weapon::WeaponComponent;
 use crate::components::weapon_shoot_attack::WeaponShootAttackComponent;
 use crate::components::weapon_swing_attack::WeaponSwingAttackComponent;
+use crate::config::*;
 use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
@@ -23,6 +20,10 @@ use crate::resources::profile::Profile;
 use crate::resources::upgrade::upgrade_controller::UpgradeController;
 use crate::resources::upgrade::upgrade_type::UpgradeType;
 use crate::utils::collide::collide;
+use bevy::color::palettes::css::DARK_GRAY;
+use bevy::prelude::*;
+use std::time::Duration;
+use Val::Percent;
 
 const BOX_TILE_SIZE: f32 = 60.0;
 const BOX_WIDTH_TILES: f32 = 6.0;
@@ -54,7 +55,7 @@ pub fn end_point_interaction_handle_system(
     font_materials: Res<FontMaterials>,
     dictionary: Res<Dictionary>,
     potion_query: Query<Entity, With<PotionComponent>>,
-    mut player_query: Query<(&Transform, &TextureAtlas, &Sprite), With<PlayerComponent>>,
+    mut player_query: Query<(&Transform, &Sprite), With<PlayerComponent>>,
     mut end_point_query: Query<
         (&Transform, &Sprite, &Visibility),
         (With<EndPoint>, Without<PlayerComponent>),
@@ -71,7 +72,7 @@ pub fn end_point_interaction_handle_system(
     // info!("Triggered Endpoint Handle! Current pos: {:?}, end room pos: {:?}, is_room_cleared: {:?}", current_position, end_room_position, player_dungeon_stats.is_room_cleared);
     if current_position == end_room_position && player_dungeon_stats.is_room_cleared {
         info!("triggered endpoint inner logic!");
-        let (player_transform, player_atlas, player_sprite) = player_query.single_mut();
+        let (player_transform, player_sprite) = player_query.single_mut();
         let (end_point_transform, end_point_sprite, visibility) = end_point_query.single_mut();
 
         let p_translation = player_transform.translation;
@@ -95,22 +96,28 @@ pub fn end_point_interaction_handle_system(
 
                         ui_center_text_query.single_mut().timer =
                             Timer::new(Duration::from_secs(1), TimerMode::Once);
-                        let upgrade_type = REWARDS[player_dungeon_stats.current_floor_index - 1].clone();
+                        let upgrade_type =
+                            REWARDS[player_dungeon_stats.current_floor_index - 1].clone();
 
                         let user_interface_root = commands
-                            .spawn(NodeBundle {
-                                style: Style {
-                                    width: Val::Percent(100.0),
-                                    height: Val::Percent(100.0),
-                                    position_type: PositionType::Absolute,
-                                    ..Default::default()
-                                },
-                                background_color: BackgroundColor(Color::NONE),
+                            .spawn(Node {
+
+                                width: Percent(100.0),
+                                height: Percent(100.0),
+                                position_type: PositionType::Absolute,
+                                // ..Default::default()
+                                // },
+                                // background_color: BackgroundColor(Color::NONE),
                                 ..Default::default()
                             })
                             .with_children(|parent| {
                                 menu_box(parent, &scenes_materials.menu_box_materials);
-                                upgrade_information(parent, &font_materials, &dictionary, upgrade_type);
+                                upgrade_information(
+                                    parent,
+                                    &font_materials,
+                                    &dictionary,
+                                    upgrade_type,
+                                );
                             })
                             .insert(Name::new("RewardUI"))
                             .id();
@@ -131,17 +138,15 @@ pub fn end_point_interaction_handle_system(
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
-    root.spawn(NodeBundle {
+    root.spawn(Node {
         ..Default::default()
     })
     .with_children(|parent| {
         for (row_index, row) in BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-
                 let image: Handle<Image> = match value {
                     0 => menu_box_materials.top_right.clone(),
                     1 => menu_box_materials.top_center.clone(),
@@ -155,9 +160,12 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     _ => panic!("Unknown resources"),
                 };
 
-                parent.spawn(ImageBundle {
-                    image: UiImage::new(image),
-                    style: Style {
+                parent.spawn((
+                    ImageNode {
+                        image: image,
+                        ..Default::default()
+                    },
+                    Node {
                         position_type: PositionType::Absolute,
                         left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                         top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
@@ -167,9 +175,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                         height: Val::Px(BOX_TILE_SIZE),
                         ..Default::default()
                     },
-
-                    ..Default::default()
-                });
+                ));
             }
         }
     })
@@ -205,37 +211,34 @@ fn upgrade_information(
     let width = 300.0;
     let height = 50.0;
 
-    root.spawn(NodeBundle {
-        style: Style {
-            left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - width / 2.0),
-            top: Val::Px(WINDOW_HEIGHT / 2.0 - height / 2.0),
-            right: Val::Auto,
-            bottom: Val::Auto,
-            width: Val::Px(width),
-            height: Val::Px(height),
-            justify_content: JustifyContent::Center,
-            align_items: AlignItems::Center,
-            align_content: AlignContent::Center,
-            position_type: PositionType::Absolute,
-            ..Default::default()
-        },
-        background_color: BackgroundColor(Color::NONE),
+    root.spawn(Node {
+
+        left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - width / 2.0),
+        top: Val::Px(WINDOW_HEIGHT / 2.0 - height / 2.0),
+        right: Val::Auto,
+        bottom: Val::Auto,
+        width: Val::Px(width),
+        height: Val::Px(height),
+        justify_content: JustifyContent::Center,
+        align_items: AlignItems::Center,
+        align_content: AlignContent::Center,
+        position_type: PositionType::Absolute,
+        // ..Default::default()
+        // },
+        // background_color: BackgroundColor(Color::NONE),
         ..Default::default()
     })
     .with_children(|parent| {
-        parent.spawn(TextBundle {
-            text: Text::from_section(
-                value,
-                TextStyle {
-                    font: font.clone(),
-                    font_size: 35.0,
-                    color: Color::from(DARK_GRAY),
-                }
-            ).with_justify(
-                JustifyText::Center
-            ),
-            ..Default::default()
-        });
+        parent.spawn((
+            Text::new(value),
+            TextFont {
+                font: font.clone(),
+                font_size: 35.0,
+                ..default()
+            },
+            TextColor(Color::from(DARK_GRAY)),
+            TextLayout::new_with_justify(JustifyText::Center),
+        ));
     })
     .insert(RewardComponent {
         upgrade_type,

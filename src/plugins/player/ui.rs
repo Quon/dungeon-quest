@@ -63,16 +63,15 @@ pub fn setup(
     dictionary: Res<Dictionary>,
 ) {
     let user_interface_root = commands
-        .spawn(NodeBundle {
-            style: Style {
+        .spawn((Node {
+
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::NONE),
-            ..Default::default()
-        })
+            BackgroundColor(Color::NONE),
+        ))
         .with_children(|parent| {
             hearts(parent, &ingame_materials);
             information_texts(parent, &font_materials, &dictionary);
@@ -104,7 +103,7 @@ pub fn information_texts(
     let glossary = dictionary.get_glossary();
     let ingame_gloassary = glossary.ingame_text;
 
-    root.spawn(NodeBundle {
+    root.spawn(Node {
         ..Default::default()
     })
     .with_children(|parent| {
@@ -127,25 +126,25 @@ pub fn information_texts(
             };
 
             parent
-                .spawn(TextBundle {
-                    style: Style {
+                .spawn((
+                    Node {
                         position_type: PositionType::Absolute,
                         left: Val::Px(left_position),
                         top: Val::Px(top_position),
                         ..Default::default()
                     },
-                    text: Text::from_section(
-                        "",
-                        TextStyle {
-                            font: font.clone(),
-                            font_size,
-                            color: Color::WHITE,
-                        }
-                    ).with_justify(
-                        JustifyText::Center
-                    ).with_no_wrap(),
-                    ..Default::default()
-                })
+                    Text::new(""),
+                    TextFont {
+                        font: font.clone(),
+                        font_size: font_size,
+                        ..Default::default()
+                    },
+                    TextColor(Color::WHITE),
+                    TextLayout {
+                        justify: JustifyText::Center,
+                        linebreak: LineBreak::NoWrap,
+                    },
+                ))
                 .insert(Name::new(component_name))
                 .insert(information_text.clone());
         }
@@ -154,10 +153,10 @@ pub fn information_texts(
 }
 
 pub fn information_texts_handle(
-    mut information_texts_query: Query<
-        (&InformationTextComponent, &mut Text),
-        Without<PlayerComponent>,
+    mut information_texts_query: Query<(Entity, &InformationTextComponent), (With<InformationTextComponent>,
+        Without<PlayerComponent>,)
     >,
+    mut writer: TextUiWriter,
     player_query: Query<&PlayerComponent>,
     dictionary: Res<Dictionary>,
 ) {
@@ -165,49 +164,49 @@ pub fn information_texts_handle(
     let ingame_gloassary = glossary.ingame_text;
     let player = player_query.single();
 
-    for (information_text, mut text) in information_texts_query.iter_mut() {
+    for (entity, information_text) in information_texts_query.iter_mut() {
         match *information_text {
             InformationTextComponent::Strength => {
-                text.sections[0].value =
+                *writer.text(entity, 0) =
                     format!("{}: {}", ingame_gloassary.strength.clone(), player.strength);
             }
             InformationTextComponent::Intelligence => {
-                text.sections[0].value = format!(
+                *writer.text(entity, 0) = format!(
                     "{}: {}",
                     ingame_gloassary.intelligence.clone(),
                     player.intelligence
                 );
             }
             InformationTextComponent::MovementSpeed => {
-                text.sections[0].value = format!(
+                *writer.text(entity, 0) = format!(
                     "{}: {}",
                     ingame_gloassary.movement_speed.clone(),
                     player.speed
                 );
             }
             InformationTextComponent::CriticalChance => {
-                text.sections[0].value = format!(
+                *writer.text(entity, 0) = format!(
                     "{}: {}%",
                     ingame_gloassary.critical_chance.clone(),
                     (player.critical_chance * 100.0) as usize
                 );
             }
             InformationTextComponent::DodgeChance => {
-                text.sections[0].value = format!(
+                *writer.text(entity, 0) = format!(
                     "{}: {}%",
                     ingame_gloassary.dodge_chance.clone(),
                     (player.dodge_chance * 100.0) as usize
                 );
             }
             InformationTextComponent::RestoreChance => {
-                text.sections[0].value = format!(
+                *writer.text(entity, 0) = format!(
                     "{}: {}%",
                     ingame_gloassary.restore_chance.clone(),
                     (player.restore_chance * 100.0) as usize
                 );
             }
             InformationTextComponent::DamagePercentBonus => {
-                text.sections[0].value = format!(
+                *writer.text(entity, 0) = format!(
                     "{}: {}%",
                     ingame_gloassary.damage_percent_bonus.clone(),
                     (player.damage_percent_bonus * 100.0) as usize
@@ -218,8 +217,8 @@ pub fn information_texts_handle(
 }
 
 fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
-    root.spawn(NodeBundle {
-        style: Style {
+    root.spawn((Node {
+
             position_type: PositionType::Absolute,
             width: Val::Px(30.0 * 5.0),
             height: Val::Px(30.0 * 2.0),
@@ -227,9 +226,8 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
             top: Val::Px(0.0),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::NONE),
-        ..Default::default()
-    })
+        BackgroundColor(Color::NONE),
+    ))
     .with_children(|parent| {
         for row_index in 0..=1 {
             for column_index in 0..=4 {
@@ -243,7 +241,7 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
                 let index = heart.index;
 
                 parent
-                    .spawn(ImageBundle {
+                    .spawn((
                         // calculated_size: ContentSize {
                         //     size: Vec2{
                         //         x: 16.0,
@@ -251,7 +249,7 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
                         //     },
                         //     ..default()
                         // },
-                        style: Style {
+                        Node {
                             width: Val::Px(35.0),
                             height: Val::Px(35.0),
                             position_type: PositionType::Absolute,
@@ -261,10 +259,9 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
                             right: Val::Auto,
                             ..Default::default()
                         },
-                        visibility: Visibility::Hidden,
-                        image: UiImage::new(ingame_materials.hearts_materials.empty_heart.clone()),
-                        ..Default::default()
-                    })
+                        Visibility::Hidden,
+                        ImageNode::new(ingame_materials.hearts_materials.empty_heart.clone()),
+                    ))
                     .insert(heart)
                     .insert(Name::new(format!("Heart:{}", index)));
             }
@@ -275,7 +272,7 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
 }
 
 pub fn hearts_handle(
-    mut heart_query: Query<(&HeartComponent, &mut Visibility, &mut UiImage)>,
+    mut heart_query: Query<(&HeartComponent, &mut Visibility, &mut ImageNode)>,
     ingame_materials: Res<InGameMaterials>,
     player_query: Query<&PlayerComponent>,
 ) {
@@ -290,15 +287,15 @@ pub fn hearts_handle(
             *visibility = Visibility::Visible;
         }
 
-        ui_image.texture = ingame_materials.hearts_materials.empty_heart.clone();
+        ui_image.image = ingame_materials.hearts_materials.empty_heart.clone();
 
         if heart.index <= current_health_points_floor {
-            ui_image.texture = ingame_materials.hearts_materials.full_heart.clone();
+            ui_image.image = ingame_materials.hearts_materials.full_heart.clone();
         }
 
         if current_health_points_floor < current_health_points {
             if heart.index == current_health_points_floor + 1.0 {
-                ui_image.texture = ingame_materials.hearts_materials.half_heart.clone();
+                ui_image.image = ingame_materials.hearts_materials.half_heart.clone();
             }
         }
     }
@@ -306,8 +303,8 @@ pub fn hearts_handle(
 
 pub fn skill_duration(root: &mut ChildBuilder) {
     let length = 300.0;
-    root.spawn(NodeBundle {
-        style: Style {
+    root.spawn((Node {
+
             position_type: PositionType::Absolute,
             bottom: Val::Px(5.0),
             left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - length / 2.0),
@@ -315,15 +312,14 @@ pub fn skill_duration(root: &mut ChildBuilder) {
             height: Val::Px(10.0),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::from(ORANGE)),
-        visibility: Visibility::Hidden,
-        ..Default::default()
-    })
+        BackgroundColor(Color::from(ORANGE)),
+        Visibility::Hidden,
+    ))
     .insert(SkillDurationComponent);
 }
 
 pub fn skill_duration_handle(
-    mut skill_duration_query: Query<(&mut Style, &mut Visibility), With<SkillDurationComponent>>,
+    mut skill_duration_query: Query<(&mut Node, &mut Visibility), With<SkillDurationComponent>>,
     player_skill_query: Query<&SkillComponent>,
 ) {
     let max_length = 300.0;
@@ -345,8 +341,8 @@ pub fn skill_duration_handle(
 pub fn skill_cooldown(root: &mut ChildBuilder) {
     let length = 250.0;
 
-    root.spawn(NodeBundle {
-        style: Style {
+    root.spawn((Node {
+
             position_type: PositionType::Absolute,
             bottom: Val::Px(WINDOW_HEIGHT / 2.0 - length / 2.0),
             right: Val::Px(5.0),
@@ -354,15 +350,14 @@ pub fn skill_cooldown(root: &mut ChildBuilder) {
             height: Val::Px(length),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::from(GREEN)),
-        visibility: Visibility::Inherited,
-        ..Default::default()
-    })
+        BackgroundColor(Color::from(GREEN)),
+        Visibility::Inherited,
+    ))
     .insert(SkillCooldownComponent);
 }
 
 pub fn skill_cooldown_handle(
-    mut skill_cooldown_query: Query<(&mut Style, &mut Visibility), With<SkillCooldownComponent>>,
+    mut skill_cooldown_query: Query<(&mut Node, &mut Visibility), With<SkillCooldownComponent>>,
     player_skill_query: Query<&SkillComponent>,
 ) {
     let max_length = 250.0;

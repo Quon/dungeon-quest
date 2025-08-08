@@ -44,24 +44,18 @@ pub fn initiate_player(
     );
 
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
-
+    let mut sprite = Sprite::from_atlas_image(hero_tileset, TextureAtlas {
+        layout: texture_atlas_handle,
+        index: 0,
+    });
+    sprite.custom_size = Some(Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT));
     let entity = commands
-        .spawn(SpriteSheetBundle {
-            texture: hero_tileset,
-            atlas: TextureAtlas {
-                layout: texture_atlas_handle,
-                index: 0,
-            },
-            sprite: Sprite {
-                custom_size: Some(Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT)),
-                ..Default::default()
-            },
-            transform: Transform {
+        .spawn((sprite,
+            Transform {
                 translation: Vec3::new(0.0, 0.0, 0.15),
                 ..Default::default()
             },
-            ..Default::default()
-        })
+        ))
         .insert(player)
         .insert(PlayerAnimation::new())
         .insert(PlayerListEffectsComponent::new(

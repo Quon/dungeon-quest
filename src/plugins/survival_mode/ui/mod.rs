@@ -29,15 +29,26 @@ impl Plugin for SurvivalModeUIPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::InGameSurvivalMode), setup);
 
-        app.add_systems(Update, reset_center_text.run_if(
-            in_state(SceneState::InGameSurvivalMode).and_then(resource_removed::<PauseSceneData>())
-        ));
+        app.add_systems(
+            Update,
+            reset_center_text.run_if(
+                in_state(SceneState::InGameSurvivalMode)
+                    .and(resource_removed::<PauseSceneData>),
+            ),
+        );
 
-        app.add_systems(Update, (
-            center_text_handle_system,
-            wave_text_handle_system,
-            wave_countdown_text_handle_system
-        ).run_if(in_state(SceneState::InGameSurvivalMode).and_then(not(resource_exists::<PauseSceneData>))));
+        app.add_systems(
+            Update,
+            (
+                center_text_handle_system,
+                wave_text_handle_system,
+                wave_countdown_text_handle_system,
+            )
+                .run_if(
+                    in_state(SceneState::InGameSurvivalMode)
+                        .and(not(resource_exists::<PauseSceneData>)),
+                ),
+        );
 
         app.add_systems(OnExit(SceneState::InGameSurvivalMode), cleanup);
     }
@@ -45,8 +56,9 @@ impl Plugin for SurvivalModeUIPlugin {
 
 fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary: Res<Dictionary>) {
     let user_interface_root = commands
-        .spawn(NodeBundle {
-            style: Style {
+        .spawn((
+            Node {
+
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
@@ -55,9 +67,8 @@ fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary:
                 align_content: AlignContent::Center,
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::NONE),
-            ..Default::default()
-        })
+            BackgroundColor(Color::NONE),
+        ))
         .with_children(|parent| {
             center_text(parent, &font_materials, &dictionary);
             wave_text(parent, &font_materials, &dictionary);
@@ -83,23 +94,20 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
 
     let value = format!("{} {}", glossary.ingame_text.wave.clone(), 1);
 
-    root.spawn(TextBundle {
-        style: Style {
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        text: Text::from_section(
-            value,
-            TextStyle {
-                font: font.clone(),
-                font_size: 50.0,
-                color: Color::WHITE,
-            }
-        ).with_justify(
-            JustifyText::Center
-        ),
-        ..Default::default()
-    })
+        Text::new(value),
+        TextFont {
+            font: font.clone(),
+            font_size: 50.0,
+            ..Default::default()
+        },
+        TextColor(Color::WHITE),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ))
     .insert(CenterTextComponent {
         timer: Timer::new(Duration::from_secs(1), TimerMode::Once),
     })
@@ -107,12 +115,13 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
 }
 
 fn center_text_handle_system(
-    mut text_query: Query<(&mut CenterTextComponent, &mut Text, &mut Visibility)>,
+    mut text_query: Query<(&mut CenterTextComponent, Entity, &mut Visibility)>,
     dictionary: Res<Dictionary>,
     wave: Res<Wave>,
     time: Res<Time>,
+    mut writer: TextUiWriter,
 ) {
-    let (mut center_text, mut text, mut visibility) = text_query.single_mut();
+    let (mut center_text, entity, mut visibility) = text_query.single_mut();
     center_text.timer.tick(time.delta());
     if center_text.timer.finished() {
         *visibility = Visibility::Hidden;
@@ -126,7 +135,7 @@ fn center_text_handle_system(
             current_floor_index
         );
 
-        text.sections[0].value = value;
+        *writer.text(entity,0) = value;
         *visibility = Visibility::Visible;
     }
 }
@@ -134,37 +143,35 @@ fn center_text_handle_system(
 fn wave_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
 
-    root.spawn(TextBundle {
-        style: Style {
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             top: Val::Px(0.0),
             right: Val::Px(10.0),
             ..Default::default()
         },
-        text: Text::from_section(
-            "1",
-            TextStyle {
-                font: font.clone(),
-                font_size: 35.0,
-                color: Color::WHITE,
-            }
-        ).with_justify(
-            JustifyText::Center
-        ),
-        ..Default::default()
-    })
+        Text::new("1"),
+        TextFont {
+            font: font.clone(),
+            font_size: 35.0,
+            ..Default::default()
+        },
+        TextColor(Color::WHITE),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ))
     .insert(WaveTextComponent)
     .insert(Name::new("WaveText"));
 }
 
 fn wave_text_handle_system(
-    mut text_query: Query<&mut Text, With<WaveTextComponent>>,
+    mut text_query: Query<Entity, With<WaveTextComponent>>,
     wave: Res<Wave>,
+    mut writer: TextUiWriter,
 ) {
-    let mut text = text_query.single_mut();
+    let entity = text_query.single();
 
     if wave.is_changed() {
-        text.sections[0].value = wave.wave_number.to_string();
+        *writer.text(entity,0) = wave.wave_number.to_string();
     }
 }
 
@@ -175,32 +182,30 @@ fn wave_countdown_text(
 ) {
     let font = font_materials.get_font(dictionary.get_current_language());
 
-    root.spawn(TextBundle {
-        style: Style {
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             top: Val::Px(35.0),
             right: Val::Px(10.0),
             ..Default::default()
         },
-        text: Text::from_section(
-            "",
-            TextStyle {
-                font: font.clone(),
-                font_size: 35.0,
-                color: Color::WHITE,
-            }
-        ).with_justify(
-            JustifyText::Center
-        ),
-        ..Default::default()
-    })
+        Text::new(""),
+        TextFont {
+            font: font.clone(),
+            font_size: 35.0,
+            ..Default::default()
+        },
+        TextColor(Color::WHITE),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ))
     .insert(WaveCountDownTextComponent)
     .insert(Name::new("WaveCountDownText"));
 }
 
 fn wave_countdown_text_handle_system(
-    mut wave_countdown_text_query: Query<&mut Text, With<WaveCountDownTextComponent>>,
+    mut wave_countdown_text_query: Query<Entity, With<WaveCountDownTextComponent>>,
     wave: Res<Wave>,
+    mut writer: TextUiWriter,
 ) {
     let timer = wave.timer.clone();
     let elapsed_seconds = timer.elapsed_secs();
@@ -222,8 +227,8 @@ fn wave_countdown_text_handle_system(
     };
 
     let value = format!("{}:{}", formated_minutes, formated_seconds);
-    let mut wave_countdown_text = wave_countdown_text_query.single_mut();
-    wave_countdown_text.sections[0].value = value;
+    let entity = wave_countdown_text_query.single();
+    *writer.text(entity,0) = value;
 }
 
 fn reset_center_text(mut center_text_query: Query<&mut CenterTextComponent>, wave: Res<Wave>) {

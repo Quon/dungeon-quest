@@ -24,25 +24,25 @@ pub fn player_movement_handle_system(
 
     if keyboard_input.pressed(KeyCode::KeyW) {
         if player_availalbe_movement.can_move_up {
-            delta.y += player_stats.speed * TILE_SIZE * time.delta_seconds();
+            delta.y += player_stats.speed * TILE_SIZE * time.delta_secs();
         }
     }
 
     if keyboard_input.pressed(KeyCode::KeyS) {
         if player_availalbe_movement.can_move_down {
-            delta.y -= player_stats.speed * TILE_SIZE * time.delta_seconds();
+            delta.y -= player_stats.speed * TILE_SIZE * time.delta_secs();
         }
     }
 
     if keyboard_input.pressed(KeyCode::KeyA) {
         if player_availalbe_movement.can_move_left {
-            delta.x -= player_stats.speed * TILE_SIZE * time.delta_seconds();
+            delta.x -= player_stats.speed * TILE_SIZE * time.delta_secs();
         }
     }
 
     if keyboard_input.pressed(KeyCode::KeyD) {
         if player_availalbe_movement.can_move_right {
-            delta.x += player_stats.speed * TILE_SIZE * time.delta_seconds();
+            delta.x += player_stats.speed * TILE_SIZE * time.delta_secs();
         }
     }
 

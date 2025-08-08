@@ -55,15 +55,14 @@ fn setup(
     mut commands: Commands,
 ) {
     let user_interface_root = commands
-        .spawn(ImageBundle {
-            style: Style {
+        .spawn((
+            Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
             },
-            image: UiImage::new(scenes_materials.sub_background_image.clone()),
-            ..Default::default()
-        })
+            ImageNode::new(scenes_materials.sub_background_image.clone()),
+    ))
         .with_children(|parent| {
             credits_menu_box(parent, &scenes_materials.menu_box_materials);
             credits_text(parent, &font_materials, &dictionary);
@@ -102,9 +101,9 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
                 _ => panic!("Unknown resources"),
             };
 
-            root.spawn(ImageBundle {
-                image: UiImage::new(image),
-                style: Style {
+            root.spawn((
+                ImageNode::new(image),
+                Node {
                     position_type: PositionType::Absolute,
                     left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                     top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
@@ -114,8 +113,7 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
                     height: Val::Px(BOX_TILE_SIZE),
                     ..Default::default()
                 },
-                ..Default::default()
-            });
+            ));
         }
     }
 }
@@ -123,8 +121,9 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
 fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
-    root.spawn(ButtonBundle {
-        style: Style {
+    root.spawn((
+        Button{..default()},
+        Node {
             left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             right: Val::Auto,
@@ -135,15 +134,14 @@ fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMat
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        image: UiImage::new(handle_image),
-        ..Default::default()
-    })
+        ImageNode::new(handle_image),
+    ))
     .insert(ReturnButtonComponent);
 }
 
 fn button_handle_system(
     mut button_query: Query<
-        (&Interaction, &mut UiImage),
+        (&Interaction, &mut ImageNode),
         (Changed<Interaction>, With<ReturnButtonComponent>),
     >,
     scenes_materials: Res<ScenesMaterials>,
@@ -152,13 +150,13 @@ fn button_handle_system(
     for (interaction, mut ui_image) in button_query.iter_mut() {
         match *interaction {
             Interaction::None => {
-                ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
+                ui_image.image = scenes_materials.icon_materials.home_icon_normal.clone()
             }
             Interaction::Hovered => {
-                ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
+                ui_image.image = scenes_materials.icon_materials.home_icon_hovered.clone()
             }
             Interaction::Pressed => {
-                ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
+                ui_image.image = scenes_materials.icon_materials.home_icon_clicked.clone();
                 state.set(SceneState::MainMenuScene);
             }
         }
@@ -168,24 +166,22 @@ fn button_handle_system(
 fn credits_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
-    root.spawn(TextBundle {
-        style: Style {
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             left: Val::Px(445.0),
             top: Val::Px(65.0),
             ..Default::default()
         },
-        text: Text::from_section(
-            glossary.main_menu_scene_text.credits,
-            TextStyle {
+        Text::new(glossary.main_menu_scene_text.credits),
+        TextFont {
                 font,
                 font_size: 50.0,
-                color: Color::BLACK,
+            ..Default::default()
             },
-        )
-        .with_justify(JustifyText::Center),
-        ..Default::default()
-    });
+        TextColor(Color::BLACK),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ));
 }
 
 fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
@@ -199,23 +195,22 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
 
     for (index, line) in lines.enumerate() {
         let text = line.unwrap();
-        root.spawn(TextBundle {
-            style: Style {
+        root.spawn((
+            Node {
                 position_type: PositionType::Absolute,
                 left: Val::Px(260.0),
                 top: Val::Px(110.0 + (index as f32) * 24.0),
                 ..Default::default()
             },
-            text: Text::from_section(
-                text,
-                TextStyle {
+            Text::new(
+                text),
+            TextFont {
                     font: font.clone(),
                     font_size: 25.0,
-                    color: Color::BLACK,
+                ..Default::default()
                 },
-            )
-            .with_justify(JustifyText::Center),
-            ..Default::default()
-        });
+            TextColor(Color::BLACK),
+            TextLayout::new_with_justify(JustifyText::Center),
+        ));
     }
 }

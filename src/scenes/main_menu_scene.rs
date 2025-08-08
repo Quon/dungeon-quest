@@ -71,16 +71,15 @@ fn setup(
     font_materials: Res<FontMaterials>,
 ) {
     let user_interface_root = commands
-        .spawn(ImageBundle {
-            style: Style {
+        .spawn((
+            Node {
                 position_type: PositionType::Absolute,
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
             },
-            image: UiImage::new(scenes_materials.main_background_image.clone()),
-            ..Default::default()
-        })
+            ImageNode::new(scenes_materials.main_background_image.clone()),
+    ))
         .with_children(|parent| {
             main_menu_box(parent, &scenes_materials.menu_box_materials);
             buttons(parent, &font_materials, dictionary);
@@ -114,9 +113,9 @@ fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
                 _ => panic!("Unknown resources"),
             };
 
-            root.spawn(ImageBundle {
-                image: UiImage::new(image),
-                style: Style {
+            root.spawn((
+                ImageNode::new(image),
+                Node {
                     position_type: PositionType::Absolute,
                     left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * column_index as f32),
                     top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * row_index as f32),
@@ -127,8 +126,7 @@ fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
                     ..Default::default()
                 },
 
-                ..Default::default()
-            });
+            ));
         }
     }
 }
@@ -137,8 +135,9 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
     let glossary = dictionary.get_glossary();
 
     for (index, button) in ButtonComponent::iterator().enumerate() {
-        root.spawn(ButtonBundle {
-            style: Style {
+        root.spawn((
+                       Button{..default()},
+                       Node  {
                 width: Val::Px(MAIN_MENU_BOX_TILE_SIZE * 3.0),
                 height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
                 justify_content: JustifyContent::Center,
@@ -151,9 +150,8 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
                 bottom: Val::Auto,
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::NONE),
-            ..Default::default()
-        })
+            BackgroundColor(Color::NONE),
+        ))
         .with_children(|parent| {
             let text: &str = match button {
                 ButtonComponent::Play => glossary.main_menu_scene_text.play.as_str(),
@@ -164,18 +162,17 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
                 ButtonComponent::Quit => glossary.main_menu_scene_text.quit.as_str(),
             };
 
-            parent.spawn(TextBundle {
-                text: Text::from_section(
-                    text,
-                    TextStyle {
+            parent.spawn((
+                Text::new(
+                    text),
+                    TextFont {
                         font: materials.get_font(dictionary.get_current_language()),
                         font_size: FONT_SIZE,
-                        color: Color::from(GRAY),
+                        ..Default::default()
                     },
-                )
-                .with_justify(JustifyText::Center),
-                ..Default::default()
-            });
+                         TextColor(Color::from(GRAY)),
+                         TextLayout::new_with_justify(JustifyText::Center),
+            ));
         })
         .insert(button.clone());
     }
@@ -186,17 +183,18 @@ fn button_handle_system(
         (&Interaction, &ButtonComponent, &Children),
         (Changed<Interaction>, With<Button>),
     >,
-    mut text_query: Query<&mut Text>,
+    mut text_query: Query<Entity>,
     mut state: ResMut<NextState<SceneState>>,
     mut exit: EventWriter<AppExit>,
+    mut writer: TextUiWriter,
 ) {
     for (interaction, button, children) in button_query.iter_mut() {
-        let mut text = text_query.get_mut(children[0]).unwrap();
+        let  entity = text_query.get(children[0]).unwrap();
         match *interaction {
-            Interaction::None => text.sections[0].style.color = Color::from(GRAY),
-            Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
+            Interaction::None => *writer.color(entity,0) = TextColor::from(GRAY),
+            Interaction::Hovered => *writer.color(entity,0) = TextColor::BLACK,
             Interaction::Pressed => {
-                text.sections[0].style.color = Color::from(RED);
+                *writer.color(entity,0) = TextColor::from(RED);
                 match button {
                     ButtonComponent::Play => state.set(SceneState::GameModeSelectScene),
                     ButtonComponent::Highscore => state.set(SceneState::HighscoreScene),

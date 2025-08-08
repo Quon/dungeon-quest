@@ -127,15 +127,14 @@ fn setup(
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn(ImageBundle {
-            style: Style {
+        .spawn((
+            Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
             },
-            image: UiImage::new(scenes_materials.sub_background_image.clone()),
-            ..Default::default()
-        })
+            ImageNode::new(scenes_materials.sub_background_image.clone()),
+    ))
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
             texts(parent, &font_materials, &dictionary);
@@ -163,7 +162,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * MENU_BOX_WIDTH_TILES) / 2.0;
 
     let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * MENU_BOX_HEIGHT_TILES) / 2.0;
-    root.spawn(NodeBundle {
+    root.spawn(Node {
         ..Default::default()
     })
     .with_children(|parent| {
@@ -182,9 +181,9 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     _ => panic!("Unknown resources"),
                 };
 
-                parent.spawn(ImageBundle {
-                    image: UiImage::new(image),
-                    style: Style {
+                parent.spawn((
+                    ImageNode::new(image),
+                    Node {
                         position_type: PositionType::Absolute,
                         left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
                         top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
@@ -195,8 +194,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                         ..Default::default()
                     },
 
-                    ..Default::default()
-                });
+                ));
             }
         }
     })
@@ -236,24 +234,23 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
             _ => 35.0,
         };
 
-        root.spawn(TextBundle {
-            style: Style {
+        root.spawn((
+            Node {
                 position_type: PositionType::Absolute,
                 left: Val::Px(position_of_texts[index][0]),
                 top: Val::Px(position_of_texts[index][1]),
                 ..Default::default()
             },
-            text: Text::from_section(
-                value,
-                TextStyle {
+            Text::new(
+                value),
+            TextFont {
                     font: font.clone(),
                     font_size,
-                    color: Color::BLACK,
+                ..Default::default()
                 },
-            )
-            .with_justify(JustifyText::Center),
-            ..Default::default()
-        })
+            TextColor(Color::BLACK),
+            TextLayout::new_with_justify(JustifyText::Center),
+        ))
         .insert(Name::new(component_name))
         .insert(prevalue.clone());
     }
@@ -312,8 +309,9 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
         };
 
         let rect = positions[index];
-        root.spawn(ButtonBundle {
-            style: Style {
+        root.spawn((
+                       Button{..default()},
+                       Node  {
                 left: rect.left,
                 right: rect.right,
                 top: rect.top,
@@ -324,9 +322,8 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
-            image: UiImage::new(handle_image),
-            ..Default::default()
-        })
+            ImageNode::new(handle_image),
+        ))
         .insert(Name::new(component_name))
         .insert(*button);
     }
@@ -371,8 +368,9 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
         };
 
         let rect = positions[index];
-        root.spawn(ButtonBundle {
-            style: Style {
+        root.spawn((
+                       Button{..default()},
+                       Node  {
                 left: rect.left,
                 right: rect.right,
                 top: rect.top,
@@ -383,10 +381,9 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::from(color)),
-            image: UiImage::new(handle_image),
-            ..Default::default()
-        })
+            // BackgroundColor(Color::from(color)),
+            ImageNode::new(handle_image).with_color(Color::from(color)),
+        ))
         .insert(Name::new(component_name))
         .insert(pair_button.clone());
     }
@@ -394,7 +391,7 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
 
 fn button_handle_system(
     mut button_query: Query<
-        (&Interaction, &ButtonComponent, &mut UiImage),
+        (&Interaction, &ButtonComponent, &mut ImageNode),
         (Changed<Interaction>, With<Button>),
     >,
     mut setting: ResMut<Setting>,
@@ -405,26 +402,26 @@ fn button_handle_system(
         match *button {
             ButtonComponent::Return => match *interaction {
                 Interaction::None => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
+                    ui_image.image = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
+                    ui_image.image = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
                 Interaction::Pressed => {
-                    ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
+                    ui_image.image = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state.set(SceneState::MainMenuScene);
                 }
             },
             ButtonComponent::EnableSound => match *interaction {
                 Interaction::None => {
                     if setting.get_enable_sound() {
-                        ui_image.texture = scenes_materials.icon_materials.sound_icon_on.clone()
+                        ui_image.image = scenes_materials.icon_materials.sound_icon_on.clone()
                     } else {
-                        ui_image.texture = scenes_materials.icon_materials.sound_icon_off.clone()
+                        ui_image.image = scenes_materials.icon_materials.sound_icon_off.clone()
                     }
                 }
                 Interaction::Hovered => {
-                    ui_image.texture = scenes_materials.icon_materials.sound_icon_hovered.clone()
+                    ui_image.image = scenes_materials.icon_materials.sound_icon_hovered.clone()
                 }
                 Interaction::Pressed => {
                     let enable_sound = setting.get_enable_sound();
@@ -434,13 +431,13 @@ fn button_handle_system(
             ButtonComponent::EnableMusic => match *interaction {
                 Interaction::None => {
                     if setting.get_enable_music() {
-                        ui_image.texture = scenes_materials.icon_materials.music_icon_on.clone()
+                        ui_image.image = scenes_materials.icon_materials.music_icon_on.clone()
                     } else {
-                        ui_image.texture = scenes_materials.icon_materials.music_icon_off.clone()
+                        ui_image.image = scenes_materials.icon_materials.music_icon_off.clone()
                     }
                 }
                 Interaction::Hovered => {
-                    ui_image.texture = scenes_materials.icon_materials.music_icon_hovered.clone()
+                    ui_image.image = scenes_materials.icon_materials.music_icon_hovered.clone()
                 }
                 Interaction::Pressed => {
                     let enable_music = setting.get_enable_music();
@@ -487,27 +484,28 @@ fn pair_button_handle_system(
 }
 
 fn text_handle_system(
-    mut text_query: Query<(&TextComponent, &mut Text)>,
+    mut text_query: Query<(&TextComponent, Entity)>,
     font_materials: Res<FontMaterials>,
     dictionary: Res<Dictionary>,
+    mut writer: TextUiWriter,
 ) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
     if dictionary.is_changed() {
-        for (text_type, mut text) in text_query.iter_mut() {
-            text.sections[0].style.font = font.clone();
+        for (text_type, mut entity) in text_query.iter_mut() {
+            *writer.font(entity,0) = TextFont::from_font(font.clone());
             match *text_type {
                 TextComponent::Options => {
-                    text.sections[0].value = glossary.options_scene_text.options.clone();
+                    *writer.text(entity,0) = glossary.options_scene_text.options.clone();
                 }
                 TextComponent::EnableSound => {
-                    text.sections[0].value = glossary.options_scene_text.enable_sound.clone();
+                    *writer.text(entity,0) = glossary.options_scene_text.enable_sound.clone();
                 }
                 TextComponent::EnableMusic => {
-                    text.sections[0].value = glossary.options_scene_text.enable_music.clone();
+                    *writer.text(entity,0) = glossary.options_scene_text.enable_music.clone();
                 }
                 TextComponent::Language => {
-                    text.sections[0].value = glossary.options_scene_text.language.clone();
+                    *writer.text(entity,0) = glossary.options_scene_text.language.clone();
                 }
             }
         }

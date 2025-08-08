@@ -48,16 +48,15 @@ pub fn pause(
         keyboard_input.reset(KeyCode::Escape);
 
         let user_interface_root = commands
-            .spawn(NodeBundle {
-                style: Style {
+            .spawn((Node {
+
                     width: Val::Percent(100.0),
                     height: Val::Percent(100.0),
                     position_type: PositionType::Absolute,
                     ..Default::default()
                 },
-                background_color: BackgroundColor(Color::NONE),
-                ..Default::default()
-            })
+                BackgroundColor(Color::NONE),
+            ))
             .with_children(|parent| {
                 menu_box(parent, &scenes_materials.menu_box_materials);
                 buttons(parent, &font_materials, &dictionary);
@@ -76,7 +75,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
-    root.spawn(NodeBundle {
+    root.spawn(Node {
         ..Default::default()
     })
     .with_children(|parent| {
@@ -95,9 +94,9 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     _ => panic!("Unknown resources"),
                 };
 
-                parent.spawn(ImageBundle {
-                    image: UiImage::new(image),
-                    style: Style {
+                parent.spawn((
+                    ImageNode::new(image),
+                    Node {
                         position_type: PositionType::Absolute,
                         left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                         top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
@@ -108,8 +107,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                         ..Default::default()
                     },
 
-                    ..Default::default()
-                });
+                ));
             }
         }
     })
@@ -131,8 +129,9 @@ fn buttons(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: 
             ButtonComponent::Quit => 300.0,
         };
 
-        root.spawn(ButtonBundle {
-            style: Style {
+        root.spawn((
+                       Button{..default()},
+                       Node {
                 left: Val::Px((WINDOW_HEIGHT * RESOLUTION - 300.0) / 2.0),
                 top: Val::Px(top_position),
                 right: Val::Auto,
@@ -143,22 +142,20 @@ fn buttons(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: 
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::NONE),
-            ..Default::default()
-        })
+            BackgroundColor(Color::NONE),
+        ))
         .with_children(|parent| {
-            parent.spawn(TextBundle {
-                text: Text::from_section(
-                    value.clone(),
-                    TextStyle {
+            parent.spawn((
+                Text::new(
+                    value.clone()),
+                TextFont {
                         font: font.clone(),
                         font_size: 35.0,
-                        color: Color::from(GRAY),
+                    ..Default::default()
                     },
-                )
-                .with_justify(JustifyText::Center),
-                ..Default::default()
-            });
+                TextColor(Color::from(GRAY)),
+                TextLayout::new_with_justify(JustifyText::Center),
+            ));
         })
         .insert(Name::new(value.clone()))
         .insert(*button);
@@ -170,17 +167,18 @@ pub fn button_handle_system(
         (&Interaction, &ButtonComponent, &Children),
         (Changed<Interaction>, With<Button>),
     >,
-    mut text_query: Query<&mut Text>,
+    mut text_query: Query<Entity>,
     mut profile: ResMut<Profile>,
     mut next_state: ResMut<NextState<SceneState>>,
     mut commands: Commands,
     pause_scene_data: Res<PauseSceneData>,
+    mut writer: TextUiWriter,
 ) {
     for (interaction, button, children) in button_query.iter_mut() {
-        let mut text = text_query.get_mut(children[0]).unwrap();
+        let entity = text_query.get(children[0]).unwrap();
         match *interaction {
-            Interaction::None => text.sections[0].style.color = Color::from(GRAY),
-            Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
+            Interaction::None =>  *writer.color(entity,0) = TextColor::from(GRAY),
+            Interaction::Hovered => *writer.color(entity,0) = TextColor::BLACK,
             Interaction::Pressed => {
                 if *button == ButtonComponent::Quit {
                     profile.is_run_finished = true;

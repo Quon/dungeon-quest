@@ -63,8 +63,9 @@ pub fn spawn_bullet(
             weapon_shoot_attack.spawn_bullet = false;
 
             commands
-                .spawn(SpriteBundle {
-                    sprite: Sprite {
+                .spawn((
+                           Sprite {
+                               image: texture,
                         custom_size: Some(Vec2::new(
                             bullet_information.width * bullet_information.scale,
                             bullet_information.height * bullet_information.scale,
@@ -72,14 +73,12 @@ pub fn spawn_bullet(
                         color,
                         ..Default::default()
                     },
-                    transform: Transform {
+                    Transform {
                         translation: Vec3::new(start_x, start_y, 0.2),
                         rotation: Quat::from_rotation_z(rotate_z),
                         ..Default::default()
                     },
-                    texture,
-                    ..Default::default()
-                })
+                ))
                 .insert(Name::new("Bullet"))
                 .insert(BulletComponent {
                     target_x,

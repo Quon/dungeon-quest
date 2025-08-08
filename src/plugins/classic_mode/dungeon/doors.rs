@@ -17,7 +17,7 @@ pub fn doors(
     mut data: ResMut<ClassicModeData>,
 ) {
     let doors = commands
-        .spawn(SpriteBundle {
+        .spawn(Sprite {
             ..Default::default()
         })
         .with_children(|parent| {
@@ -55,20 +55,16 @@ pub fn horizontal_door(parent: &mut ChildBuilder, door: &Door, ingame_materials:
     } else {
         "Right Door"
     };
-
+    let mut sprite = Sprite::from_image(image);
+    sprite.custom_size = Some(Vec2::new(TILE_SIZE, TILE_SIZE));
     parent
-        .spawn(SpriteBundle {
-            sprite: Sprite {
-                custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                ..Default::default()
-            },
-            transform: Transform {
+        .spawn((
+            sprite,
+            Transform {
                 translation: Vec3::new(x, y, 0.2),
                 ..Default::default()
             },
-            texture: image,
-            ..Default::default()
-        })
+        ))
         .insert(Name::new(component_name))
         .insert(HorizontalDoor)
         .insert(door.clone());
@@ -102,54 +98,51 @@ pub fn vertical_door(
     };
 
     grandparent
-        .spawn(SpriteBundle {
+        .spawn(Sprite {
             ..Default::default()
         })
         .with_children(|parent| {
             parent
-                .spawn(SpriteBundle {
-                    sprite: Sprite {
+                .spawn((
+                    Sprite {
+                        image: left_part,
                         custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE * 2.0)),
                         ..Default::default()
                     },
-                    transform: Transform {
+                    Transform {
                         translation: Vec3::new(left_door_part_x, y, z),
                         ..Default::default()
                     },
-                    texture: left_part,
-                    ..Default::default()
-                })
+                ))
                 .insert(Name::new("Left Verticalt Door Part"));
 
             parent
-                .spawn(SpriteBundle {
-                    sprite: Sprite {
+                .spawn((
+                           Sprite {
+                               image: door_closed,
                         custom_size: Some(Vec2::new(TILE_SIZE * 2.0, TILE_SIZE * 2.0)),
                         ..Default::default()
                     },
-                    transform: Transform {
+                    Transform {
                         translation: Vec3::new(0.0, y, z),
                         ..Default::default()
                     },
-                    texture: door_closed,
-                    ..Default::default()
-                })
+                ))
                 .insert(Name::new("Main Verticalt Door Part"))
                 .insert(door.clone());
 
             parent
-                .spawn(SpriteBundle {
-                    sprite: Sprite {
+                .spawn((
+                           Sprite {
+                               image: right_part,
                         custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE * 2.0)),
                         ..Default::default()
                     },
-                    transform: Transform {
+                    Transform {
                         translation: Vec3::new(right_door_part_x, y, z),
                         ..Default::default()
                     },
-                    texture: right_part,
-                    ..Default::default()
-                })
+                ))
                 .insert(Name::new("Left Verticalt Door Part"));
         })
         .insert(Name::new(component_name))
@@ -206,7 +199,7 @@ pub fn horizontal_doors_system(
 pub fn vertical_doors_system(
     mut vertical_door_query: Query<(&VerticaltDoor, &Children, &mut Visibility)>,
     mut visibility_query: Query<&mut Visibility, Without<VerticaltDoor>>,
-    mut image_query: Query<(&Door, &mut Handle<Image>)>,
+    mut image_query: Query<(&Door, &mut Sprite)>,
     player_dungeon_stats: Res<PlayerDungeonStats>,
     ingame_materials: Res<InGameMaterials>,
     dungeon: Res<Dungeon>,
@@ -244,7 +237,7 @@ pub fn vertical_doors_system(
                     let result = image_query.get_mut(*child);
                     if result.is_ok() {
                         let (_door, mut texture) = result.unwrap();
-                        *texture = if is_room_cleared {
+                        texture.image = if is_room_cleared {
                             ingame_materials.dungeon_materials.door_opened.clone()
                         } else {
                             ingame_materials.dungeon_materials.door_closed.clone()
