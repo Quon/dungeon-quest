@@ -1,13 +1,13 @@
-use bevy::app::AppExit;
-use bevy::prelude::*;
-use std::slice::Iter;
-use bevy::color::palettes::basic::GRAY;
-use bevy::color::palettes::css::RED;
 use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
 use crate::scenes::SceneState;
+use bevy::app::AppExit;
+use bevy::color::palettes::basic::GRAY;
+use bevy::color::palettes::css::RED;
+use bevy::prelude::*;
+use std::slice::Iter;
 
 const MAIN_MENU_BOX_ARRAY: [[i8; 5]; 8] = [
     [0, 1, 1, 1, 2],
@@ -79,7 +79,7 @@ fn setup(
                 ..Default::default()
             },
             ImageNode::new(scenes_materials.main_background_image.clone()),
-    ))
+        ))
         .with_children(|parent| {
             main_menu_box(parent, &scenes_materials.menu_box_materials);
             buttons(parent, &font_materials, dictionary);
@@ -125,7 +125,6 @@ fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
                     height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
                     ..Default::default()
                 },
-
             ));
         }
     }
@@ -136,8 +135,8 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
 
     for (index, button) in ButtonComponent::iterator().enumerate() {
         root.spawn((
-                       Button{..default()},
-                       Node  {
+            Button { ..default() },
+            Node {
                 width: Val::Px(MAIN_MENU_BOX_TILE_SIZE * 3.0),
                 height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
                 justify_content: JustifyContent::Center,
@@ -163,15 +162,14 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
             };
 
             parent.spawn((
-                Text::new(
-                    text),
-                    TextFont {
-                        font: materials.get_font(dictionary.get_current_language()),
-                        font_size: FONT_SIZE,
-                        ..Default::default()
-                    },
-                         TextColor(Color::from(GRAY)),
-                         TextLayout::new_with_justify(JustifyText::Center),
+                Text::new(text),
+                TextFont {
+                    font: materials.get_font(dictionary.get_current_language()),
+                    font_size: FONT_SIZE,
+                    ..Default::default()
+                },
+                TextColor(Color::from(GRAY)),
+                TextLayout::new_with_justify(JustifyText::Center),
             ));
         })
         .insert(button.clone());
@@ -189,19 +187,21 @@ fn button_handle_system(
     mut writer: TextUiWriter,
 ) {
     for (interaction, button, children) in button_query.iter_mut() {
-        let  entity = text_query.get(children[0]).unwrap();
+        let entity = text_query.get(children[0]).unwrap();
         match *interaction {
-            Interaction::None => *writer.color(entity,0) = TextColor::from(GRAY),
-            Interaction::Hovered => *writer.color(entity,0) = TextColor::BLACK,
+            Interaction::None => *writer.color(entity, 0) = TextColor::from(GRAY),
+            Interaction::Hovered => *writer.color(entity, 0) = TextColor::BLACK,
             Interaction::Pressed => {
-                *writer.color(entity,0) = TextColor::from(RED);
+                *writer.color(entity, 0) = TextColor::from(RED);
                 match button {
                     ButtonComponent::Play => state.set(SceneState::GameModeSelectScene),
                     ButtonComponent::Highscore => state.set(SceneState::HighscoreScene),
                     ButtonComponent::Options => state.set(SceneState::OptionsScene),
                     ButtonComponent::Help => state.set(SceneState::HelpScene),
                     ButtonComponent::Credits => state.set(SceneState::CreditsScene),
-                    ButtonComponent::Quit => {exit.send(AppExit::Success);},
+                    ButtonComponent::Quit => {
+                        exit.send(AppExit::Success);
+                    }
                 }
             }
         }

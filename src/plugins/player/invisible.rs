@@ -1,10 +1,10 @@
+use crate::components::{invinsible_cooldown::InvisibleCooldownComponent, player::PlayerComponent};
+use bevy::color::palettes::css::*;
+use bevy::sprite::TextureAtlas;
 use bevy::{
     prelude::{Color, Query, Res, Time, With},
     sprite::Sprite,
 };
-use bevy::sprite::TextureAtlas;
-use crate::components::{invinsible_cooldown::InvisibleCooldownComponent, player::PlayerComponent};
-use bevy::color::palettes::css::*;
 
 pub fn invincible_cooldown(
     mut invincible_cooldown_query: Query<&mut InvisibleCooldownComponent, With<PlayerComponent>>,

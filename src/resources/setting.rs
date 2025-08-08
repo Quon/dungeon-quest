@@ -54,7 +54,7 @@ impl Setting {
             .expect("Unable to write file");
     }
 
-    #[allow(dead_code)]  // unused but maybe needed for something
+    #[allow(dead_code)] // unused but maybe needed for something
     pub fn load_setting(&mut self) {
         let setting = match File::open(SETTING_FILE) {
             Ok(mut file) => {

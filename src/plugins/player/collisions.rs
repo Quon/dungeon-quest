@@ -48,7 +48,7 @@ pub fn wall_collision_check(
             continue;
         }
 
-        if collide(player_position, player_size, block_position, block_size){
+        if collide(player_position, player_size, block_position, block_size) {
             match *block_type {
                 BlockType::WallTop => player_available_movement.can_move_up = false,
                 BlockType::WallBottom => player_available_movement.can_move_down = false,
@@ -107,14 +107,15 @@ pub fn monsters_collision_check(
                 }
             }
 
-            invincible_cooldown.duration = Timer::new(Duration::from_secs_f32(2.0), TimerMode::Once);
-            invincible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
+            invincible_cooldown.duration =
+                Timer::new(Duration::from_secs_f32(2.0), TimerMode::Once);
+            invincible_cooldown.hurt_duration =
+                Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
             player_animation.animation_state = AnimationState::Hit;
             break;
         }
     }
 }
-
 
 pub fn monsters_collision_check_survival(
     player_query: Query<(
@@ -126,10 +127,7 @@ pub fn monsters_collision_check_survival(
     )>,
     monsters_query: Query<(&MonsterComponent, &Transform), Without<PlayerComponent>>,
 ) {
-    monsters_collision_check(
-        player_query,
-        monsters_query
-    );
+    monsters_collision_check(player_query, monsters_query);
 }
 
 pub fn potions_collision(

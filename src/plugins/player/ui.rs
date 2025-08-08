@@ -63,8 +63,8 @@ pub fn setup(
     dictionary: Res<Dictionary>,
 ) {
     let user_interface_root = commands
-        .spawn((Node {
-
+        .spawn((
+            Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
@@ -153,8 +153,9 @@ pub fn information_texts(
 }
 
 pub fn information_texts_handle(
-    mut information_texts_query: Query<(Entity, &InformationTextComponent), (With<InformationTextComponent>,
-        Without<PlayerComponent>,)
+    mut information_texts_query: Query<
+        (Entity, &InformationTextComponent),
+        (With<InformationTextComponent>, Without<PlayerComponent>),
     >,
     mut writer: TextUiWriter,
     player_query: Query<&PlayerComponent>,
@@ -217,8 +218,8 @@ pub fn information_texts_handle(
 }
 
 fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
-    root.spawn((Node {
-
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             width: Val::Px(30.0 * 5.0),
             height: Val::Px(30.0 * 2.0),
@@ -303,8 +304,8 @@ pub fn hearts_handle(
 
 pub fn skill_duration(root: &mut ChildBuilder) {
     let length = 300.0;
-    root.spawn((Node {
-
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             bottom: Val::Px(5.0),
             left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - length / 2.0),
@@ -341,8 +342,8 @@ pub fn skill_duration_handle(
 pub fn skill_cooldown(root: &mut ChildBuilder) {
     let length = 250.0;
 
-    root.spawn((Node {
-
+    root.spawn((
+        Node {
             position_type: PositionType::Absolute,
             bottom: Val::Px(WINDOW_HEIGHT / 2.0 - length / 2.0),
             right: Val::Px(5.0),

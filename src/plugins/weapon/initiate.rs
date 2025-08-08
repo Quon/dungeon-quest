@@ -50,7 +50,7 @@ pub fn initiate_weapon(
 
     let weapon_entity = commands
         .spawn((
-                   Sprite {
+            Sprite {
                 image: weapon_texture,
                 custom_size: Some(Vec2::new(weapon_width * scale, weapon_height * scale)),
                 anchor: match weapon.attack_type {

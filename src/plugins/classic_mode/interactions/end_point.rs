@@ -11,8 +11,8 @@ use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::plugins::classic_mode::ui::CenterTextComponent;
 use crate::resources::dictionary::Dictionary;
-use crate::resources::dungeon::end_point::EndPoint;
 use crate::resources::dungeon::Dungeon;
+use crate::resources::dungeon::end_point::EndPoint;
 use crate::resources::game_data::{GameData, PauseSceneData};
 use crate::resources::hero::hero_class::HeroClass;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
@@ -20,10 +20,10 @@ use crate::resources::profile::Profile;
 use crate::resources::upgrade::upgrade_controller::UpgradeController;
 use crate::resources::upgrade::upgrade_type::UpgradeType;
 use crate::utils::collide::collide;
+use Val::Percent;
 use bevy::color::palettes::css::DARK_GRAY;
 use bevy::prelude::*;
 use std::time::Duration;
-use Val::Percent;
 
 const BOX_TILE_SIZE: f32 = 60.0;
 const BOX_WIDTH_TILES: f32 = 6.0;
@@ -101,7 +101,6 @@ pub fn end_point_interaction_handle_system(
 
                         let user_interface_root = commands
                             .spawn(Node {
-
                                 width: Percent(100.0),
                                 height: Percent(100.0),
                                 position_type: PositionType::Absolute,
@@ -212,7 +211,6 @@ fn upgrade_information(
     let height = 50.0;
 
     root.spawn(Node {
-
         left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - width / 2.0),
         top: Val::Px(WINDOW_HEIGHT / 2.0 - height / 2.0),
         right: Val::Auto,

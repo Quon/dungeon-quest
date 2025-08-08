@@ -1,7 +1,4 @@
-use bevy::prelude::*;
-use rand::Rng;
-use std::time::Duration;
-use bevy::render::render_resource::Texture;
+use crate::plugins::player::{PLAYER_SIZE_HEIGHT, PLAYER_SIZE_WIDTH};
 use crate::{
     components::{
         invinsible_cooldown::InvisibleCooldownComponent, monster::MonsterComponent,
@@ -14,12 +11,15 @@ use crate::{
         dungeon::wave::Wave,
         game_data::GameData,
         monster::{
-            monster_class::MonsterClass, monster_spawn_controller::MonsterSpawnController, Monster,
+            Monster, monster_class::MonsterClass, monster_spawn_controller::MonsterSpawnController,
         },
         player::player_dungeon_stats::PlayerDungeonStats,
     },
 };
-use crate::plugins::player::{PLAYER_SIZE_HEIGHT, PLAYER_SIZE_WIDTH};
+use bevy::prelude::*;
+use bevy::render::render_resource::Texture;
+use rand::Rng;
+use std::time::Duration;
 
 pub fn spawn_monsters_classic_mode(
     mut monster_spawn_controller: ResMut<MonsterSpawnController>,
@@ -74,13 +74,16 @@ pub fn spawn_monsters_classic_mode(
 
                 let (texture_atlas, image) = get_texture(&raw_monster, &ingame_materials);
                 let texture_atlas_handle = texture_atlases.add(texture_atlas);
-                let mut sprite = Sprite::from_atlas_image(image, TextureAtlas {
-                    layout: texture_atlas_handle,
-                    index: 0,
-                });
+                let mut sprite = Sprite::from_atlas_image(
+                    image,
+                    TextureAtlas {
+                        layout: texture_atlas_handle,
+                        index: 0,
+                    },
+                );
                 sprite.custom_size = Some(Vec2::new(
-                            raw_monster.origin_width * 3.5,
-                            raw_monster.origin_height * 3.5,
+                    raw_monster.origin_width * 3.5,
+                    raw_monster.origin_height * 3.5,
                 ));
                 let component_name = format!("Monster {}", monster_spawn_controller.alive_monsters);
 
@@ -179,10 +182,13 @@ pub fn spawn_monsters_survival_mode(
 
                 let (texture_atlas, image) = get_texture(&raw_monster, &ingame_materials);
                 let texture_atlas_handle = texture_atlases.add(texture_atlas);
-                let mut sprite = Sprite::from_atlas_image(image, TextureAtlas {
-                    layout: texture_atlas_handle,
-                    index: 0,
-                });
+                let mut sprite = Sprite::from_atlas_image(
+                    image,
+                    TextureAtlas {
+                        layout: texture_atlas_handle,
+                        index: 0,
+                    },
+                );
                 sprite.custom_size = Some(Vec2::new(
                     raw_monster.origin_width * 3.5,
                     raw_monster.origin_height * 3.5,
@@ -233,7 +239,10 @@ pub fn spawn_monsters_survival_mode(
     }
 }
 
-fn get_texture(monster: &Monster, ingame_materials: &InGameMaterials) -> (TextureAtlasLayout, Handle<Image>) {
+fn get_texture(
+    monster: &Monster,
+    ingame_materials: &InGameMaterials,
+) -> (TextureAtlasLayout, Handle<Image>) {
     let monster_tileset = ingame_materials
         .monsters_materials
         .get_texture(monster.class.clone());
@@ -243,11 +252,14 @@ fn get_texture(monster: &Monster, ingame_materials: &InGameMaterials) -> (Textur
         _ => 8,
     };
 
-    (TextureAtlasLayout::from_grid(
-        UVec2::new(monster.origin_width as u32, monster.origin_height as u32),
-        columns,
-        1,
-        None,
-        None
-    ), monster_tileset)
+    (
+        TextureAtlasLayout::from_grid(
+            UVec2::new(monster.origin_width as u32, monster.origin_height as u32),
+            columns,
+            1,
+            None,
+            None,
+        ),
+        monster_tileset,
+    )
 }

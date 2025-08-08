@@ -64,8 +64,8 @@ pub fn spawn_bullet(
 
             commands
                 .spawn((
-                           Sprite {
-                               image: texture,
+                    Sprite {
+                        image: texture,
                         custom_size: Some(Vec2::new(
                             bullet_information.width * bullet_information.scale,
                             bullet_information.height * bullet_information.scale,

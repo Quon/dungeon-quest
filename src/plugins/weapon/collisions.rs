@@ -12,7 +12,7 @@ use crate::components::{
 };
 use crate::resources::hero::power::Power;
 use crate::resources::weapon::attack_type::AttackType;
-use crate::utils::collide::{collide};
+use crate::utils::collide::collide;
 
 pub fn bullet_collision(
     mut commands: Commands,
@@ -145,7 +145,8 @@ pub fn swing_weapon_collision(
                     }
                 }
 
-                invincible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
+                invincible_cooldown.hurt_duration =
+                    Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
 
                 monster.current_health_points = if damage > monster.current_health_points {
                     0.0

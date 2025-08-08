@@ -36,21 +36,28 @@ pub fn initiate_player(
         .get_texture(class.clone(), gender);
 
     let texture_atlas = TextureAtlasLayout::from_grid(
-        UVec2::new(PLAYER_ORIGIN_SIZE_WIDTH as u32, PLAYER_ORIGIN_SIZE_HEIGHT as u32),
+        UVec2::new(
+            PLAYER_ORIGIN_SIZE_WIDTH as u32,
+            PLAYER_ORIGIN_SIZE_HEIGHT as u32,
+        ),
         9,
         1,
         None,
-        None
+        None,
     );
 
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
-    let mut sprite = Sprite::from_atlas_image(hero_tileset, TextureAtlas {
-        layout: texture_atlas_handle,
-        index: 0,
-    });
+    let mut sprite = Sprite::from_atlas_image(
+        hero_tileset,
+        TextureAtlas {
+            layout: texture_atlas_handle,
+            index: 0,
+        },
+    );
     sprite.custom_size = Some(Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT));
     let entity = commands
-        .spawn((sprite,
+        .spawn((
+            sprite,
             Transform {
                 translation: Vec3::new(0.0, 0.0, 0.15),
                 ..Default::default()

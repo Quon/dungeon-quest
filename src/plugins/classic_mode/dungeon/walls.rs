@@ -2,14 +2,14 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::materials::ingame::InGameMaterials;
-use crate::plugins::classic_mode::dungeon::TOTAL_TILE_HEIGHT;
 use crate::plugins::classic_mode::ClassicModeData;
+use crate::plugins::classic_mode::dungeon::TOTAL_TILE_HEIGHT;
+use crate::resources::dungeon::Dungeon;
 use crate::resources::dungeon::block_type::BlockType;
 use crate::resources::dungeon::rooms::Rooms;
 use crate::resources::dungeon::wall::Wall;
 use crate::resources::dungeon::wall_type::WallType;
 use crate::resources::dungeon::walls::Walls;
-use crate::resources::dungeon::Dungeon;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 
 const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
@@ -107,8 +107,9 @@ fn wall(
     };
 
     parent
-        .spawn((Sprite {
-            image: image,
+        .spawn((
+            Sprite {
+                image: image,
                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                 ..Default::default()
             },
@@ -176,19 +177,35 @@ pub fn temporary_walls_system(
         for (wall, mut visibility) in wall_query.iter_mut() {
             if wall.wall_type == WallType::Temporary {
                 if wall.row_index == 0 || wall.row_index == 1 {
-                    *visibility = if has_above_room {Visibility::Hidden} else {Visibility::Inherited};
+                    *visibility = if has_above_room {
+                        Visibility::Hidden
+                    } else {
+                        Visibility::Inherited
+                    };
                 }
 
                 if wall.row_index == total_room_rows - 1 || wall.row_index == total_room_rows - 2 {
-                    *visibility = if has_below_room {Visibility::Hidden} else {Visibility::Inherited};
+                    *visibility = if has_below_room {
+                        Visibility::Hidden
+                    } else {
+                        Visibility::Inherited
+                    };
                 }
 
                 if wall.value == -8 {
-                    *visibility = if has_right_room {Visibility::Hidden} else {Visibility::Inherited};
+                    *visibility = if has_right_room {
+                        Visibility::Hidden
+                    } else {
+                        Visibility::Inherited
+                    };
                 }
 
                 if wall.value == -7 {
-                    *visibility = if has_left_room {Visibility::Hidden} else {Visibility::Inherited};
+                    *visibility = if has_left_room {
+                        Visibility::Hidden
+                    } else {
+                        Visibility::Inherited
+                    };
                 }
             }
         }

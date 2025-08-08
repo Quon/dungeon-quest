@@ -20,7 +20,11 @@ use crate::resources::weapon::weapon_type::WeaponType;
 
 pub fn use_skill(
     mut player_query: Query<(&mut PlayerComponent, &mut SkillComponent)>,
-    mut monsters_query: Query<(&mut MonsterComponent, &mut InvisibleCooldownComponent, &mut MonsterListEffectsComponent)>,
+    mut monsters_query: Query<(
+        &mut MonsterComponent,
+        &mut InvisibleCooldownComponent,
+        &mut MonsterListEffectsComponent,
+    )>,
     mut keyboard_input: ResMut<ButtonInput<KeyCode>>,
 ) {
     if keyboard_input.pressed(KeyCode::Space) {
@@ -31,21 +35,25 @@ pub fn use_skill(
 
             match player_skill.skill.name {
                 SkillType::Thunderstorm => {
-                    for (mut monster, mut invincible_cooldown, mut monster_list_effects) in monsters_query.iter_mut()
+                    for (mut monster, mut invincible_cooldown, mut monster_list_effects) in
+                        monsters_query.iter_mut()
                     {
                         let damage = player.intelligence;
-                        monster.current_health_points = if monster.current_health_points < damage { 0.0 } 
-                        else { monster.current_health_points - damage };
+                        monster.current_health_points = if monster.current_health_points < damage {
+                            0.0
+                        } else {
+                            monster.current_health_points - damage
+                        };
 
-                        invincible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.2), TimerMode::Once);
+                        invincible_cooldown.hurt_duration =
+                            Timer::new(Duration::from_secs_f32(0.2), TimerMode::Once);
                         monster_list_effects.activate(EffectType::Stun);
                     }
                 }
                 SkillType::TimeToHunt => {
                     let duration = skill.duration.unwrap() as u64;
-                    player_skill.duration = Timer::new(Duration::from_secs(duration), TimerMode::Once);
-
-                  
+                    player_skill.duration =
+                        Timer::new(Duration::from_secs(duration), TimerMode::Once);
                 }
                 SkillType::AnimalInstinct => {
                     let require_health = skill.require_health_points.unwrap();
@@ -53,7 +61,8 @@ pub fn use_skill(
                         player.current_health_points -= require_health;
 
                         let duration = skill.duration.unwrap() as u64;
-                        player_skill.duration = Timer::new(Duration::from_secs(duration), TimerMode::Once);
+                        player_skill.duration =
+                            Timer::new(Duration::from_secs(duration), TimerMode::Once);
                     }
                 }
                 _ => {}

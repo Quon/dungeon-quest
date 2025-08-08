@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_kira_audio::prelude::{AudioSource, Audio, AudioControl};
+use bevy_kira_audio::prelude::{Audio, AudioControl, AudioSource};
 
 use crate::resources::setting::Setting;
 use crate::scenes::SceneState;
@@ -32,12 +32,10 @@ pub fn play_background_music(
     if setting.get_enable_music() {
         if !background_audio_channel.loop_started {
             background_audio_channel.loop_started = true;
-            audio.set_volume(
-                background_audio_channel.volume as f64,
-            );
-            audio.play(
-                background_audio_channel.background_music.clone(),
-            ).looped();
+            audio.set_volume(background_audio_channel.volume as f64);
+            audio
+                .play(background_audio_channel.background_music.clone())
+                .looped();
         } else {
             match state.get() {
                 SceneState::InGameClassicMode | SceneState::InGameSurvivalMode => {

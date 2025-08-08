@@ -1,1 +1,1 @@
-﻿pub mod collide;
+pub mod collide;

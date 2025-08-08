@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::resources::game_mode::GameMode;
+use bevy::prelude::*;
 
 #[derive(Resource)]
 pub struct MonsterSpawnController {

@@ -32,8 +32,7 @@ impl Plugin for SurvivalModeUIPlugin {
         app.add_systems(
             Update,
             reset_center_text.run_if(
-                in_state(SceneState::InGameSurvivalMode)
-                    .and(resource_removed::<PauseSceneData>),
+                in_state(SceneState::InGameSurvivalMode).and(resource_removed::<PauseSceneData>),
             ),
         );
 
@@ -58,7 +57,6 @@ fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary:
     let user_interface_root = commands
         .spawn((
             Node {
-
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
@@ -135,7 +133,7 @@ fn center_text_handle_system(
             current_floor_index
         );
 
-        *writer.text(entity,0) = value;
+        *writer.text(entity, 0) = value;
         *visibility = Visibility::Visible;
     }
 }
@@ -171,7 +169,7 @@ fn wave_text_handle_system(
     let entity = text_query.single();
 
     if wave.is_changed() {
-        *writer.text(entity,0) = wave.wave_number.to_string();
+        *writer.text(entity, 0) = wave.wave_number.to_string();
     }
 }
 
@@ -228,7 +226,7 @@ fn wave_countdown_text_handle_system(
 
     let value = format!("{}:{}", formated_minutes, formated_seconds);
     let entity = wave_countdown_text_query.single();
-    *writer.text(entity,0) = value;
+    *writer.text(entity, 0) = value;
 }
 
 fn reset_center_text(mut center_text_query: Query<&mut CenterTextComponent>, wave: Res<Wave>) {

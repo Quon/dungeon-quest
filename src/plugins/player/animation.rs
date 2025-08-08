@@ -13,9 +13,7 @@ pub fn player_animation_system(
         &mut Sprite,
     )>,
 ) {
-    for (mut player_animation, invincible_cooldown, mut sprite,) in
-        query.iter_mut()
-    {
+    for (mut player_animation, invincible_cooldown, mut sprite) in query.iter_mut() {
         let Some(ref mut atlas) = sprite.texture_atlas else {
             continue;
         };

@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use std::collections::HashMap;
 use std::time::Duration;
 
-use crate::resources::effect::effect_type::EffectType;
 use crate::resources::effect::Effect;
+use crate::resources::effect::effect_type::EffectType;
 use crate::resources::upgrade::Upgrade;
 
 #[derive(Component, Debug)]
@@ -59,7 +59,10 @@ impl PlayerListEffectsComponent {
 
         self.activated_effects.insert(
             effect_type,
-            Timer::new(Duration::from_secs(information.duration as u64), TimerMode::Once),
+            Timer::new(
+                Duration::from_secs(information.duration as u64),
+                TimerMode::Once,
+            ),
         );
     }
 }

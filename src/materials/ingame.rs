@@ -1,4 +1,3 @@
-use bevy::prelude::*;
 use crate::materials::bullets::BulletsMaterials;
 use crate::materials::dungeon::DungeonMaterials;
 use crate::materials::hearts::HeartsMaterials;
@@ -6,6 +5,7 @@ use crate::materials::heroes::HeroesMaterials;
 use crate::materials::monsters::MonstersMaterials;
 use crate::materials::potions::PotionsMaterials;
 use crate::materials::weapons::WeaponsMaterials;
+use bevy::prelude::*;
 
 #[derive(Resource)]
 pub struct InGameMaterials {

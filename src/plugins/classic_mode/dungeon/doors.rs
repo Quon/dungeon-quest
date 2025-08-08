@@ -3,9 +3,9 @@ use bevy::prelude::*;
 use crate::config::*;
 use crate::materials::ingame::InGameMaterials;
 use crate::plugins::classic_mode::ClassicModeData;
+use crate::resources::dungeon::Dungeon;
 use crate::resources::dungeon::door::{Door, HorizontalDoor, VerticaltDoor};
 use crate::resources::dungeon::doors::Doors;
-use crate::resources::dungeon::Dungeon;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 
 const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
@@ -118,8 +118,8 @@ pub fn vertical_door(
 
             parent
                 .spawn((
-                           Sprite {
-                               image: door_closed,
+                    Sprite {
+                        image: door_closed,
                         custom_size: Some(Vec2::new(TILE_SIZE * 2.0, TILE_SIZE * 2.0)),
                         ..Default::default()
                     },
@@ -133,8 +133,8 @@ pub fn vertical_door(
 
             parent
                 .spawn((
-                           Sprite {
-                               image: right_part,
+                    Sprite {
+                        image: right_part,
                         custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE * 2.0)),
                         ..Default::default()
                     },
@@ -224,11 +224,19 @@ pub fn vertical_doors_system(
                 false
             };
 
-            *visibility = if has_next_room {Visibility::Inherited} else {Visibility::Hidden};
+            *visibility = if has_next_room {
+                Visibility::Inherited
+            } else {
+                Visibility::Hidden
+            };
 
             for child in children.iter() {
                 let mut child_visibility = visibility_query.get_mut(*child).unwrap();
-                *child_visibility = if has_next_room {Visibility::Inherited} else {Visibility::Hidden};
+                *child_visibility = if has_next_room {
+                    Visibility::Inherited
+                } else {
+                    Visibility::Hidden
+                };
             }
 
             if has_next_room {

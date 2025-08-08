@@ -25,7 +25,8 @@ impl Dictionary {
         match self.current_language {
             Language::VI => self.vi_glossary.clone(),
             Language::EN => self.en_glossary.clone(),
-        }    }
+        }
+    }
 
     pub fn get_current_language(&self) -> Language {
         self.current_language

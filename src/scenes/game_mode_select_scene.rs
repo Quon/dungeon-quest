@@ -78,7 +78,7 @@ fn setup(
                 ..Default::default()
             },
             ImageNode::new(scenes_materials.sub_background_image.clone()),
-    ))
+        ))
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
             select_game_mode_text(parent, &font_materials, &dictionary);
@@ -157,13 +157,12 @@ fn select_game_mode_text(
             top: Val::Px(190.0),
             ..Default::default()
         },
-        Text::new(
-            glossary.shared_text.select_game_mode),
+        Text::new(glossary.shared_text.select_game_mode),
         TextFont {
-                font: font,
-                font_size: 50.0,
+            font: font,
+            font_size: 50.0,
             ..Default::default()
-            },
+        },
         TextColor(Color::BLACK),
         TextLayout::new_with_justify(JustifyText::Center),
     ));
@@ -183,8 +182,8 @@ fn buttons(
             ButtonComponent::Return => {
                 let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
                 root.spawn((
-                               Button{..default()},
-                               Node  {
+                    Button { ..default() },
+                    Node {
                         left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                         top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                         right: Val::Auto,
@@ -201,8 +200,8 @@ fn buttons(
             }
             _ => {
                 root.spawn((
-                               Button{..default()},
-                               Node  {
+                    Button { ..default() },
+                    Node {
                         left: Val::Px((WINDOW_HEIGHT * RESOLUTION - 300.0) / 2.0),
                         top: Val::Px(if index == 1 { 270.0 } else { 330.0 }),
                         right: Val::Auto,
@@ -217,17 +216,16 @@ fn buttons(
                 ))
                 .with_children(|parent| {
                     parent.spawn((
-                        Text::new(
-                            if index == 1 {
-                                glossary.shared_text.classic_mode.clone()
-                            } else {
-                                glossary.shared_text.survival_mode.clone()
-                            }),
+                        Text::new(if index == 1 {
+                            glossary.shared_text.classic_mode.clone()
+                        } else {
+                            glossary.shared_text.survival_mode.clone()
+                        }),
                         TextFont {
-                                font: font.clone(),
-                                font_size: FONT_SIZE,
+                            font: font.clone(),
+                            font_size: FONT_SIZE,
                             ..Default::default()
-                            },
+                        },
                         TextColor(Color::from(GRAY)),
                         TextLayout::new_with_justify(JustifyText::Center),
                     ));
@@ -251,8 +249,8 @@ fn button_handle_system(
     for (interaction, button, children) in button_query.iter_mut() {
         let entity = text_query.get(children[0]).unwrap();
         match *interaction {
-            Interaction::None => *writer.color(entity,0) = TextColor::from(GRAY),
-            Interaction::Hovered => *writer.color(entity,0) = TextColor::BLACK,
+            Interaction::None => *writer.color(entity, 0) = TextColor::from(GRAY),
+            Interaction::Hovered => *writer.color(entity, 0) = TextColor::BLACK,
             Interaction::Pressed => {
                 if *button == ButtonComponent::ClassicMode {
                     profile.set_game_mode(GameMode::ClassicMode);

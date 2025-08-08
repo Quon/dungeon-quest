@@ -2,10 +2,10 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::materials::ingame::InGameMaterials;
-use crate::plugins::classic_mode::dungeon::{TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
 use crate::plugins::classic_mode::ClassicModeData;
-use crate::resources::dungeon::end_point::EndPoint;
+use crate::plugins::classic_mode::dungeon::{TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
 use crate::resources::dungeon::Dungeon;
+use crate::resources::dungeon::end_point::EndPoint;
 
 pub fn end_point(
     mut commands: Commands,
@@ -20,8 +20,8 @@ pub fn end_point(
 
     let end_point = commands
         .spawn((
-                   Sprite {
-                       image: ingame_materials.dungeon_materials.ladder.clone(),
+            Sprite {
+                image: ingame_materials.dungeon_materials.ladder.clone(),
                 custom_size: Some(Vec2::new(50.0, 50.0)),
                 ..Default::default()
             },

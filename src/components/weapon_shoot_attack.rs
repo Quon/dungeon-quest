@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 use std::time::Duration;
 
-use crate::resources::weapon::bullet::Bullet;
 use crate::resources::weapon::Weapon;
+use crate::resources::weapon::bullet::Bullet;
 
 #[derive(Component)]
 pub struct WeaponShootAttackComponent {

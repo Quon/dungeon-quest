@@ -2,8 +2,8 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::materials::ingame::InGameMaterials;
-use crate::plugins::survival_mode::dungeon::{TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
 use crate::plugins::survival_mode::SurvivalModeData;
+use crate::plugins::survival_mode::dungeon::{TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
 use crate::resources::dungeon::ground::Ground;
 use crate::resources::dungeon::layer::Layer;
 
@@ -16,16 +16,14 @@ pub fn ground(
     let start_y = 0.0 + (TOTAL_TILE_HEIGHT * TILE_SIZE / 2.0 - TILE_SIZE / 2.0);
 
     let ground = commands
-        .spawn((
-               Sprite {
-                color: Color::BLACK,
-                custom_size: Some(Vec2::new(
-                    TOTAL_TILE_WIDTH * TILE_SIZE,
-                    TOTAL_TILE_HEIGHT * TILE_SIZE,
-                )),
-                ..Default::default()
-            },
-        ))
+        .spawn((Sprite {
+            color: Color::BLACK,
+            custom_size: Some(Vec2::new(
+                TOTAL_TILE_WIDTH * TILE_SIZE,
+                TOTAL_TILE_HEIGHT * TILE_SIZE,
+            )),
+            ..Default::default()
+        },))
         .with_children(|parent| {
             let total_tile_width = TOTAL_TILE_WIDTH as usize;
             let total_tile_height = TOTAL_TILE_HEIGHT as usize;
@@ -38,8 +36,8 @@ pub fn ground(
 
                     parent
                         .spawn((
-                                   Sprite {
-                                       image: ingame_materials.dungeon_materials.floor.clone(),
+                            Sprite {
+                                image: ingame_materials.dungeon_materials.floor.clone(),
                                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                                 ..Default::default()
                             },

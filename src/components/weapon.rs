@@ -1,9 +1,9 @@
 use bevy::prelude::*;
 
 use crate::resources::effect::effect_type::EffectType;
+use crate::resources::weapon::Weapon;
 use crate::resources::weapon::attack_type::AttackType;
 use crate::resources::weapon::weapon_type::WeaponType;
-use crate::resources::weapon::Weapon;
 
 #[derive(Component, Copy, Clone)]
 pub struct WeaponComponent {

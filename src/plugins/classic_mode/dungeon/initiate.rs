@@ -49,6 +49,5 @@ pub fn initiate_classic_mode(mut commands: Commands, mut state: ResMut<NextState
     commands.insert_resource(classic_mode_data);
     commands.insert_resource(monster_spawn_controller);
 
-    state
-        .set(SceneState::InGameClassicMode);
+    state.set(SceneState::InGameClassicMode);
 }

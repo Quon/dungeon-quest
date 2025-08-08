@@ -23,6 +23,9 @@ impl Wave {
     pub fn next_wave(&mut self) {
         self.wave_number += 1;
         self.wave_duration += 15;
-        self.timer = Timer::new(Duration::from_secs(self.wave_duration as u64), TimerMode::Once);
+        self.timer = Timer::new(
+            Duration::from_secs(self.wave_duration as u64),
+            TimerMode::Once,
+        );
     }
 }

@@ -129,7 +129,7 @@ impl Glossary {
                 // let glossary = serde_json::from_str(&contents).unwrap_or(|_| { panic!("{}", error_message) });
                 match serde_json::from_str::<Glossary>(&contents) {
                     Ok(glossary) => glossary,
-                    _ => panic!("{}", error_message)
+                    _ => panic!("{}", error_message),
                 }
             }
             Err(err) => panic!("Can't find language file: {}", err),

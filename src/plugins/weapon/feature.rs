@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::sprite::Anchor;
-use std::f32::consts::PI;
 use bevy::window::PrimaryWindow;
+use std::f32::consts::PI;
 
 use crate::components::player::PlayerComponent;
 use crate::components::weapon::WeaponComponent;
@@ -47,9 +47,8 @@ pub fn aim(
         let window_size = Vec2::new(wnd.width() as f32, wnd.height() as f32);
 
         // translate y coord of cursor, according to https://bevyengine.org/learn/migration-guides/0.10-0.11/#consistent-screen-space-coordinates
-        let ndc = (
-            Vec2::new(screen_pos.x, window_size.y - screen_pos.y) / window_size
-        ) * 2.0 - Vec2::ONE;
+        let ndc =
+            (Vec2::new(screen_pos.x, window_size.y - screen_pos.y) / window_size) * 2.0 - Vec2::ONE;
 
         let ndc_to_world = camera_transform.compute_matrix() * camera.clip_from_view().inverse();
         let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
@@ -117,10 +116,7 @@ pub fn aim(
 }
 
 pub fn change_weapon_texture(
-    mut weapon_query: Query<(
-        Ref<WeaponComponent>,
-        &mut Sprite,
-    )>,
+    mut weapon_query: Query<(Ref<WeaponComponent>, &mut Sprite)>,
     ingame_materials: Res<InGameMaterials>,
 ) {
     let (weapon, mut sprite) = weapon_query.single_mut();

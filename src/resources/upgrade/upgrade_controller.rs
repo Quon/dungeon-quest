@@ -1,13 +1,13 @@
-use rand::prelude::*;
 use bevy::prelude::*;
+use rand::prelude::*;
 use std::fs::File;
 use std::io::prelude::*;
 
 use crate::config::*;
 use crate::resources::hero::hero_class::HeroClass;
 use crate::resources::skill::skill_type::SkillType;
-use crate::resources::upgrade::upgrade_type::UpgradeType;
 use crate::resources::upgrade::Upgrade;
+use crate::resources::upgrade::upgrade_type::UpgradeType;
 
 #[derive(Resource)]
 pub struct UpgradeController {

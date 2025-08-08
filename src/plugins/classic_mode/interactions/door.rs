@@ -2,9 +2,9 @@ use bevy::prelude::*;
 
 use crate::components::player::PlayerComponent;
 use crate::components::potion::PotionComponent;
+use crate::resources::dungeon::Dungeon;
 use crate::resources::dungeon::door::{Door, HorizontalDoor, VerticaltDoor};
 use crate::resources::dungeon::position::Position;
-use crate::resources::dungeon::Dungeon;
 use crate::resources::monster::monster_spawn_controller::MonsterSpawnController;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::resources::profile::Profile;

@@ -16,7 +16,10 @@ impl Plugin for CameraPlugin {
         app.add_systems(Startup, spawn_user_interface_camera);
         app.add_systems(Startup, spawn_2d_camera);
 
-        app.add_systems(Update, camera_follow.run_if(in_state(SceneState::InGameSurvivalMode)));
+        app.add_systems(
+            Update,
+            camera_follow.run_if(in_state(SceneState::InGameSurvivalMode)),
+        );
 
         app.add_systems(OnExit(SceneState::InGameSurvivalMode), reset_camera);
     }

@@ -134,7 +134,7 @@ fn setup(
                 ..Default::default()
             },
             ImageNode::new(scenes_materials.sub_background_image.clone()),
-    ))
+        ))
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
             texts(parent, &font_materials, &dictionary);
@@ -193,7 +193,6 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                         height: Val::Px(MENU_BOX_TILE_SIZE),
                         ..Default::default()
                     },
-
                 ));
             }
         }
@@ -241,13 +240,12 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
                 top: Val::Px(position_of_texts[index][1]),
                 ..Default::default()
             },
-            Text::new(
-                value),
+            Text::new(value),
             TextFont {
-                    font: font.clone(),
-                    font_size,
+                font: font.clone(),
+                font_size,
                 ..Default::default()
-                },
+            },
             TextColor(Color::BLACK),
             TextLayout::new_with_justify(JustifyText::Center),
         ))
@@ -310,8 +308,8 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
 
         let rect = positions[index];
         root.spawn((
-                       Button{..default()},
-                       Node  {
+            Button { ..default() },
+            Node {
                 left: rect.left,
                 right: rect.right,
                 top: rect.top,
@@ -369,8 +367,8 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
 
         let rect = positions[index];
         root.spawn((
-                       Button{..default()},
-                       Node  {
+            Button { ..default() },
+            Node {
                 left: rect.left,
                 right: rect.right,
                 top: rect.top,
@@ -493,19 +491,19 @@ fn text_handle_system(
     let glossary = dictionary.get_glossary();
     if dictionary.is_changed() {
         for (text_type, mut entity) in text_query.iter_mut() {
-            *writer.font(entity,0) = TextFont::from_font(font.clone());
+            *writer.font(entity, 0) = TextFont::from_font(font.clone());
             match *text_type {
                 TextComponent::Options => {
-                    *writer.text(entity,0) = glossary.options_scene_text.options.clone();
+                    *writer.text(entity, 0) = glossary.options_scene_text.options.clone();
                 }
                 TextComponent::EnableSound => {
-                    *writer.text(entity,0) = glossary.options_scene_text.enable_sound.clone();
+                    *writer.text(entity, 0) = glossary.options_scene_text.enable_sound.clone();
                 }
                 TextComponent::EnableMusic => {
-                    *writer.text(entity,0) = glossary.options_scene_text.enable_music.clone();
+                    *writer.text(entity, 0) = glossary.options_scene_text.enable_music.clone();
                 }
                 TextComponent::Language => {
-                    *writer.text(entity,0) = glossary.options_scene_text.language.clone();
+                    *writer.text(entity, 0) = glossary.options_scene_text.language.clone();
                 }
             }
         }

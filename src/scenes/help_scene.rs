@@ -61,7 +61,7 @@ fn setup(
                 ..Default::default()
             },
             ImageNode::new(scenes_materials.sub_background_image.clone()),
-    ))
+        ))
         .with_children(|parent| {
             help_menu_box(parent, &scenes_materials.menu_box_materials);
             texts(parent, &font_materials, &dictionary);
@@ -113,7 +113,6 @@ fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
                     height: Val::Px(MENU_BOX_TILE_SIZE),
                     ..Default::default()
                 },
-
             ));
         }
     }
@@ -166,13 +165,12 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
                 top: Val::Px(position_top),
                 ..Default::default()
             },
-            Text::new(
-                value),
+            Text::new(value),
             TextFont {
-                    font: font.clone(),
-                    font_size,
+                font: font.clone(),
+                font_size,
                 ..Default::default()
-                },
+            },
             TextColor(Color::BLACK),
             TextLayout::new_with_justify(JustifyText::Center),
         ));
@@ -211,13 +209,12 @@ fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictio
                 top: Val::Px(position[1]),
                 ..Default::default()
             },
-            Text::new(
-                value),
+            Text::new(value),
             TextFont {
-                    font: font.clone(),
-                    font_size: 30.0,
+                font: font.clone(),
+                font_size: 30.0,
                 ..Default::default()
-                },
+            },
             TextColor(Color::BLACK),
             TextLayout::new_with_justify(JustifyText::Center),
         ));
@@ -228,8 +225,8 @@ fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMat
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
     root.spawn((
-                   Button{..default()},
-                   Node  {
+        Button { ..default() },
+        Node {
             left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             right: Val::Auto,

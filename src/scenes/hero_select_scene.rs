@@ -122,8 +122,8 @@ fn setup(
         .id();
 
     let user_interface_root = commands
-        .spawn((Node {
-
+        .spawn((
+            Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
@@ -183,7 +183,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
             let mut sprite = Sprite::from_image(image);
             sprite.custom_size = Some(Vec2::new(BOX_TILE_SIZE, BOX_TILE_SIZE));
             root.spawn((
-               sprite,
+                sprite,
                 Transform {
                     translation: Vec3::new(
                         start_x + BOX_TILE_SIZE * column_index as f32,
@@ -201,8 +201,8 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
 fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
     root.spawn((
-                   Button{..default()},
-                   Node  {
+        Button { ..default() },
+        Node {
             left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
             top: Val::Px(RETURN_BUTTON_SIZE / 2.0),
             right: Val::Auto,
@@ -317,18 +317,21 @@ fn heroes_images(
                 },
             };
 
-            let texture_atlas =
-                TextureAtlasLayout::from_grid(UVec2::new(16, 28), 9, 1, None, None);
+            let texture_atlas = TextureAtlasLayout::from_grid(UVec2::new(16, 28), 9, 1, None, None);
             let texture_atlas_handle = texture_atlases.add(texture_atlas);
-            let mut sprite = Sprite::from_atlas_image(hero_tileset, TextureAtlas {
-                layout: texture_atlas_handle,
-                index: 0,
-            });
+            let mut sprite = Sprite::from_atlas_image(
+                hero_tileset,
+                TextureAtlas {
+                    layout: texture_atlas_handle,
+                    index: 0,
+                },
+            );
 
             let x = hero_image_positions[index][0];
             let y = hero_image_positions[index][1];
 
-            root.spawn((sprite,
+            root.spawn((
+                sprite,
                 Transform {
                     translation: Vec3::new(x, y, 0.2),
                     scale: Vec3::splat(4.0),
@@ -356,13 +359,12 @@ fn select_hero_text(
             top: Val::Px(95.0),
             ..Default::default()
         },
-        Text::new(
-            glossary.shared_text.select_hero),
+        Text::new(glossary.shared_text.select_hero),
         TextFont {
-                font: font,
-                font_size: 50.0,
+            font: font,
+            font_size: 50.0,
             ..Default::default()
-            },
+        },
         TextColor(Color::BLACK),
         TextLayout::new_with_justify(JustifyText::Center),
     ))
@@ -394,8 +396,8 @@ fn heroes_buttons(root: &mut ChildBuilder) {
         };
 
         root.spawn((
-                       Button{..default()},
-                       Node  {
+            Button { ..default() },
+            Node {
                 position_type: PositionType::Absolute,
                 left: Val::Px(button_positions[index][0]),
                 top: Val::Px(button_positions[index][1]),

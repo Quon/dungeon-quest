@@ -3,8 +3,8 @@ use std::time::Duration;
 
 use crate::materials::font::FontMaterials;
 use crate::resources::dictionary::Dictionary;
-use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::resources::game_data::PauseSceneData;
+use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::scenes::SceneState;
 
 pub struct ClassicModeUIPlugin;
@@ -26,10 +26,17 @@ impl Plugin for ClassicModeUIPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::InGameClassicMode), setup);
 
-        app.add_systems(Update, (
-            center_text_handle_system,
-            top_right_conner_text_handle_system
-        ).run_if(in_state(SceneState::InGameClassicMode).and(not(resource_exists::<PauseSceneData>))));
+        app.add_systems(
+            Update,
+            (
+                center_text_handle_system,
+                top_right_conner_text_handle_system,
+            )
+                .run_if(
+                    in_state(SceneState::InGameClassicMode)
+                        .and(not(resource_exists::<PauseSceneData>)),
+                ),
+        );
 
         app.add_systems(OnExit(SceneState::InGameClassicMode), cleanup);
     }
@@ -37,8 +44,8 @@ impl Plugin for ClassicModeUIPlugin {
 
 fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary: Res<Dictionary>) {
     let user_interface_root = commands
-        .spawn((Node {
-
+        .spawn((
+            Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
@@ -80,10 +87,10 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
         },
         Text::new(value),
         TextFont {
-                font: font.clone(),
-                font_size: 50.0,
+            font: font.clone(),
+            font_size: 50.0,
             ..default()
-            },
+        },
         TextColor(Color::WHITE),
         TextLayout::new_with_justify(JustifyText::Center),
     ))
@@ -123,21 +130,21 @@ fn center_text_handle_system(
 fn floor_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     root.spawn((
-            Node {
-                position_type: PositionType::Absolute,
-                top: Val::Px(0.0),
-                right: Val::Px(10.0),
-                ..Default::default()
-            },
-            Text::new("1"),
-            TextFont {
-                font: font.clone(),
-                font_size: 35.0,
-                ..Default::default()
-            },
-            TextColor(Color::WHITE),
-            TextLayout::new_with_justify(JustifyText::Center),
-        ))
+        Node {
+            position_type: PositionType::Absolute,
+            top: Val::Px(0.0),
+            right: Val::Px(10.0),
+            ..Default::default()
+        },
+        Text::new("1"),
+        TextFont {
+            font: font.clone(),
+            font_size: 35.0,
+            ..Default::default()
+        },
+        TextColor(Color::WHITE),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ))
     .insert(FloorTextComponent)
     .insert(Name::new("FloorTextComponent"));
 }
@@ -150,6 +157,6 @@ fn top_right_conner_text_handle_system(
     let entity = text_query.single();
 
     if player_dungeon_stats.is_changed() {
-        *writer.text(entity,0) = (player_dungeon_stats.current_floor_index + 1).to_string();
+        *writer.text(entity, 0) = (player_dungeon_stats.current_floor_index + 1).to_string();
     }
 }

@@ -44,19 +44,18 @@ pub struct LoadingScenePlugin;
 impl Plugin for LoadingScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::LoadingScene), setup);
-        app.add_systems(Update, (
-            load_materials,
-            load_data,
-            update_loader
-        ).run_if(in_state(SceneState::LoadingScene)));
+        app.add_systems(
+            Update,
+            (load_materials, load_data, update_loader).run_if(in_state(SceneState::LoadingScene)),
+        );
         app.add_systems(OnExit(SceneState::LoadingScene), cleanup);
     }
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res<Dictionary>) {
     let user_interface_root = commands
-        .spawn((Node {
-
+        .spawn((
+            Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
@@ -87,26 +86,25 @@ fn loader_bundle(
 ) {
     root.spawn(
         // Border
-        (Node {
-
-            justify_content: JustifyContent::Center,
-            position_type: PositionType::Absolute,
-            width: Val::Px(LOADING_BORDER_WIDTH),
-            height: Val::Px(LOADING_BORDER_HEIGHT),
-            top: Val::Px((WINDOW_HEIGHT / 2.0) - (LOADING_BORDER_HEIGHT / 2.0)),
-            left: Val::Px(
-                (WINDOW_HEIGHT * RESOLUTION) / 2.0 - (LOADING_BORDER_WIDTH / 2.0),
-            ),
-            bottom: Val::Auto,
-            right: Val::Auto,
-            ..default()
+        (
+            Node {
+                justify_content: JustifyContent::Center,
+                position_type: PositionType::Absolute,
+                width: Val::Px(LOADING_BORDER_WIDTH),
+                height: Val::Px(LOADING_BORDER_HEIGHT),
+                top: Val::Px((WINDOW_HEIGHT / 2.0) - (LOADING_BORDER_HEIGHT / 2.0)),
+                left: Val::Px((WINDOW_HEIGHT * RESOLUTION) / 2.0 - (LOADING_BORDER_WIDTH / 2.0)),
+                bottom: Val::Auto,
+                right: Val::Auto,
+                ..default()
             },
             BackgroundColor(Color::from(DARK_GRAY)),
-        ))
+        ),
+    )
     .with_children(|parent| {
         parent
-            .spawn((Node {
-
+            .spawn((
+                Node {
                     justify_content: JustifyContent::Center,
                     position_type: PositionType::Absolute,
                     width: Val::Px(0.0),
@@ -133,13 +131,12 @@ fn loader_bundle(
                         align_self: AlignSelf::Center,
                         ..Default::default()
                     },
-                    Text::new(
-                        ""),
+                    Text::new(""),
                     TextFont {
-                            font: asset_server.load(font_str),
-                            font_size: TEXT_FONT_SIZE,
+                        font: asset_server.load(font_str),
+                        font_size: TEXT_FONT_SIZE,
                         ..Default::default()
-                        },
+                    },
                     TextColor(Color::WHITE),
                     TextLayout::new_with_justify(JustifyText::Center),
                 ));
@@ -156,8 +153,8 @@ fn loading_text(
     asset_server: &Res<AssetServer>,
     dictionary: &Res<Dictionary>,
 ) {
-    root.spawn((Node {
-
+    root.spawn((
+        Node {
             justify_content: JustifyContent::Center,
             position_type: PositionType::Absolute,
             width: Val::Px(LOADING_BORDER_WIDTH),
@@ -186,14 +183,12 @@ fn loading_text(
                 align_self: AlignSelf::Center,
                 ..Default::default()
             },
-
-            Text::new(
-                glossary.loading_scene_text.loading),
+            Text::new(glossary.loading_scene_text.loading),
             TextFont {
-                    font: asset_server.load(font_str),
-                    font_size: LOADING_TEXT_FONT_SIZE,
+                font: asset_server.load(font_str),
+                font_size: LOADING_TEXT_FONT_SIZE,
                 ..Default::default()
-                },
+            },
             TextColor(Color::WHITE),
             TextLayout::new_with_justify(JustifyText::Center),
         ));
@@ -217,8 +212,7 @@ fn update_loader(
                 *writer.text(entity, 0) = value.to_string() + "%";
             }
         } else {
-            state
-                .set(SceneState::MainMenuScene);
+            state.set(SceneState::MainMenuScene);
         }
     }
 }

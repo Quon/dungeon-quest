@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
 use crate::config::*;
-use crate::plugins::survival_mode::dungeon::{TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
 use crate::plugins::survival_mode::SurvivalModeData;
+use crate::plugins::survival_mode::dungeon::{TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
 use crate::resources::dungeon::wave::Wave;
 use crate::resources::game_mode::GameMode;
 use crate::resources::monster::monster_spawn_controller::MonsterSpawnController;
@@ -40,6 +40,5 @@ pub fn initiate_survival_mode(mut commands: Commands, mut state: ResMut<NextStat
     commands.insert_resource(dungeon_mode_data);
     commands.insert_resource(wave);
 
-    state
-        .set(SceneState::InGameSurvivalMode);
+    state.set(SceneState::InGameSurvivalMode);
 }

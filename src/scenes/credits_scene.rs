@@ -62,7 +62,7 @@ fn setup(
                 ..Default::default()
             },
             ImageNode::new(scenes_materials.sub_background_image.clone()),
-    ))
+        ))
         .with_children(|parent| {
             credits_menu_box(parent, &scenes_materials.menu_box_materials);
             credits_text(parent, &font_materials, &dictionary);
@@ -122,7 +122,7 @@ fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMat
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
     root.spawn((
-        Button{..default()},
+        Button { ..default() },
         Node {
             left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
@@ -175,10 +175,10 @@ fn credits_text(root: &mut ChildBuilder, font_materials: &FontMaterials, diction
         },
         Text::new(glossary.main_menu_scene_text.credits),
         TextFont {
-                font,
-                font_size: 50.0,
+            font,
+            font_size: 50.0,
             ..Default::default()
-            },
+        },
         TextColor(Color::BLACK),
         TextLayout::new_with_justify(JustifyText::Center),
     ));
@@ -202,13 +202,12 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
                 top: Val::Px(110.0 + (index as f32) * 24.0),
                 ..Default::default()
             },
-            Text::new(
-                text),
+            Text::new(text),
             TextFont {
-                    font: font.clone(),
-                    font_size: 25.0,
+                font: font.clone(),
+                font_size: 25.0,
                 ..Default::default()
-                },
+            },
             TextColor(Color::BLACK),
             TextLayout::new_with_justify(JustifyText::Center),
         ));

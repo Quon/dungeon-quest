@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::resources::game_data::PauseSceneData;
+use bevy::prelude::*;
 
 use crate::scenes::SceneState;
 
@@ -15,22 +15,36 @@ pub struct SurvivalModePlugin;
 
 impl Plugin for SurvivalModePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(SceneState::PreSurvivalMode), dungeon::initiate::initiate_survival_mode);
-
-        app.add_systems(OnEnter(SceneState::InGameSurvivalMode), (
-            dungeon::ground::ground,
-            dungeon::walls::walls
-        ));
-
-        app.add_systems(Update, dungeon::wave::button_handle_system.run_if(
-            in_state(SceneState::InGameSurvivalMode).and(resource_exists::<dungeon::wave::RewardsSceneFlag>))
+        app.add_systems(
+            OnEnter(SceneState::PreSurvivalMode),
+            dungeon::initiate::initiate_survival_mode,
         );
 
-        app.add_systems(Update, dungeon::wave::countdown.run_if(
-            in_state(SceneState::InGameSurvivalMode).and(not(resource_exists::<PauseSceneData>)
-        )));
+        app.add_systems(
+            OnEnter(SceneState::InGameSurvivalMode),
+            (dungeon::ground::ground, dungeon::walls::walls),
+        );
 
-        app.add_systems(OnExit(SceneState::InGameSurvivalMode), cleanup_survival_mode_data);
+        app.add_systems(
+            Update,
+            dungeon::wave::button_handle_system.run_if(
+                in_state(SceneState::InGameSurvivalMode)
+                    .and(resource_exists::<dungeon::wave::RewardsSceneFlag>),
+            ),
+        );
+
+        app.add_systems(
+            Update,
+            dungeon::wave::countdown.run_if(
+                in_state(SceneState::InGameSurvivalMode)
+                    .and(not(resource_exists::<PauseSceneData>)),
+            ),
+        );
+
+        app.add_systems(
+            OnExit(SceneState::InGameSurvivalMode),
+            cleanup_survival_mode_data,
+        );
     }
 }
 

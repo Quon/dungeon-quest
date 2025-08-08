@@ -1,6 +1,6 @@
+use bevy::window::{WindowResizeConstraints, WindowResolution};
 use bevy::{prelude::*, window::WindowMode};
-use bevy::window::{WindowResolution, WindowResizeConstraints};
-use bevy_kira_audio::{AudioPlugin};
+use bevy_kira_audio::AudioPlugin;
 
 use config::*;
 
@@ -14,29 +14,36 @@ mod utils;
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
-            primary_window: Some(Window {
-                resolution: WindowResolution::new(WINDOW_HEIGHT * RESOLUTION, WINDOW_HEIGHT),
-                title: TITLE.to_string(),
-                position: WindowPosition::At(IVec2::new(MONITOR_WIDTH / 4, MONITOR_HEIGHT / 4)),
-                resizable: false,
-                resize_constraints: WindowResizeConstraints {
-                    min_width: WINDOW_HEIGHT * RESOLUTION,
-                    max_width: WINDOW_HEIGHT * RESOLUTION,
-                    min_height: WINDOW_HEIGHT,
-                    max_height: WINDOW_HEIGHT,
-                },
-                mode: WindowMode::Windowed,
-                ..default()
-            }),
-            ..default()
-        }).set(
-            ImagePlugin::default_nearest()
-        ))
+        .add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        resolution: WindowResolution::new(
+                            WINDOW_HEIGHT * RESOLUTION,
+                            WINDOW_HEIGHT,
+                        ),
+                        title: TITLE.to_string(),
+                        position: WindowPosition::At(IVec2::new(
+                            MONITOR_WIDTH / 4,
+                            MONITOR_HEIGHT / 4,
+                        )),
+                        resizable: false,
+                        resize_constraints: WindowResizeConstraints {
+                            min_width: WINDOW_HEIGHT * RESOLUTION,
+                            max_width: WINDOW_HEIGHT * RESOLUTION,
+                            min_height: WINDOW_HEIGHT,
+                            max_height: WINDOW_HEIGHT,
+                        },
+                        mode: WindowMode::Windowed,
+                        ..default()
+                    }),
+                    ..default()
+                })
+                .set(ImagePlugin::default_nearest()),
+        )
         .init_resource::<resources::setting::Setting>()
         .init_resource::<resources::dictionary::Dictionary>()
         .init_state::<scenes::SceneState>()
-
         .add_plugins(AudioPlugin)
         .add_systems(Startup, plugins::music::background_audio_channel_setup)
         .add_systems(Update, plugins::music::play_background_music)

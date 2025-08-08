@@ -1,16 +1,16 @@
-use std::slice::Iter;
-use bevy::prelude::*;
-use crate::config::*;
 use crate::components::player::PlayerComponent;
 use crate::components::player_list_effects::PlayerListEffectsComponent;
 use crate::components::skill::SkillComponent;
 use crate::components::weapon::WeaponComponent;
 use crate::components::weapon_shoot_attack::WeaponShootAttackComponent;
 use crate::components::weapon_swing_attack::WeaponSwingAttackComponent;
+use crate::config::*;
 use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
+use bevy::prelude::*;
+use std::slice::Iter;
 
 use crate::resources::dungeon::wave::Wave;
 use crate::resources::game_data::{GameData, PauseSceneData};
@@ -67,11 +67,12 @@ pub fn countdown(
         let player = player_query.single();
         let hero_class = player.class.clone();
         let weapon_component = weapon_query.single();
-        let three_upgrades = upgrade_controller.get_three_upgrades(hero_class, weapon_component.level);
+        let three_upgrades =
+            upgrade_controller.get_three_upgrades(hero_class, weapon_component.level);
 
         let user_interface_root = commands
-            .spawn((Node {
-
+            .spawn((
+                Node {
                     width: Val::Percent(100.0),
                     height: Val::Percent(100.0),
                     position_type: PositionType::Absolute,
@@ -94,7 +95,6 @@ pub fn countdown(
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
@@ -104,7 +104,6 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .with_children(|parent| {
         for (row_index, row) in BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-
                 let image: Handle<Image> = match value {
                     0 => menu_box_materials.top_right.clone(),
                     1 => menu_box_materials.top_center.clone(),
@@ -167,7 +166,10 @@ fn buttons(
             };
 
             grandparent
-                .spawn((Button {..Default::default()},
+                .spawn((
+                    Button {
+                        ..Default::default()
+                    },
                     Node {
                         left: Val::Px(435.0),
                         top: Val::Px(top_position),
@@ -201,7 +203,6 @@ fn buttons(
     .insert(Name::new("Rewards"));
 }
 
-
 pub fn button_handle_system(
     mut button_query: Query<
         (&Interaction, &Reward, &Children),
@@ -228,8 +229,8 @@ pub fn button_handle_system(
     for (interaction, reward, children) in button_query.iter_mut() {
         let mut entity = text_query.get_mut(children[0]).unwrap();
         match *interaction {
-            Interaction::None => *writer.color(entity,0) = TextColor::from(GRAY),
-            Interaction::Hovered => *writer.color(entity,0) = TextColor::BLACK,
+            Interaction::None => *writer.color(entity, 0) = TextColor::from(GRAY),
+            Interaction::Hovered => *writer.color(entity, 0) = TextColor::BLACK,
             Interaction::Pressed => {
                 let (mut player, mut player_skill, mut player_list_effects) =
                     player_query.single_mut();

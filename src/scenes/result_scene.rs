@@ -1,11 +1,3 @@
-use bevy::prelude::*;
-use chrono::{DateTime, Datelike, Timelike};
-use std::fs::File;
-use std::io::prelude::*;
-use std::slice::Iter;
-use bevy::color::palettes::basic::GRAY;
-use bevy::color::palettes::css::DARK_GRAY;
-use bevy::input::keyboard::{Key, KeyboardInput};
 use crate::config::*;
 use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
@@ -16,6 +8,14 @@ use crate::resources::language::Language;
 use crate::resources::profile::Profile;
 use crate::resources::stored_profile::StoredProfile;
 use crate::scenes::SceneState;
+use bevy::color::palettes::basic::GRAY;
+use bevy::color::palettes::css::DARK_GRAY;
+use bevy::input::keyboard::{Key, KeyboardInput};
+use bevy::prelude::*;
+use chrono::{DateTime, Datelike, Timelike};
+use std::fs::File;
+use std::io::prelude::*;
+use std::slice::Iter;
 
 const RETURN_BUTTON_SIDE: f32 = 50.0;
 const BUTTON_SIDE: f32 = 70.0;
@@ -122,7 +122,7 @@ fn setup(
                 ..Default::default()
             },
             ImageNode::new(scenes_materials.sub_background_image.clone()),
-    ))
+        ))
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
             result_text(parent, &font_materials, &dictionary);
@@ -183,7 +183,6 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                         height: Val::Px(MENU_BOX_TILE_SIZE),
                         ..Default::default()
                     },
-
                 ));
             }
         }
@@ -208,13 +207,12 @@ fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
             top: Val::Px(60.0),
             ..Default::default()
         },
-        Text::new(
-            glossary.result_scene_text.result),
+        Text::new(glossary.result_scene_text.result),
         TextFont {
-                font: font,
-                font_size: 50.0,
+            font: font,
+            font_size: 50.0,
             ..Default::default()
-            },
+        },
         TextColor(Color::BLACK),
         TextLayout::new_with_justify(JustifyText::Center),
     ))
@@ -407,14 +405,13 @@ fn texts(
                         ..Default::default()
                     },
                     Visibility::Inherited,
-                    Text::new(
-                        value),
+                    Text::new(value),
                     TextFont {
                         font: font.clone(),
                         font_size: 35.0,
-                    ..Default::default()
+                        ..Default::default()
                     },
-                   TextColor(Color::BLACK),
+                    TextColor(Color::BLACK),
                     TextLayout {
                         justify: JustifyText::Center,
                         linebreak: LineBreak::NoWrap,
@@ -431,8 +428,8 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
     root.spawn((
-       Button,
-       Node {
+        Button,
+        Node {
             left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
             right: Val::Auto,
@@ -461,8 +458,8 @@ fn save_profile_button(
     let handle_image = scenes_materials.icon_materials.leaderboard.clone();
 
     root.spawn((
-       Button,
-       Node {
+        Button,
+        Node {
             left: Val::Px(550.0),
             top: Val::Px(440.0),
             right: Val::Auto,
@@ -483,8 +480,8 @@ fn play_again_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials
     let handle_image = scenes_materials.icon_materials.restart.clone();
 
     root.spawn((
-       Button,
-       Node {
+        Button,
+        Node {
             left: Val::Px(400.0),
             top: Val::Px(440.0),
             right: Val::Auto,
@@ -560,8 +557,8 @@ fn user_input_text(
     let font = font_materials.get_font(dictionary.get_current_language());
 
     grandparent
-        .spawn((Node {
-
+        .spawn((
+            Node {
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
                 align_items: AlignItems::Center,
@@ -668,13 +665,13 @@ fn user_input_handle(
                         if character.is_ascii() {
                             user_name.push(character.chars().next().unwrap());
                         }
-                    },
-                    _ => {},
+                    }
+                    _ => {}
                 }
             }
         }
         let entity = user_input_query.single();
-        *writer.text(entity,0) = user_name.to_string();
+        *writer.text(entity, 0) = user_name.to_string();
     }
 }
 

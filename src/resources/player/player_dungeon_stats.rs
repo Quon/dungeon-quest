@@ -1,5 +1,5 @@
-use bevy_inspector_egui::InspectorOptions;
 use bevy::prelude::*;
+use bevy_inspector_egui::InspectorOptions;
 
 use crate::resources::dungeon::position::Position;
 

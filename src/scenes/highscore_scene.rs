@@ -101,12 +101,16 @@ pub struct HighscoreScenePlugin;
 impl Plugin for HighscoreScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::HighscoreScene), setup);
-        app.add_systems(Update, (
-            button_handle_system,
-            book_animation_handle_system,
-            hero_image_handle_system,
-            texts_handle_system
-        ).run_if(in_state(SceneState::HighscoreScene)));
+        app.add_systems(
+            Update,
+            (
+                button_handle_system,
+                book_animation_handle_system,
+                hero_image_handle_system,
+                texts_handle_system,
+            )
+                .run_if(in_state(SceneState::HighscoreScene)),
+        );
         app.add_systems(OnExit(SceneState::HighscoreScene), cleanup);
     }
 }
@@ -134,7 +138,9 @@ fn setup(
 ) {
     // background
     let background = commands
-        .spawn(Sprite::from_image(scenes_materials.sub_background_image.clone()))
+        .spawn(Sprite::from_image(
+            scenes_materials.sub_background_image.clone(),
+        ))
         .id();
 
     // book texture
@@ -144,7 +150,7 @@ fn setup(
         7,
         1,
         None,
-        None
+        None,
     );
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
@@ -157,19 +163,22 @@ fn setup(
         }
         Err(err) => panic!("Can't find highscores file: {}", err),
     };
-    let mut sprite = Sprite::from_atlas_image(book_tileset, TextureAtlas {
-        layout: texture_atlas_handle,
-        index: 0,
-    });
+    let mut sprite = Sprite::from_atlas_image(
+        book_tileset,
+        TextureAtlas {
+            layout: texture_atlas_handle,
+            index: 0,
+        },
+    );
     sprite.custom_size = Some(Vec2::new(BOOK_TILE_SIZE.width, BOOK_TILE_SIZE.height));
     // book
     let book = commands
         .spawn((
             sprite,
             Transform {
-               translation: Vec3::new(-25.0, -30.0, 1.0),
-               scale: Vec3::splat(4.0),
-               ..Default::default()
+                translation: Vec3::new(-25.0, -30.0, 1.0),
+                scale: Vec3::splat(4.0),
+                ..Default::default()
             },
         ))
         .insert(HighscoreBookComponent {
@@ -185,8 +194,8 @@ fn setup(
 
     // user interface root
     let user_interface_root = commands
-        .spawn((Node {
-
+        .spawn((
+            Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 ..Default::default()
@@ -235,8 +244,8 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                 let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
                 let rect = positions[index];
                 root.spawn((
-                               Button{..default()},
-                               Node  {
+                    Button { ..default() },
+                    Node {
                         left: rect.left,
                         right: rect.right,
                         top: rect.top,
@@ -254,8 +263,8 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
             _ => {
                 let rect = positions[index];
                 root.spawn((
-                               Button{..default()},
-                               Node  {
+                    Button { ..default() },
+                    Node {
                         left: rect.left,
                         right: rect.right,
                         top: rect.top,
@@ -294,8 +303,7 @@ fn button_handle_system(
                 }
                 Interaction::Pressed => {
                     ui_image.image = scenes_materials.icon_materials.home_icon_clicked.clone();
-                    state
-                        .set(SceneState::MainMenuScene);
+                    state.set(SceneState::MainMenuScene);
                 }
             },
             ButtonComponent::Next => {
@@ -367,9 +375,7 @@ fn book_animation_handle_system(
 
 fn hero_image(root: &mut ChildBuilder) {
     root.spawn((
-        ImageNode {
-            ..default()
-        },
+        ImageNode { ..default() },
         Node {
             right: Val::Auto,
             bottom: Val::Auto,
@@ -432,8 +438,8 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
         [500.0, 300.0],
     ];
 
-    root.spawn((Node {
-
+    root.spawn((
+        Node {
             display: Display::None,
             position_type: PositionType::Absolute,
             width: Val::Percent(100.0),
@@ -454,15 +460,14 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
                         ..Default::default()
                     },
                     Visibility::Inherited,
-                    Text::new(
-                        ""),
+                    Text::new(""),
                     TextFont {
-                            font: font.clone(),
-                            font_size: 25.0,
+                        font: font.clone(),
+                        font_size: 25.0,
                         ..Default::default()
-                        },
-                       TextColor(Color::BLACK),
-                       TextLayout::new_with_justify(JustifyText::Center),
+                    },
+                    TextColor(Color::BLACK),
+                    TextLayout::new_with_justify(JustifyText::Center),
                 ))
                 .insert(*prevalue);
         }
@@ -580,7 +585,7 @@ fn texts_handle_system(
                 };
 
                 let entity = text_query.get(children[text_index]).unwrap();
-                *writer.text(entity,0) = text_value;
+                *writer.text(entity, 0) = text_value;
             }
             style.display = Display::Flex;
         } else {

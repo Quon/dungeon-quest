@@ -1,6 +1,3 @@
-use bevy::prelude::*;
-use std::slice::Iter;
-use bevy::color::palettes::css::GRAY;
 use crate::config::*;
 use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
@@ -9,6 +6,9 @@ use crate::resources::dictionary::Dictionary;
 use crate::resources::game_data::PauseSceneData;
 use crate::resources::profile::Profile;
 use crate::scenes::SceneState;
+use bevy::color::palettes::css::GRAY;
+use bevy::prelude::*;
+use std::slice::Iter;
 
 const BOX_TILE_SIZE: f32 = 60.0;
 const BOX_WIDTH_TILES: f32 = 7.0;
@@ -48,8 +48,8 @@ pub fn pause(
         keyboard_input.reset(KeyCode::Escape);
 
         let user_interface_root = commands
-            .spawn((Node {
-
+            .spawn((
+                Node {
                     width: Val::Percent(100.0),
                     height: Val::Percent(100.0),
                     position_type: PositionType::Absolute,
@@ -106,7 +106,6 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                         height: Val::Px(BOX_TILE_SIZE),
                         ..Default::default()
                     },
-
                 ));
             }
         }
@@ -130,8 +129,8 @@ fn buttons(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: 
         };
 
         root.spawn((
-                       Button{..default()},
-                       Node {
+            Button { ..default() },
+            Node {
                 left: Val::Px((WINDOW_HEIGHT * RESOLUTION - 300.0) / 2.0),
                 top: Val::Px(top_position),
                 right: Val::Auto,
@@ -146,13 +145,12 @@ fn buttons(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: 
         ))
         .with_children(|parent| {
             parent.spawn((
-                Text::new(
-                    value.clone()),
+                Text::new(value.clone()),
                 TextFont {
-                        font: font.clone(),
-                        font_size: 35.0,
+                    font: font.clone(),
+                    font_size: 35.0,
                     ..Default::default()
-                    },
+                },
                 TextColor(Color::from(GRAY)),
                 TextLayout::new_with_justify(JustifyText::Center),
             ));
@@ -177,8 +175,8 @@ pub fn button_handle_system(
     for (interaction, button, children) in button_query.iter_mut() {
         let entity = text_query.get(children[0]).unwrap();
         match *interaction {
-            Interaction::None =>  *writer.color(entity,0) = TextColor::from(GRAY),
-            Interaction::Hovered => *writer.color(entity,0) = TextColor::BLACK,
+            Interaction::None => *writer.color(entity, 0) = TextColor::from(GRAY),
+            Interaction::Hovered => *writer.color(entity, 0) = TextColor::BLACK,
             Interaction::Pressed => {
                 if *button == ButtonComponent::Quit {
                     profile.is_run_finished = true;

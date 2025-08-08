@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 use std::time::Duration;
 
-use crate::resources::skill::skill_type::SkillType;
 use crate::resources::skill::Skill;
+use crate::resources::skill::skill_type::SkillType;
 use crate::resources::upgrade::Upgrade;
 
 #[derive(Component)]

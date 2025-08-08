@@ -2,8 +2,8 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::materials::ingame::InGameMaterials;
-use crate::plugins::survival_mode::dungeon::{TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
 use crate::plugins::survival_mode::SurvivalModeData;
+use crate::plugins::survival_mode::dungeon::{TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
 use crate::resources::dungeon::block_type::BlockType;
 use crate::resources::dungeon::rooms::Rooms;
 use crate::resources::dungeon::wall::Wall;
@@ -96,8 +96,8 @@ fn wall(
 
     parent
         .spawn((
-                   Sprite {
-                       image: image,
+            Sprite {
+                image: image,
                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                 ..Default::default()
             },

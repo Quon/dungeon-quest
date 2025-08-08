@@ -15,13 +15,15 @@ impl MonsterListEffectsComponent {
             activated_effects: HashMap::new(),
         };
 
-        monster_list_effects
-            .activated_effects
-            .insert(EffectType::Stun, Timer::new(Duration::from_secs(0), TimerMode::Once));
+        monster_list_effects.activated_effects.insert(
+            EffectType::Stun,
+            Timer::new(Duration::from_secs(0), TimerMode::Once),
+        );
 
-        monster_list_effects
-            .activated_effects
-            .insert(EffectType::Slow, Timer::new(Duration::from_secs(0), TimerMode::Once));
+        monster_list_effects.activated_effects.insert(
+            EffectType::Slow,
+            Timer::new(Duration::from_secs(0), TimerMode::Once),
+        );
 
         monster_list_effects.activated_effects.insert(
             EffectType::ReduceDamage,
@@ -34,8 +36,10 @@ impl MonsterListEffectsComponent {
     pub fn activate(&mut self, effect_type: EffectType) {
         match effect_type {
             EffectType::Stun => {
-                self.activated_effects
-                    .insert(EffectType::Stun, Timer::new(Duration::from_secs(2), TimerMode::Once));
+                self.activated_effects.insert(
+                    EffectType::Stun,
+                    Timer::new(Duration::from_secs(2), TimerMode::Once),
+                );
             }
             EffectType::ReduceDamage => {
                 self.activated_effects.insert(
@@ -44,8 +48,10 @@ impl MonsterListEffectsComponent {
                 );
             }
             EffectType::Slow => {
-                self.activated_effects
-                    .insert(EffectType::Slow, Timer::new(Duration::from_secs(3), TimerMode::Once));
+                self.activated_effects.insert(
+                    EffectType::Slow,
+                    Timer::new(Duration::from_secs(3), TimerMode::Once),
+                );
             }
             _ => {}
         }

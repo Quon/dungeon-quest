@@ -9,7 +9,6 @@ pub fn finish_run(mut profile: ResMut<Profile>, mut state: ResMut<NextState<Scen
         let end_time: DateTime<Local> = Local::now();
         profile.end_time = end_time.to_rfc3339();
 
-        state
-            .set(SceneState::ResultScene);
+        state.set(SceneState::ResultScene);
     }
 }
