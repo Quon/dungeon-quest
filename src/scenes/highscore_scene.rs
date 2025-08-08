@@ -308,7 +308,7 @@ fn button_handle_system(
             },
             ButtonComponent::Next => {
                 if *interaction == Interaction::Pressed {
-                    let mut highscore_book = highscore_book_query.get_single_mut().unwrap();
+                    let mut highscore_book = highscore_book_query.single_mut().unwrap();
                     let total_pages = highscore_book.total_pages as isize;
                     if highscore_book.animation_indexes.is_empty() {
                         highscore_book.is_reverse = false;
@@ -325,7 +325,7 @@ fn button_handle_system(
             }
             ButtonComponent::Previous => {
                 if *interaction == Interaction::Pressed {
-                    let mut highscore_book = highscore_book_query.get_single_mut().unwrap();
+                    let mut highscore_book = highscore_book_query.single_mut().unwrap();
                     if highscore_book.animation_indexes.is_empty() {
                         highscore_book.is_reverse = true;
                         highscore_book.animation_index = 0;
@@ -397,7 +397,7 @@ fn hero_image_handle_system(
     scenes_materials: Res<ScenesMaterials>,
 ) {
     for (_hero_image, mut ui_image, mut visibility) in query.iter_mut() {
-        let highscore_book = highscore_book_query.get_single_mut().unwrap();
+        let highscore_book = highscore_book_query.single_mut().unwrap();
         if highscore_book.current_page != -1 && highscore_book.animation_indexes.is_empty() {
             let index = highscore_book.current_page as usize;
             ui_image.image = match highscore_book.profiles[index].hero_class {
@@ -479,12 +479,12 @@ fn texts_handle_system(
     mut query: Query<(&TextsNodeComponent, &mut Node, &Children)>,
     mut highscore_book_query: Query<&mut HighscoreBookComponent>,
     mut text_type_query: Query<&PrefixWordComponent>,
-    mut text_query: Query<Entity>,
+    text_query: Query<Entity>,
     dictionary: Res<Dictionary>,
     mut writer: TextUiWriter,
 ) {
     for (_hero_image, mut style, children) in query.iter_mut() {
-        let highscore_book = highscore_book_query.get_single_mut().unwrap();
+        let highscore_book = highscore_book_query.single_mut().unwrap();
         if highscore_book.current_page != -1 && highscore_book.animation_indexes.is_empty() {
             let profile_index = highscore_book.current_page as usize;
 

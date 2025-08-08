@@ -227,7 +227,7 @@ pub fn button_handle_system(
     mut commands: Commands,
 ) {
     for (interaction, reward, children) in button_query.iter_mut() {
-        let mut entity = text_query.get_mut(children[0]).unwrap();
+        let entity = text_query.get_mut(children[0]).unwrap();
         match *interaction {
             Interaction::None => *writer.color(entity, 0) = TextColor::from(GRAY),
             Interaction::Hovered => *writer.color(entity, 0) = TextColor::BLACK,

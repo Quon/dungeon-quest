@@ -319,7 +319,7 @@ fn heroes_images(
 
             let texture_atlas = TextureAtlasLayout::from_grid(UVec2::new(16, 28), 9, 1, None, None);
             let texture_atlas_handle = texture_atlases.add(texture_atlas);
-            let mut sprite = Sprite::from_atlas_image(
+            let sprite = Sprite::from_atlas_image(
                 hero_tileset,
                 TextureAtlas {
                     layout: texture_atlas_handle,

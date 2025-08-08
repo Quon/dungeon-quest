@@ -32,7 +32,7 @@ fn spawn_user_interface_camera(mut commands: Commands) {
 }
 
 fn spawn_2d_camera(mut commands: Commands) {
-    let mut camera = Camera2d::default();
+    let camera = Camera2d::default();
 
     // camera.projection.top = 1.0;
     // camera.projection.bottom = -1.0;

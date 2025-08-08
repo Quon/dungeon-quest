@@ -23,7 +23,7 @@ impl PlayerListEffectsComponent {
     pub fn upgrade(&mut self, upgrade: Upgrade) {
         let effect_upgrade = upgrade.effect_upgrade.unwrap();
 
-        let mut information = self
+        let information = self
             .information
             .iter_mut()
             .find(|effect_information| effect_information.name == effect_upgrade.name)

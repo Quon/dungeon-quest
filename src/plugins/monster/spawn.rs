@@ -17,7 +17,6 @@ use crate::{
     },
 };
 use bevy::prelude::*;
-use bevy::render::render_resource::Texture;
 use rand::Rng;
 use std::time::Duration;
 

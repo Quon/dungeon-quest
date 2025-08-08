@@ -8,7 +8,6 @@ use crate::resources::language::Language;
 use crate::resources::profile::Profile;
 use crate::resources::stored_profile::StoredProfile;
 use crate::scenes::SceneState;
-use bevy::color::palettes::basic::GRAY;
 use bevy::color::palettes::css::DARK_GRAY;
 use bevy::input::keyboard::{Key, KeyboardInput};
 use bevy::prelude::*;
@@ -628,7 +627,7 @@ fn user_input_visibility_handle(
 }
 
 fn user_input_handle(
-    mut user_input_query: Query<Entity, With<UserInput>>,
+    user_input_query: Query<Entity, With<UserInput>>,
     mut user_input_controller: ResMut<UserInputController>,
     mut char_evr: EventReader<KeyboardInput>,
     mut state: ResMut<NextState<SceneState>>,

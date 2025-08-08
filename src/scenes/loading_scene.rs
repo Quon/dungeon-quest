@@ -198,7 +198,7 @@ fn loading_text(
 fn update_loader(
     mut query: Query<(&mut LoaderComponent, &mut Node, &Children)>,
     mut state: ResMut<NextState<SceneState>>,
-    mut text_query: Query<Entity>,
+    text_query: Query<Entity>,
     mut writer: TextUiWriter,
 ) {
     for (mut loader, mut style, children) in query.iter_mut() {

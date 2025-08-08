@@ -490,7 +490,7 @@ fn text_handle_system(
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
     if dictionary.is_changed() {
-        for (text_type, mut entity) in text_query.iter_mut() {
+        for (text_type, entity) in text_query.iter_mut() {
             *writer.font(entity, 0) = TextFont::from_font(font.clone());
             match *text_type {
                 TextComponent::Options => {

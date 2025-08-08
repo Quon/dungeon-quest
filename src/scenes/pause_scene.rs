@@ -165,7 +165,7 @@ pub fn button_handle_system(
         (&Interaction, &ButtonComponent, &Children),
         (Changed<Interaction>, With<Button>),
     >,
-    mut text_query: Query<Entity>,
+    text_query: Query<Entity>,
     mut profile: ResMut<Profile>,
     mut next_state: ResMut<NextState<SceneState>>,
     mut commands: Commands,

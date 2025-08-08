@@ -107,7 +107,7 @@ fn center_text_handle_system(
     time: Res<Time>,
     mut writer: TextUiWriter,
 ) {
-    let (mut entity, mut center_text, mut visibility) = text_query.single_mut().unwrap();
+    let (entity, mut center_text, mut visibility) = text_query.single_mut().unwrap();
     center_text.timer.tick(time.delta());
 
     if center_text.timer.finished() {
@@ -150,7 +150,7 @@ fn floor_text(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, d
 }
 
 fn top_right_conner_text_handle_system(
-    mut text_query: Query<Entity, With<FloorTextComponent>>,
+    text_query: Query<Entity, With<FloorTextComponent>>,
     player_dungeon_stats: Res<PlayerDungeonStats>,
     mut writer: TextUiWriter,
 ) {

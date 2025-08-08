@@ -162,7 +162,7 @@ fn wave_text(root: &mut ChildSpawnerCommands, font_materials: &FontMaterials, di
 }
 
 fn wave_text_handle_system(
-    mut text_query: Query<Entity, With<WaveTextComponent>>,
+    text_query: Query<Entity, With<WaveTextComponent>>,
     wave: Res<Wave>,
     mut writer: TextUiWriter,
 ) {
@@ -201,7 +201,7 @@ fn wave_countdown_text(
 }
 
 fn wave_countdown_text_handle_system(
-    mut wave_countdown_text_query: Query<Entity, With<WaveCountDownTextComponent>>,
+    wave_countdown_text_query: Query<Entity, With<WaveCountDownTextComponent>>,
     wave: Res<Wave>,
     mut writer: TextUiWriter,
 ) {

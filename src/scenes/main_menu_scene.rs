@@ -181,7 +181,7 @@ fn button_handle_system(
         (&Interaction, &ButtonComponent, &Children),
         (Changed<Interaction>, With<Button>),
     >,
-    mut text_query: Query<Entity>,
+    text_query: Query<Entity>,
     mut state: ResMut<NextState<SceneState>>,
     mut exit: EventWriter<AppExit>,
     mut writer: TextUiWriter,
@@ -200,7 +200,7 @@ fn button_handle_system(
                     ButtonComponent::Help => state.set(SceneState::HelpScene),
                     ButtonComponent::Credits => state.set(SceneState::CreditsScene),
                     ButtonComponent::Quit => {
-                        exit.send(AppExit::Success);
+                        exit.write(AppExit::Success);
                     }
                 }
             }

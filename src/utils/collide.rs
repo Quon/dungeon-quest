@@ -1,5 +1,5 @@
 use bevy::math::bounding::{Aabb2d, IntersectsVolume};
-use bevy::math::{Vec2, Vec3, Vec3Swizzles};
+use bevy::math::{Vec2, Vec3};
 
 pub fn collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2) -> bool {
     let collision = Aabb2d::new(a_pos.truncate().trunc(), a_size / 2.)
